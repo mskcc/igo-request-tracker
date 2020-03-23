@@ -1,0 +1,135 @@
+.hover:hover{
+  cursor: pointer;
+}
+.inline-block {
+  display: inline-block;
+}
+.text-align-center{
+  text-align: center;
+}
+.text-align-left{
+  text-align: left;
+}
+.bold {
+  font-weight: bold;
+}
+.fill-width {
+  width: 100%;
+}
+.fill-height {
+  height: 100%;
+}
+.pos-rel {
+  position: relative;
+}
+.vert-align {
+  position: absolute;
+  top: 50%;
+  transform: translate(0px, -50%);
+}
+.padding-hor-20 {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.padding-vert-10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.margin-vert-20 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.margin-left-20 {
+  margin-left: 20px;
+}
+.light-gray-background {
+  background-color: #f2f2f2;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.request-complete {
+  font-size: 38px;
+  color: green;
+  margin-left: 40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.bold {
+  font-weight: bold;
+}
+.underline {
+  text-decoration: underline;
+}
+.timeline-button-container {
+  width: 135px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.step {
+  width: 300px;
+  height: 175px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  display: inline-block;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  vertical-align: top;
+}
+
+.completed-step {
+  background-color: #f2f2f2;
+}
+.project-selector-icon{
+  font-size: 2.5em;
+  display: inline-block;
+  margin-right: 20px;
+}
+.border {
+  border: 1px solid #dee2e6;
+}
+.sample-tree-container {
+  margin-top: 20px;
+  border: 1px solid #dee2e6;
+}
+.parent-sample-level-stages{
+  min-height: 250px;
+}
+.sample-viewer-toggle {
+  vertical-align: top;
+  font-size: 24px;
+}
+.gray-color {
+  color: #8c8c8c;
+}
+.black-color {
+  color: black;
+}
