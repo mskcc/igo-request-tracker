@@ -1,8 +1,7 @@
 const apiResponse = require("../helpers/apiResponse");
-const auth = require("../middlewares/jwt");
+const {authenticateRequest} = require("../middlewares/jwt-cookie");
 const {getAllProjects, getProjectTrackingInfo} = require("../services/services");
 const Cache = require("../helpers/cache");
-
 const ttl = 60 * 60 * 1; // cache for 1 Hour
 const cache = new Cache(ttl); // Create a new cache service instance
 
@@ -12,7 +11,7 @@ const cache = new Cache(ttl); // Create a new cache service instance
  * @returns {Object}
  */
 exports.getProjects = [
-	// auth,
+	authenticateRequest,
 	function (req, res) {
 		const key = "GET_PROJECTS";
 		const retrievalFunc = () => getAllProjects();
@@ -27,7 +26,7 @@ exports.getProjects = [
 ];
 
 exports.getProjectTrackingData = [
-	// auth,
+	authenticateRequest,
 	function (req, res) {
 		const project = req.params.id;
 

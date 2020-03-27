@@ -17,6 +17,15 @@ exports.successResponseWithData = function (res, msg, data) {
 	return res.status(200).json(resData);
 };
 
+exports.AuthenticationErrorResponse = function(res, msg) {
+	var data = {
+		status: 0,
+		message: msg,
+	};
+	logger.log("error", msg);
+	return res.status(401).json(data);
+};
+
 exports.ErrorResponse = function (res, msg) {
 	var data = {
 		status: 0,

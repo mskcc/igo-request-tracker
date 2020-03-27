@@ -7,6 +7,10 @@ const apiRouter = require("./routes/api");
 const apiResponse = require("./helpers/apiResponse");
 const cors = require("cors");
 
+const jwtInCookie = require("jwt-in-cookie");
+// TODO - take from a shared location on server
+jwtInCookie.configure({secret: process.env.JWT_SECRET});
+
 // DB connection
 const MONGODB_URL = process.env.MONGODB_URL;
 const mongoose = require("mongoose");
