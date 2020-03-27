@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL} from "../config";
+import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH} from "../config";
 import API_PROJECT_ID from '../mocks/api-projects-id';
 import API_PROJECT from '../mocks/api-projects';
 
@@ -19,7 +19,7 @@ const checkForAuthorizationError = (error) => {
     const status = resp.status;
     if(status === 401){
         // Automatically redirect client to the login page
-        window.location.href = LOGIN_PAGE_URL;
+        window.location.href = `${LOGIN_PAGE_URL}/${HOME_PAGE_PATH}`;
     }
 };
 
