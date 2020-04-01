@@ -1,6 +1,6 @@
 const axios = require("axios");
 const https = require("https");
-const { LIMS_API } = require("./config.js");
+const { LIMS_API, LIMS } = require("./config.js");
 const { logger } = require("../helpers/winston");
 
 const formatAllProjectsResponse = function(resp) {
@@ -36,7 +36,7 @@ exports.getAllProjects = () => {
 	const url = `${LIMS_API}/getRecentDeliveries`;
 	// return axios.get(`${LIMS_API}/getRecentDeliveries?time=2&units=d`,
 	return axios.get(url,
-		{auth: { username: "pms", password: "tiagostarbuckslightbike"},
+		{auth: { username: LIMS.username, password: LIMS.password},
 			httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getAllProjects response from ${url}`);
@@ -49,7 +49,7 @@ exports.getProjectTrackingInfo = (requestId) => {
 	const url = `${LIMS_API}/getRequestTracking?request=${requestId}`;
 	logger.log("info", `Sending request to ${url}`);
 	return axios.get(url,
-		{auth: { username: "pms", password: "tiagostarbuckslightbike"},
+		{auth: { username: LIMS.username, password: LIMS.password},
 			httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getProjectTrackingInfo response from ${url}`);
