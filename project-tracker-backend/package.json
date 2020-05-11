@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "ENV=QA node ./bin/www",
     "dev": "nodemon ./bin/www",
     "config-qa": "cp services/qa.config.js services/config.js",
     "test": "JWT_SECRET={ADD_JWT_SECRET} nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
