@@ -2,7 +2,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import StageLevelTracker from "./stage-level-tracker";
 import Tree from "react-d3-tree";
 import React, {useState} from "react";
-import {faAngleDown, faAngleRight, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
+import {faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const treeContainerHeight = 600;
