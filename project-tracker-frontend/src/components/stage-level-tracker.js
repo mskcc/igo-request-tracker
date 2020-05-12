@@ -3,9 +3,6 @@ import {convertUnixTimeToDate} from "../utils/utils";
 import {Step, StepLabel, Stepper, Typography, Button} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
-import Tree from 'react-d3-tree';
-import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const getPendingIndex = (stages) => {
     let stage;

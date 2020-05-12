@@ -2,7 +2,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import StageLevelTracker from "./stage-level-tracker";
 import Tree from "react-d3-tree";
 import React, {useState} from "react";
-import {faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
+import {faFlask} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const treeContainerHeight = 600;
@@ -16,24 +16,29 @@ const translate = {
     x: 20
 };
 
-function SampleTree({sample}){
-    const[showTree, setShowTree] = useState(false);
-    const sampleId = sample['sampleId'];
+function SampleTree({sample, idx}){
+    const [showTree, setShowTree] = useState(false);
 
-    let treeToggleClasses = 'project-selector-icon hover inline-block';
+    const root = sample['root'] || {};
+    const sampleId = sample['sampleId'];
+    const plus1Idx = idx+1;
+
+    let toggleClasses = "project-selector-icon fa-layers fa-fw hover inline-block";
     if(showTree) {
-        treeToggleClasses += ' black-color';
+        toggleClasses += ' black-color';
     } else {
-        treeToggleClasses += ' gray-color';
+        toggleClasses += ' gray-color';
     }
 
     return <Row key={sampleId} className={"border"}>
-        <Col xs={2} className={"padding-vert-10"}>
-            <p>{sampleId}</p>
-            <FontAwesomeIcon className={treeToggleClasses} icon={ faProjectDiagram }
-                             onClick={() => setShowTree(!showTree)}/>
+        <Col xs={1} className={"padding-vert-10"}>
+            <span className={toggleClasses}>
+                <FontAwesomeIcon icon={faFlask}
+                                 onClick={() => setShowTree(!showTree)}/>
+                <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
+            </span>
         </Col>
-        <Col xs={10} className={"padding-vert-10"}>
+        <Col xs={11} className={"padding-vert-10"}>
             <StageLevelTracker label={sample['sampleId']}
                                stages={sample.stages}
                                orientation={"horizontal"}
@@ -41,6 +46,20 @@ function SampleTree({sample}){
         </Col>
         {
             showTree ? <Col xs={12} className={"sample-tree-container"} style={treeContainerStyle}>
+                <Row className={"sample-info"}>
+                    <Col xs={4}>
+                        <p className={"bold"}>SampleId:</p>
+                    </Col>
+                    <Col xs={8}>
+                        <p> {sampleId}</p>
+                    </Col>
+                    <Col xs={4}>
+                        <p className={"bold"}>Record Name:</p>
+                    </Col>
+                    <Col xs={8}>
+                        <p>{root['recordName']}</p>
+                    </Col>
+                </Row>
                 <Tree data={sample.root}
                       translate={translate}
                       orientation={"horizontal"}
@@ -58,8 +77,9 @@ function SampleTree({sample}){
 function SampleLevelTracker({samples}) {
     return <Container>
         {
-            samples.map(sample => {
-                return <SampleTree sample={sample}></SampleTree>;
+            samples.map((sample, idx) => {
+                return <SampleTree  sample={sample}
+                                    idx={idx}></SampleTree>;
             })
         }
     </Container>
