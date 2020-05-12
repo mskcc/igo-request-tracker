@@ -22,12 +22,20 @@ function SampleTree({sample, idx}){
     const root = sample['root'] || {};
     const sampleId = sample['sampleId'];
     const plus1Idx = idx+1;
+    const status = sample['status'];
 
     let toggleClasses = "project-selector-icon fa-layers fa-fw hover inline-block";
     if(showTree) {
+        toggleClasses += ' fade-color';
+    }
+
+    // TODO - api constants
+    if(status === 'Complete'){
         toggleClasses += ' black-color';
+    } else if (status === 'Failed'){
+        toggleClasses += ' red-color';
     } else {
-        toggleClasses += ' gray-color';
+        toggleClasses += ' blue-color';
     }
 
     return <Row key={sampleId} className={"border"}>
