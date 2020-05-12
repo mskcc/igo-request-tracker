@@ -129,7 +129,7 @@ class Project {
                     shape: 'circle',
                     shapeProps: {
                         r: 10,
-                        fill: attributes.failed ? 'red' : attributes.completed ? 'green' : 'yellow'
+                        fill: attributes.failed ? 'red' : attributes.complete ? 'green' : 'yellow'
                     },
                 };
 
