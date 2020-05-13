@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {convertUnixTimeToDate} from "../utils/utils";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
@@ -9,6 +9,9 @@ import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-ic
 
 function ProjectLevelTracker({project}) {
     const [viewSamples, setViewSamples] = useState(false);
+    const [showFailed, setShowFailed] = useState(true);
+    const [showPending, setShowPending] = useState(false);
+    const [showCompleted, setShowCompleted] = useState(true);
 
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
@@ -23,7 +26,29 @@ function ProjectLevelTracker({project}) {
     const investigator = project.getInvestigator();
     const projectManager = project.getProjectManager();
 
-    // Grab
+    // Filter Samples
+    const completedSamples = samples.filter((sample) => {
+        const status = sample['status'];
+        return status === 'Complete';
+    });
+    const pendingSamples = samples.filter((sample) => {
+        const status = sample['status'];
+        return status === 'Pending';
+    });
+    const failedSamples = samples.filter((sample) => {
+        const status = sample['status'];
+        return status === 'Failed';
+    });
+    let filteredSamples = [];
+    if(showFailed) {
+        filteredSamples = filteredSamples.concat(failedSamples);
+    }
+    if(showPending){
+        filteredSamples = filteredSamples.concat(pendingSamples);
+    }
+    if(showCompleted) {
+        filteredSamples = filteredSamples.concat(completedSamples);
+    }
     return <Container className={"border"}>
                     <Row className={"padding-vert-10 border"}>
                         <Col xs={12} sm={6}>
@@ -69,10 +94,44 @@ function ProjectLevelTracker({project}) {
                             <FontAwesomeIcon className="project-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
                             <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
                         </Col>
+                        {
+                            viewSamples? <Col xs={9}>
+                                {
+                                    failedSamples.length > 0 ? <span>
+                                        Failed
+                                        <span className={`sample-filter-icon red-color fa-layers fa-fw hover inline-block ${showFailed ? 'fade-color' : ''}`}>
+                                            <FontAwesomeIcon icon={faFlask}
+                                                             onClick={() => setShowFailed(!showFailed)}/>
+                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
+                                        </span>
+                                    </span> : <span></span>
+                                }
+                                {
+                                    completedSamples.length > 0 ? <span>
+                                        Completed
+                                        <span className={`sample-filter-icon black-color fa-layers fa-fw hover inline-block ${showCompleted ? 'fade-color' : ''}`}>
+                                            <FontAwesomeIcon icon={faFlask}
+                                                             onClick={() => setShowCompleted(!showCompleted)}/>
+                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>
+                                        </span>
+                                    </span> : <span></span>
+                                }
+                                {
+                                    pendingSamples.length > 0 ? <span>
+                                        Pending
+                                        <span className={`sample-filter-icon blue-color fa-layers fa-fw hover inline-block ${showPending ? 'fade-color' : ''}`}>
+                                            <FontAwesomeIcon icon={faFlask}
+                                                             onClick={() => setShowPending(!showPending)}/>
+                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>
+                                        </span>
+                                    </span> : <span></span>
+                                }
+                            </Col> : <span></span>
+                        }
                     </Row>
                     {
                         viewSamples ? <Row>
-                            <SampleLevelTracker samples={samples}></SampleLevelTracker>
+                            <SampleLevelTracker samples={filteredSamples}></SampleLevelTracker>
                         </Row> : <span></span>
                     }
 

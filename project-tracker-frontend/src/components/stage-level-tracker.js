@@ -31,6 +31,32 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
         return stepIdx < pendingIndex
     };
 
+    const generateStageSummary = (stage) => {
+        const completedCount = stage.completedSamples || 0;
+        const failedCount = stage.failedSamples || 0;
+        const progressCount = completedCount + failedCount;
+        const total = stage.totalSamples;
+
+        // Only render failed samples if there are any failed
+        const failedSpan = () => {
+            if(failedCount > 0){
+                return <p><span className={"underline"}>
+                    Failed</span>: {failedCount}</p>
+            }
+            return <span></span>
+        };
+
+        return <span className={"hover"}>
+            <p><span className={"underline"}>
+                Progress</span>: {progressCount}/{total}</p>
+            {failedSpan()}
+            <p><span className={"underline"}>
+                Updated</span>: {convertUnixTimeToDate(stage.updateTime)}</p>
+            <p><span className={"underline"}>
+                Started</span>: {convertUnixTimeToDate(stage.startTime)}</p>
+        </span>
+    };
+
     return <Container>
         <Row>
             <Col xs={12-labelSize}>
@@ -42,14 +68,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
                         };
                         const labelProps = {};
                         if(projectView){
-                            labelProps.optional = <span className={"hover"}>
-                                    <p><span
-                                        className={"underline"}>Progress</span>: {stage.completedSamples}/{stage.totalSamples}</p>
-                                    <p><span
-                                        className={"underline"}>Updated</span>: {convertUnixTimeToDate(stage.updateTime)}</p>
-                                    <p><span
-                                        className={"underline"}>Started</span>: {convertUnixTimeToDate(stage.startTime)}</p>
-                                </span>
+                            labelProps.optional = generateStageSummary(stage);
                         };
 
                         const name = stage.stage;

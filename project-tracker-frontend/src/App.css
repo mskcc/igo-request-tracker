@@ -123,6 +123,10 @@
   display: inline-block;
   margin-right: 20px;
 }
+.sample-filter-icon{
+  font-size: 2.5em;
+  display: inline-block;
+}
 .border {
   border: 1px solid #dee2e6;
 }
