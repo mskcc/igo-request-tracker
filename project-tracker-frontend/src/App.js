@@ -44,7 +44,7 @@ function App() {
                             <h2>Your Projects</h2>
                         </div>
                         { Object.keys(stateProjects).map((projectName) => {
-                            return <ProjectTracker projectName={projectName}/>
+                            return <ProjectTracker key={projectName} projectName={projectName}/>
                         })}
                     </div>
                 </Container>

@@ -56,7 +56,7 @@ function SampleTree({sample, idx}){
             showTree ? <Col xs={12} className={"sample-tree-container"} style={treeContainerStyle}>
                 <Row className={"sample-info"}>
                     <Col xs={4}>
-                        <p className={"bold"}>SampleId:</p>
+                        <p className={"bold"}>Record ID:</p>
                     </Col>
                     <Col xs={8}>
                         <p> {sampleId}</p>
@@ -87,7 +87,8 @@ function SampleLevelTracker({samples}) {
         {
             samples.map((sample, idx) => {
                 return <SampleTree  sample={sample}
-                                    idx={idx}></SampleTree>;
+                                    idx={idx}
+                                    key={`${sample}-${idx}`}></SampleTree>;
             })
         }
     </Container>

@@ -22,7 +22,7 @@ function ProjectTracker({projectName}) {
      * @returns {*}
      */
     const projectHasData = (proj) => {
-        return (proj);
+        return proj !== null;
     };
 
     useEffect(() => {
