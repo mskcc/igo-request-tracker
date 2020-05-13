@@ -10,8 +10,8 @@ import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-ic
 function ProjectLevelTracker({project}) {
     const [viewSamples, setViewSamples] = useState(false);
     const [showFailed, setShowFailed] = useState(true);
-    const [showPending, setShowPending] = useState(false);
-    const [showCompleted, setShowCompleted] = useState(true);
+    const [showPending, setShowPending] = useState(true);
+    const [showCompleted, setShowCompleted] = useState(false);
 
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
@@ -39,6 +39,8 @@ function ProjectLevelTracker({project}) {
         const status = sample['status'];
         return status === 'Failed';
     });
+
+    // Show samples in order of filtered, pending, and completed
     let filteredSamples = [];
     if(showFailed) {
         filteredSamples = filteredSamples.concat(failedSamples);
@@ -87,45 +89,47 @@ function ProjectLevelTracker({project}) {
                                            orientation={"horizontal"}
                                            projectView={true}></StageLevelTracker>
                     </Row>
-                    <Row>
-                        <Col xs={3}
-                             className={"hover"}
-                             onClick={() => setViewSamples(!viewSamples)}>
+                    <Row className={"padding-vert-10"}>
+                        <Col xs={6} className={"hover"} onClick={() => setViewSamples(!viewSamples)}>
                             <FontAwesomeIcon className="project-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
                             <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
                         </Col>
                         {
-                            viewSamples? <Col xs={9}>
-                                {
-                                    failedSamples.length > 0 ? <span>
-                                        Failed
-                                        <span className={`sample-filter-icon red-color fa-layers fa-fw hover inline-block ${showFailed ? 'fade-color' : ''}`}>
-                                            <FontAwesomeIcon icon={faFlask}
-                                                             onClick={() => setShowFailed(!showFailed)}/>
-                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
-                                        </span>
-                                    </span> : <span></span>
-                                }
-                                {
-                                    completedSamples.length > 0 ? <span>
-                                        Completed
-                                        <span className={`sample-filter-icon black-color fa-layers fa-fw hover inline-block ${showCompleted ? 'fade-color' : ''}`}>
-                                            <FontAwesomeIcon icon={faFlask}
-                                                             onClick={() => setShowCompleted(!showCompleted)}/>
-                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>
-                                        </span>
-                                    </span> : <span></span>
-                                }
-                                {
-                                    pendingSamples.length > 0 ? <span>
-                                        Pending
-                                        <span className={`sample-filter-icon blue-color fa-layers fa-fw hover inline-block ${showPending ? 'fade-color' : ''}`}>
-                                            <FontAwesomeIcon icon={faFlask}
-                                                             onClick={() => setShowPending(!showPending)}/>
-                                            <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>
-                                        </span>
-                                    </span> : <span></span>
-                                }
+                            viewSamples? <Col xs={6}>
+                                <Container>
+                                    <Row>
+                                        {
+                                            completedSamples.length > 0 ? <Col xs={6} sm={4}>
+                                                Completed
+                                                <span className={`sample-filter-icon black-color fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
+                                                      onClick={() => setShowCompleted(!showCompleted)}>
+                                                    <FontAwesomeIcon icon={faFlask}/>
+                                                    <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>
+                                                </span>
+                                            </Col> : <span></span>
+                                        }
+                                        {
+                                            failedSamples.length > 0 ? <Col xs={6} sm={4}>
+                                                Failed
+                                                <span className={`sample-filter-icon red-color fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
+                                                      onClick={() => setShowFailed(!showFailed)}>
+                                                    <FontAwesomeIcon icon={faFlask}/>
+                                                    <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
+                                                </span>
+                                            </Col> : <span></span>
+                                        }
+                                        {
+                                            pendingSamples.length > 0 ? <Col xs={6} sm={4}>
+                                                Pending
+                                                <span className={`sample-filter-icon blue-color fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
+                                                      onClick={() => setShowPending(!showPending)}>
+                                                    <FontAwesomeIcon icon={faFlask}/>
+                                                    <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>
+                                                </span>
+                                            </Col> : <span></span>
+                                        }
+                                    </Row>
+                                </Container>
                             </Col> : <span></span>
                         }
                     </Row>

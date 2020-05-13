@@ -39,14 +39,14 @@ function SampleTree({sample, idx}){
     }
 
     return <Row key={sampleId} className={"border"}>
-        <Col xs={1} className={"padding-vert-10"}>
+        <Col xs={3} sm={2} md={1} className={"padding-vert-10"}>
             <span className={toggleClasses}>
                 <FontAwesomeIcon icon={faFlask}
                                  onClick={() => setShowTree(!showTree)}/>
                 <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
             </span>
         </Col>
-        <Col xs={11} className={"padding-vert-10"}>
+        <Col xs={9} sm={10} md={11} className={"padding-vert-10 overflow-x-auto"}>
             <StageLevelTracker label={sample['sampleId']}
                                stages={sample.stages}
                                orientation={"horizontal"}
@@ -85,11 +85,16 @@ function SampleTree({sample, idx}){
 function SampleLevelTracker({samples}) {
     return <Container>
         {
-            samples.map((sample, idx) => {
+            (samples.length > 0) ? samples.map((sample, idx) => {
                 return <SampleTree  sample={sample}
                                     idx={idx}
                                     key={`${sample}-${idx}`}></SampleTree>;
-            })
+            }) :
+                <Row>
+                    <Col xs={12}>
+                        <p className={"text-align-center"}>No Samples selected</p>
+                    </Col>
+                </Row>
         }
     </Container>
 }

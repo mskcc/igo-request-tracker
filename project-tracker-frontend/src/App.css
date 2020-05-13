@@ -42,6 +42,9 @@
 .margin-left-20 {
   margin-left: 20px;
 }
+.overflow-x-auto {
+  overflow-x: auto;
+}
 .light-gray-background {
   background-color: #f2f2f2;
 }
@@ -138,8 +141,8 @@
   min-height: 250px;
 }
 .sample-viewer-toggle {
-  vertical-align: top;
-  font-size: 24px;
+  vertical-align: bottom;
+  font-size: 22px;
 }
 .fade-color {
   opacity: 0.5;
