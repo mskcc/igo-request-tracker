@@ -44,7 +44,7 @@ function ProjectTracker({projectName}) {
         const mapping = projectMap[projectName];
         // If mapping isn't present, or null, this should show a pending icon
         if(mapping === null || mapping === undefined){
-            return <span className={`float-right large-icon width-100 black-color fa-layers fa-fw hover inline-block`}>
+            return <span className={`float-right small-icon width-100 black-color fa-layers fa-fw hover inline-block`}>
             <FontAwesomeIcon icon={faEllipsisH}/>
         </span>;
         }
