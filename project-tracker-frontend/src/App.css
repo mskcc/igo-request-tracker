@@ -16,11 +16,17 @@
 .fill-width {
   width: 100%;
 }
+.width-100 {
+  width: 100px;
+}
 .fill-height {
   height: 100%;
 }
 .pos-rel {
   position: relative;
+}
+.float-right {
+  float: right;
 }
 .vert-align {
   position: absolute;
@@ -111,6 +117,10 @@
   font-size: 12px;
   top: 80% !important;
 }
+.project-summary-text-override {
+    font-size: 10px;
+    top: 80% !important;
+}
 .sample-info {
   position: absolute;
   left: 0px;
@@ -126,8 +136,12 @@
   display: inline-block;
   margin-right: 20px;
 }
-.sample-filter-icon{
+.small-icon{
   font-size: 2.5em;
+  display: inline-block;
+}
+.large-icon{
+  font-size: 3.5em;
   display: inline-block;
 }
 .border {
@@ -147,6 +161,7 @@
 .fade-color {
   opacity: 0.5;
 }
+/* TODO: MSKCC colors */
 .black-color {
   color: black;
 }
@@ -155,4 +170,7 @@
 }
 .blue-color {
   color: #1f3d7a;
+}
+.mskcc-dark-green {
+  color: #4c8b2b;
 }

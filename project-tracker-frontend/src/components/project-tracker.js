@@ -5,7 +5,7 @@ import {getProjectTrackingData} from "../services/services";
 import {updateProjects} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleRight, faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faAngleRight, faAngleDown, faCheck, faCircle, faEllipsisH, faFlask} from "@fortawesome/free-solid-svg-icons";
 import Project from '../utils/Project';
 
 function ProjectTracker({projectName}) {
@@ -25,6 +25,8 @@ function ProjectTracker({projectName}) {
         return proj !== null;
     };
 
+    const projectMap = useSelector(state => state['projects']);
+
     useEffect(() => {
         if( !projectHasData(project) ){
             // Need to request the tracking information of the project
@@ -38,6 +40,38 @@ function ProjectTracker({projectName}) {
         }
     }, [dispatch, project, projectName, store]);
 
+    const getSummaryIcon = (projectName) => {
+        const mapping = projectMap[projectName];
+        // If mapping isn't present, or null, this should show a pending icon
+        if(mapping === null || mapping === undefined){
+            return <span className={`float-right large-icon width-100 black-color fa-layers fa-fw hover inline-block`}>
+            <FontAwesomeIcon icon={faEllipsisH}/>
+        </span>;
+        }
+
+        const summary = mapping.getSummary();
+
+        // igoComplete projects should just show completed icon
+        const isIgoComplete = summary['isIgoComplete'] || false;
+        if(isIgoComplete){
+            return <span className={`float-right small-icon black-color fa-layers fa-fw hover inline-block width-100 mskcc-dark-green`}>
+                <FontAwesomeIcon icon={faCheck}/>
+            </span>;
+        }
+
+        // TODO - api constants
+        // Show an icon w/ an overall status
+        const completed = summary['completed'];
+        const failed = summary['failed'];
+        const total = summary['total'];
+        const summaryColor = (failed && failed > 0) ? 'red-color' : 'blue-color';
+        return <span className={`float-right large-icon black-color fa-layers fa-fw hover inline-block width-100 ${summaryColor}`}>
+            <FontAwesomeIcon icon={faFlask}/>
+            <span className="fa-layers-bottom fa-layers-text fa-inverse project-summary-text-override">{completed}/{total}</span>
+        </span>;
+
+    };
+
     return <div>
         <div className={"hover"}
              onClick={() => setShowProject(!showProject)}>
@@ -47,6 +81,7 @@ function ProjectTracker({projectName}) {
                 (projectHasData(project) && project.getIgoComplete()) ? <FontAwesomeIcon className="request-complete" icon={faCheck}/>
                     : <span></span>
             }
+            {getSummaryIcon(projectName)}
         </div>
         {
             showProject ?
