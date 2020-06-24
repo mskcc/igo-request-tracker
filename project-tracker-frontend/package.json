@@ -17,6 +17,7 @@
     "react-d3-tree": "^1.16.1",
     "react-dom": "^16.13.0",
     "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.0",
     "redux": "^4.0.5"
   },
@@ -24,6 +25,7 @@
     "start": "npm run config-qa && react-scripts start",
     "build": "npm run config-prod && react-scripts build",
     "build-qa": "npm run config-qa && npm run build",
+    "build-prod": "npm run config-prod && npm run build",
     "config-qa": "cp src/qa.config.js src/config.js",
     "config-prod": "cp src/prod.config.js src/config.js",
     "test": "react-scripts test",

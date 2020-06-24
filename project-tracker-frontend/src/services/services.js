@@ -23,14 +23,73 @@ const checkForAuthorizationError = (error) => {
     }
 };
 
-export function getProjects(projects) {
+export function getUndeliveredProjects(projects) {
+    /**
+     RESP
+     "data": {
+            "requests": [
+                {
+                    "samples": [],
+                    "requestId": "05427_I",
+                    "requestType": "ddPCR",
+                    "investigator": "Parisa Momtaz",
+                    "pi": "Paul Chapman",
+                    "analysisRequested": false,
+                    "recordId": 0,
+                    "sampleNumber": 68,
+                    "restStatus": "SUCCESS",
+                    "deliveryDate": [],
+                    "autorunnable": false
+                },
+                ...
+            ]
+    }
+     */
+    return axios
+        .get(`${PROJECTS_ENDPOINT}/undelivered`)
+        .then(resp => {
+            const data = getData(resp);
+            return data;
+        })
+        .catch(error => {
+            checkForAuthorizationError(error);
+            throw new Error('Unable to get Get Events: ' + error)
+        });
+}
+
+export function getDeliveredProjects(projects) {
     /*
     return new Promise((resolve) => { resolve(API_PROJECT) })
         .then(resp => {return getData(resp)})
         .catch(error => {throw new Error('Unable to get Get Events: ' + error) });
      */
+    /**
+     Resp:
+         data: {
+             reqeusts: [
+                 {
+                    "samples": [],
+                    "requestId": "08822",
+                    "requestType": "DNAExtraction",
+                    "investigator": "Nancy Bouvier",
+                    "pi": "Neerav Shukla",
+                    "projectManager": "NO PM",
+                    "analysisRequested": true,
+                    "recordId": 0,
+                    "sampleNumber": 1,
+                    "restStatus": "SUCCESS",
+                    "autorunnable": false,
+                    "deliveryDate": [
+                        1592599085454
+                    ]
+                },
+                ...
+             ]
+             }
+         }
+     */
     return axios
-        .get(`${PROJECTS_ENDPOINT}/`)
+        .get(`${PROJECTS_ENDPOINT}/delivered`)
         .then(resp => {return getData(resp)})
         .catch(error => {
             checkForAuthorizationError(error);

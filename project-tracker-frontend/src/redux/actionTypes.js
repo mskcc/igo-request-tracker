@@ -1,1 +1,2 @@
-export const SET_PROJECTS = "SET_PROJECTS";
+export const SET_DELIVERED = "SET_DELIVERED";
+export const SET_UNDELIVERED = "SET_UNDELIVERED";

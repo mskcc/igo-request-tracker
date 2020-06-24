@@ -3,11 +3,18 @@
  *
  * @param resp, { [PROJECT_KEY]: {...}, ... }
  */
-import {SET_PROJECTS} from "./actionTypes";
+import {SET_DELIVERED, SET_UNDELIVERED} from "./actionTypes";
 
-export const updateProjects = (dispatch, payload) => {
+export const updateDelivered = (dispatch, payload) => {
     dispatch({
-        type: SET_PROJECTS,
+        type: SET_DELIVERED,
+        payload
+    });
+};
+
+export const updateUndelivered = (dispatch, payload) => {
+    dispatch({
+        type: SET_UNDELIVERED,
         payload
     });
 };

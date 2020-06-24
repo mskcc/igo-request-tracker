@@ -1,10 +1,10 @@
-import { SET_PROJECTS } from "../actionTypes";
+import {SET_DELIVERED, SET_UNDELIVERED} from "../actionTypes";
 
 const initialState = {};
 
-const projects = (state = initialState, action) => {
+export const deliveredProjects = (state = initialState, action) => {
     switch (action.type) {
-        case SET_PROJECTS: {
+        case SET_DELIVERED: {
             return action.payload;
         }
         default: {
@@ -13,4 +13,13 @@ const projects = (state = initialState, action) => {
     }
 };
 
-export default projects;
+export const undeliveredProjects = (state = initialState, action) => {
+    switch (action.type) {
+        case SET_UNDELIVERED: {
+            return action.payload;
+        }
+        default: {
+            return state;
+        }
+    }
+};

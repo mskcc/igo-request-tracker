@@ -13,6 +13,9 @@
 .bold {
   font-weight: bold;
 }
+.font-1p5em{
+  font-size: 1.5em;
+}
 .fill-width {
   width: 100%;
 }
@@ -28,6 +31,9 @@
 .float-right {
   float: right;
 }
+.float-left {
+  float: left;
+}
 .vert-align {
   position: absolute;
   top: 50%;
@@ -40,6 +46,10 @@
 .padding-vert-10 {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+.padding-vert-5 {
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .margin-vert-20 {
   margin-top: 20px;
@@ -58,10 +68,14 @@
 .App {
   text-align: center;
 }
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+.help-img {
+  width: 80%;
+  margin: auto;
+  display: block;
 }
 
 .request-complete {
@@ -78,8 +92,6 @@
 
 .App-header {
   background-color: #282c34;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -170,6 +182,9 @@
 }
 .blue-color {
   color: #1f3d7a;
+}
+.white-color {
+  color: white;
 }
 .mskcc-dark-green {
   color: #4c8b2b;
