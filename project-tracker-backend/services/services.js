@@ -4,20 +4,22 @@ const { LIMS_API, LIMS } = require("./config.js");
 const { logger } = require("../helpers/winston");
 
 const formatAllProjectsResponse = function(resp) {
+	// TODO - should add a filter for whoever is logged in
+	// TODO - Should also return a more enirched object for each sample
 	const data = resp.data || [];
-	const requestIds = data.map((entry)=> entry.requestId);
 
-	// LIMS '/getRecentDeliveries' endpoint handles errors by returning an error
-	const validIds = requestIds.filter((id) => !id.startsWith("ERROR:"));
-	const errors = requestIds.filter((id) => id.startsWith("ERROR:"));
-	if(errors.length > 0){
-		const allErrors = Array.from(new Set(errors));
+	// LIMS '/getRecentDeliveries' endpoint handles errors by returning populating the requestId field w/ an "ERROR:"
+	const validProjects = data.filter((entry) => !entry.requestId.startsWith("ERROR:"));
+	const invalidProjects = data.filter((entry) => entry.requestId.startsWith("ERROR:"));
+	if(invalidProjects.length > 0){
+		const errorIds = invalidProjects.map((entry) => entry.requestId);
+		const allErrors = Array.from(new Set(errorIds));
 		const errMessage = `Failed to retrieve projects. Errors: ${allErrors}`;
 		logger.error(errMessage);
 		throw new Error(errMessage);
 	}
 	return {
-		requests: validIds
+		requests: validProjects
 	};
 };
 
@@ -31,15 +33,31 @@ const agent = new https.Agent({
 	rejectUnauthorized: false
 });
 
+exports.getUndeliveredProjects = () => {
+	const url = `${LIMS_API}/getUndeliveredProjects?time=7`;
+	return axios.get(url,
+		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
+		.then((resp) => {
+			logger.log("info", `Successfully retrieved /getUndeliveredProjects response from ${url}`);
+			return resp;
+		})
+		.then((resp) => {
+			// TODO - should add a filter for whoever is logged in
+			const data = resp.data || [];
+			return {
+				requests: data
+			};
+		});
+};
+
 // TODO - Actually get all projects
-exports.getAllProjects = () => {
-	const url = `${LIMS_API}/getRecentDeliveries`;
+exports.getRecentDeliveries = () => {
+	const url = `${LIMS_API}/getRecentDeliveries?time=7&units=d`;
 	// return axios.get(`${LIMS_API}/getRecentDeliveries?time=2&units=d`,
 	return axios.get(url,
-		{auth: { username: LIMS.username, password: LIMS.password},
-			httpsAgent: agent})
+		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
-			logger.log("info", `Successfully retrieved /getAllProjects response from ${url}`);
+			logger.log("info", `Successfully retrieved /getRecentDeliveries response from ${url}`);
 			return resp;
 		})
 		.then(formatAllProjectsResponse);
@@ -56,5 +74,5 @@ exports.getProjectTrackingInfo = (requestId) => {
 			return resp;
 		})
 		.then(formatData);
-}
+};
 
