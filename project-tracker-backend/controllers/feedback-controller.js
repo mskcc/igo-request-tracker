@@ -1,24 +1,70 @@
 const apiResponse = require("../helpers/apiResponse");
-const {getRecentDeliveries} = require("../services/services");
-const Cache = require("../helpers/cache");
-const ttl = 60 * 60 * 1; // cache for 1 Hour
-const cache = new Cache(ttl); // Create a new cache service instance
+const { logger } = require("../helpers/winston");
+
+const REQUIRED_FIELDS = ["body", "type", "subject"];
+const OPTIONAL_FIELDS = ["project"];
+const FeedbackModel = require("../models/feedback");
+
+const parseModelFromRequest = (req) => {
+	const data = req.body || {};
+	const model = {};
+	for(const field of REQUIRED_FIELDS){
+		model[field] = data[field];
+	}
+	for(const field of OPTIONAL_FIELDS){
+		model[field] = data[field];
+	}
+	return model;
+};
 
 /**
- * Receive feedback request
+ * Receive feedback request and save to mongo
  *
  * @returns {Object}
  */
 exports.submitFeedback = [
-	function (req, res) {
-		const key = "SUBMIT_FEEDBACK";
-		const retrievalFunc = () => getRecentDeliveries();
-		return cache.get(key, retrievalFunc)
-			.then((projects) => {
-				return apiResponse.successResponseWithData(res, "success", projects);
-			})
-			.catch((err) => {
-				return apiResponse.ErrorResponse(res, err.message);
+	async function (req, res) {
+		const model = parseModelFromRequest(req);
+
+		// All values should be populated from the request
+		for(const field of REQUIRED_FIELDS){
+			if(!model[field]){
+				logger.log("error", `Request couldn't be parsed for all model values. Missing '${field}'`);
+				return apiResponse.ErrorResponse(res, `Invalid request. Must contain fields: ${REQUIRED_FIELDS.join(",")}`);
+			}
+		}
+
+		const feedback = new FeedbackModel(model);
+		let success = true;	   // TODO - node will try to send the success AND error response unless we flag the success
+		await feedback.save((err) => {
+			const errMsg = `Failed to save to database: ${err}`;
+			logger.log("error", errMsg);
+			success = false;
+			return apiResponse.ErrorResponse(res, "Failed to save feedback");
+		});
+		if(success) {
+			logger.log("info", resp);
+			return apiResponse.successResponseWithData(res, "Saved Feedback", {feedback: model});
+		}
+	}
+];
+
+exports.getFeedback = [
+	async function (req, res) {
+		try {
+			const all = await FeedbackModel.find({});
+			const feedback = all.map((entry) => {
+				// Redact default fields added by mongo
+				const resp = Object.assign(entry.toJSON());
+				delete resp._id;
+				delete resp.__v;
+				delete resp.createdAt;
+				delete resp.updatedAt;
+				return resp;
 			});
+			return apiResponse.successResponseWithData(res, "Saved Feedback", {feedback});
+		} catch (err) {
+			return apiResponse.ErrorResponse(res, "Failed to save feedback");
+		}
 	}
 ];
