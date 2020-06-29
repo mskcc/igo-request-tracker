@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {useDispatch, useSelector, useStore} from "react-redux";
-import {getProjectTrackingData} from "../services/services";
+import {getProjectTrackingDataRequest} from "../services/services";
 import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -30,7 +30,7 @@ function ProjectTracker({projectName, projectState}) {
     useEffect(() => {
         if( !projectHasData(project) ){
             // Need to request the tracking information of the project
-            getProjectTrackingData(projectName)
+            getProjectTrackingDataRequest(projectName)
                 .then(data => {
                     const storeProjects = store.getState()[projectState] || {};  // Retrieve latest version of the store
                     const clone = Object.assign({}, storeProjects);

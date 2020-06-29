@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import './App.css';
-import {getDeliveredProjects, getUndeliveredProjects} from "./services/services";
+import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest} from "./services/services";
 import {updateDelivered, updateUndelivered} from "./redux/dispatchers";
 import { Container } from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +23,7 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        getDeliveredProjects()
+        getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
                 const deliveredProjects = {};
@@ -40,7 +40,7 @@ function App() {
                 // TODO - update UI
                 console.error(`Failed to retrieve projects: ${err}`);
             });
-        getUndeliveredProjects()
+        getUndeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
                 const unDelivered = {};

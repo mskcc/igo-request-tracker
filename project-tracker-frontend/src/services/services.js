@@ -1,14 +1,7 @@
 import axios from 'axios';
 import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH} from "../config";
-import API_PROJECT_ID from '../mocks/api-projects-id';
-import API_PROJECT from '../mocks/api-projects';
+import {getResponseData} from "../utils/utils";
 
-
-const getData = (resp) => {
-    const content = resp.data || {};
-    const data = content.data || {};
-    return data;
-};
 
 /**
  * Checks whether the authorization status
@@ -23,7 +16,7 @@ const checkForAuthorizationError = (error) => {
     }
 };
 
-export function getUndeliveredProjects(projects) {
+export function getUndeliveredProjectsRequest(projects) {
     /**
      RESP
      "data": {
@@ -48,7 +41,7 @@ export function getUndeliveredProjects(projects) {
     return axios
         .get(`${PROJECTS_ENDPOINT}/undelivered`)
         .then(resp => {
-            const data = getData(resp);
+            const data = getResponseData(resp);
             return data;
         })
         .catch(error => {
@@ -57,7 +50,7 @@ export function getUndeliveredProjects(projects) {
         });
 }
 
-export function getDeliveredProjects(projects) {
+export function getDeliveredProjectsRequest(projects) {
     /*
     return new Promise((resolve) => { resolve(API_PROJECT) })
         .then(resp => {return getData(resp)})
@@ -90,14 +83,14 @@ export function getDeliveredProjects(projects) {
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/delivered`)
-        .then(resp => {return getData(resp)})
+        .then(resp => {return getResponseData(resp)})
         .catch(error => {
             checkForAuthorizationError(error);
             throw new Error('Unable to get Get Events: ' + error)
         });
 }
 
-export function getProjectTrackingData(project){
+export function getProjectTrackingDataRequest(project){
     /*
     return new Promise((resolve) => { resolve(API_PROJECT_ID) })
         .then(resp => { return getData(resp) })
@@ -105,7 +98,7 @@ export function getProjectTrackingData(project){
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/${project}`)
-        .then(resp => {return getData(resp) })
+        .then(resp => {return getResponseData(resp) })
         .catch(error => {
             checkForAuthorizationError(error);
             throw new Error('Unable to get Get Events: ' + error)
