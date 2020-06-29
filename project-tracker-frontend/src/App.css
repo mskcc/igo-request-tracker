@@ -4,6 +4,9 @@
 .inline-block {
   display: inline-block;
 }
+.inline {
+  display: inline;
+}
 .text-align-center{
   text-align: center;
 }
@@ -55,6 +58,12 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.margin-left-10 {
+  margin-left: 10px;
+}
+.margin-left-15 {
+  margin-left: 15px;
+}
 .margin-left-20 {
   margin-left: 20px;
 }
@@ -100,6 +109,44 @@
 
 .App-link {
   color: #61dafb;
+}
+
+/* FEEDBACK FORM */
+.feedback-container {
+  height: 400px;
+  margin-bottom: 10px;
+  margin-top: 15px;
+  overflow-y: scroll;
+}
+.feedback-form {
+  position: absolute;
+  right: 0px;
+  width: 275px;
+  background-color: white;
+  border: 1px solid black;
+  z-index: 1;
+}
+.feedback-text {
+  height: 150px;
+  width: 95%;
+}
+.feedback-submit-btn {
+  width: 50%;
+  margin: auto;
+  display: block;;
+}
+.text-input-single-line-container {
+  height: 35px;
+}
+.dropdown-container {
+  width: 85%;
+  margin: auto;
+  display: block;
+}
+.status-change-close{
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 .bold {

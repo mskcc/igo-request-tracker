@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,13 +7,17 @@ import './App.css';
 import {getDeliveredProjects, getUndeliveredProjects} from "./services/services";
 import {updateDelivered, updateUndelivered} from "./redux/dispatchers";
 import { Container } from "react-bootstrap";
-import {faHome, faQuestion} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
+import MuiButton from "@material-ui/core/Button/Button";
+import IconButton from "@material-ui/core/IconButton";
 import ProjectSection from "./components/project-section/project-section";
 import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
+import Feedback from "./components/common/feedback";
 
 function App() {
+    const [showFeedback, setShowFeedback] = useState(true);
     const deliveredProjects = useSelector(state => state[STATE_DELIVERED_PROJECTS] );
     const undeliveredProjects = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
     const dispatch = useDispatch();
@@ -70,7 +74,13 @@ function App() {
                             <FontAwesomeIcon className={"font-1p5em text-align-center white-color"} icon={faQuestion}/>
                         </Link>
                     </span>
+                    <IconButton aria-label="feedback"
+                                onClick={() => setShowFeedback(!showFeedback)}
+                                className={"project-search-submit hover inline-block float-right"}>
+                        <FontAwesomeIcon className={"font-1p5em text-align-center white-color"} icon={faComment}/>
+                    </IconButton>
                 </header>
+                { showFeedback ? <Feedback closeFeedback={() => setShowFeedback(false)}/> : <div></div> }
                 <body>
                     <Container className={"margin-vert-20"}>
                         <Switch>

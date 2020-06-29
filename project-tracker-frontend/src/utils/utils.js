@@ -12,3 +12,14 @@ export function getHumanReadable(name) {
     };
     return mapping[name] || name;
 }
+
+/**
+ * Prases out the axios data fields & expected "data" field of the node service response
+ * @param resp
+ * @returns {*|{}}
+ */
+export const getResponseData = (resp) => {
+    const content = resp.data || {};
+    const data = content.data || {};
+    return data;
+};
