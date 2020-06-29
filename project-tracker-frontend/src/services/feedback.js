@@ -7,5 +7,4 @@ export const submitFeedbackRequest = (body, subject, type) => {
     const content = { body, subject, type };
     return axios.post(`${FEEDBACK_ENDPOINT}/submitFeedback`, content)
         .then(getResponseData)
-        .catch(console.error)           // Swallow the error
 };

@@ -7,6 +7,10 @@ import {faTimes} from "@fortawesome/free-solid-svg-icons";
 import {submitFeedbackRequest} from "../../services/feedback";
 import {useSelector} from "react-redux";
 import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../../redux/reducers";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import TextField from "@material-ui/core/TextField";
 
 const INCORRECT_STATUS = "INCORRECT_STATUS";
 const OTHER = "OTHER";
@@ -51,14 +55,16 @@ const Feedback = (props) => {
         return formatted;
     };
 
-    const generateTextInput = (label, val, fn) => {
-        return <div className={"text-input-single-line-container"}>
-            <p className={"inline"}>{label}</p>
-            <input className={"inline float-right"}
-                   type="text"
-                   value={val}
-                   onChange={(evt) => fn(evt.target.value)} />
-        </div>
+    const getTargetValue = (evt) => {
+        return evt.target.value;
+    };
+
+    const generateTextInput = (label, val, fn, required = false) => {
+        return <TextField  id="standard-basic"
+                           className={"fill-width"}
+                           label={label}
+                           onChange={(evt) => fn(getTargetValue(evt))}
+                           required={required}/>;
     };
 
     const getSubject = () => {
@@ -71,43 +77,41 @@ const Feedback = (props) => {
 
             const input = formatStringList(filtered);
 
-            return <div className={"block fill-width"}>
-                <div className={"dropdown-container"}>
-                    <MuiDownshift
-                        items={input}
-                        onStateChange={(evt) => {
-                            const nxt = evt.inputValue;
-                            if(nxt){
-                                setBugProject(nxt)
-                            }
-                        }}
-                        getInputProps={() => ({
-                            id: 'project-selector-feedback',
-                            autoFocus: true,
-                            error: projectError,
-                            label: projectError
-                                ? 'Please provide a valid project'
-                                : 'Enter project',
-                        })}
-                        loading={projectList.length === 0}
-                        includeFooter={false}
-                        menuItemCount={10}
-                        focusOnClear
-                    />
-                </div>
-                {generateTextInput("Stages", bugStages, setBugStages)}
-                {generateTextInput("Samples", bugSamples, setBugSamples)}
+            return <div className={"feedback-inputs"}>
+                <MuiDownshift
+                    items={input}
+                    onStateChange={(evt) => {
+                        const nxt = evt.inputValue;
+                        if(nxt){
+                            setBugProject(nxt)
+                        }
+                    }}
+                    getInputProps={() => ({
+                        id: 'project-selector-feedback',
+                        autoFocus: false,
+                        error: projectList.length > 0 && projectError,
+                        label: projectError
+                            ? 'Please provide a valid project'
+                            : 'Enter project',
+                    })}
+                    loading={projectList.length === 0}
+                    includeFooter={false}
+                    menuItemCount={10}
+                    focusOnClear
+                />
+                {generateTextInput("Stages", bugStages, setBugStages, false)}
+                {generateTextInput("Samples", bugSamples, setBugSamples, false)}
             </div>
         } else {
-            return <div className={"block fill-width"}>
-                {generateTextInput("Subject", feedbackSubject, setFeedbackSubject)}
+            return <div className={"feedback-inputs"}>
+                {generateTextInput("Subject", feedbackSubject, setFeedbackSubject, true)}
             </div>
         }
     };
 
     const getHelpText = () => {
         if(feedbackType === INCORRECT_STATUS){
-            return "Please provide the projectID, stages and/or statuses that are incorrect. In the comments, please provide the expected and actual values.";
+            return "Please provide the expected and actual values if relevant.";
         } else {
             return "Please describe the issue or feature you would like added and what it would help you with";
         }
@@ -117,17 +121,9 @@ const Feedback = (props) => {
         let subjectLine = feedbackSubject;
         // Override the feedback subject w/ form version w/ project/sample/stages specified
         if(feedbackType === INCORRECT_STATUS){
-            // Prefix the subject line w/ either the project/samples
-            if(bugProject !== ''){
-                subjectLine += `Project: ${bugProject}, `;
-            } else if (bugSamples != ''){
-                subjectLine += `Sample(s): ${bugSamples}`;
-            }
-            // Add a substring of the stages
-            if(bugStages !== ''){
-                subjectLine += `Stages: ${bugStages.substring(0,15)}`;
-            }
+            subjectLine = `Project: ${bugProject}, Stages: ${bugStages.substring(0,15)}`;
         }
+
         submitFeedbackRequest(feedbackBody, subjectLine,feedbackType)
             .then(() => {
                 console.log("Success");
@@ -160,36 +156,27 @@ const Feedback = (props) => {
                          onClick={() => props.closeFeedback()}/>
         <div className={"feedback-container"}>
             <form className={"fill-width"}>
-                <p className={"text-align-center font-bold"}>What type of feedback?</p>
-                <div className={"margin-left-10"}>
-                    <label>
-                        <p className={"inline"}>Incorrect Status</p>
-                    </label>
-                    <input className={"margin-left-10 inline-block hover"}
-                           type="radio"
-                           value={INCORRECT_STATUS}
-                           onChange={() => setFeedbackType(INCORRECT_STATUS)}
-                           checked={feedbackType === INCORRECT_STATUS} />
-                    <label className={"margin-left-10"}>
-                        <p className={"inline"}>Other</p>
-                    </label>
-                    <input className={"margin-left-10 inline-block hover"}
-                           type="radio"
-                           value={OTHER}
-                           onChange={() => setFeedbackType(OTHER)}
-                           checked={feedbackType === OTHER} />
+                <h5 className={"text-align-center bold"}>What type of feedback?</h5>
+                <div className={"margin-left-20"}>
+                    <RadioGroup aria-label="feedback-type"
+                                name="feedback-type"
+                                defaultValue={INCORRECT_STATUS}
+                                onChange={(evt) => setFeedbackType(getTargetValue(evt))}>
+                        <FormControlLabel value={INCORRECT_STATUS} control={<Radio />} label="Incorrect Status" />
+                        <FormControlLabel value={OTHER} control={<Radio />} label="Other" />
+                    </RadioGroup>
                 </div>
-                <label className={"inline-block margin-vert-20 fill-width"}>
+                <div className={"inline-block fill-width"}>
                     {getSubject()}
-                </label>
-                <div>
-                    <p className={"margin-left-10 italics mskcc-dark-gray"}>{getHelpText()}</p>
                 </div>
-                <label className={"inline-block fill-width margin-top-15"}>
+                <label className={"margin-vert-20"}>
+                    <p className={"margin-left-10 italic mskcc-dark-gray no-margin-bottom"}>{getHelpText()}</p>
+                </label>
+                <label className={"inline-block fill-width"}>
                 <textarea className={"feedback-text"}
                           type="textarea"
                           value={feedbackBody}
-                          onChange={(evt) => setFeedbackBody(evt.target.value)} />
+                          onChange={(evt) => setFeedbackBody(getTargetValue(evt))} />
                 </label>
                 <MuiButton
                     variant="contained"

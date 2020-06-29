@@ -54,6 +54,13 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
+.no-margin-bottom {
+  margin-bottom: 0px;
+}
+.margin-vert-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .margin-vert-20 {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -130,6 +137,11 @@
   height: 150px;
   width: 95%;
 }
+.feedback-inputs {
+  width: 85%;
+  margin: auto;
+  display: block;
+}
 .feedback-submit-btn {
   width: 50%;
   margin: auto;
@@ -138,11 +150,7 @@
 .text-input-single-line-container {
   height: 35px;
 }
-.dropdown-container {
-  width: 85%;
-  margin: auto;
-  display: block;
-}
+
 .status-change-close{
   position: absolute;
   right: 10px;
@@ -151,6 +159,9 @@
 
 .bold {
   font-weight: bold;
+}
+.italic {
+  font-style: italic;
 }
 .underline {
   text-decoration: underline;
