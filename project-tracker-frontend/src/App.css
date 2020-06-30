@@ -65,6 +65,10 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.margin-hor-20 {
+  margin-left: 20px;
+  margin-right: 20px;
+}
 .margin-left-10 {
   margin-left: 10px;
 }
@@ -120,10 +124,9 @@
 
 /* FEEDBACK FORM */
 .feedback-container {
-  height: 400px;
+  height: 150px;
   margin-bottom: 10px;
   margin-top: 15px;
-  overflow-y: scroll;
 }
 .feedback-form {
   position: absolute;
