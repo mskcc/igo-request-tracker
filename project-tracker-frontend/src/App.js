@@ -18,7 +18,7 @@ import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
 
 function App() {
-    const [showFeedback, setShowFeedback] = useState(true);
+    const [showFeedback, setShowFeedback] = useState(false);
     const deliveredProjects = useSelector(state => state[STATE_DELIVERED_PROJECTS] );
     const undeliveredProjects = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
@@ -49,7 +49,7 @@ function App() {
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
                 const unDelivered = {};
-                for (const project of requests.slice(requests.length-100,requests.length-1)) {
+                for (const project of requests) {
                     // TODO - api
                     const requestId = project['requestId'];
                     if(requestId){

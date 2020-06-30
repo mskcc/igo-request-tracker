@@ -75,17 +75,6 @@ const Feedback = ({closeFeedback}) => {
         );
     };
 
-    const getTargetValue = (evt) => {
-        return evt.target.value;
-    };
-
-    const generateTextInput = (label, val, fn, required = false) => {
-        return <TextField  id="standard-basic"
-                           className={"fill-width"}
-                           label={label}
-                           onChange={(evt) => fn(getTargetValue(evt))}
-                           required={required}/>;
-    };
 
     return <div className={"feedback-form padding-24"}>
         <FontAwesomeIcon className={"status-change-close hover"}
