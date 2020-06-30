@@ -1,7 +1,22 @@
 import axios from 'axios';
-import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH} from "../config";
+import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST} from "../config";
 import {getResponseData} from "../utils/utils";
 
+export function getUserSession() {
+    console.log("Retrieving user session...");
+    return axios
+        .get(`${HOST}/login/api/session/user`)
+        .then(resp => {
+            console.log("Got session");
+            const data = getResponseData(resp);
+            console.log(data);
+            return data;
+        })
+        .catch(error => {
+            checkForAuthorizationError(error);
+            throw new Error('Unable to get Get Events: ' + error)
+        });
+}
 
 /**
  * Checks whether the authorization status

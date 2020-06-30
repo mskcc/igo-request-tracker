@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal, {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
 
 import './App.css';
-import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest} from "./services/services";
+import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest, getUserSession} from "./services/services";
 import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/dispatchers";
 import { Container } from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
@@ -62,6 +62,14 @@ function App() {
             .catch((err) => {
                 sendUpdate(modalUpdater, 'Failed to load pending projects', MODAL_ERROR, 5000);
             });
+
+        getUserSession()
+            .then((session)=> {
+                const greeting = session.firstName;
+                if(greeting) {
+                    sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 2000);
+                }
+            })
     }, [dispatch]);
 
     return (
