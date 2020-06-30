@@ -2,27 +2,32 @@ import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal, {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
 
 import './App.css';
 import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest} from "./services/services";
-import {updateDelivered, updateUndelivered} from "./redux/dispatchers";
+import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/dispatchers";
 import { Container } from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
-import MuiButton from "@material-ui/core/Button/Button";
 import IconButton from "@material-ui/core/IconButton";
 import ProjectSection from "./components/project-section/project-section";
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "./redux/reducers";
+import {STATE_DELIVERED_PROJECTS, STATE_MODAL_UPDATER, STATE_UNDELIVERED_PROJECTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
+import {Subject} from "rxjs";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(true);
     const deliveredProjects = useSelector(state => state[STATE_DELIVERED_PROJECTS] );
     const undeliveredProjects = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
+    const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const modalUpdater = new Subject();
+        updateModalUpdater(dispatch, modalUpdater);
+
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
@@ -34,11 +39,11 @@ function App() {
                         deliveredProjects[requestId] = null;
                     }
                 }
+                sendUpdate(modalUpdater, 'Loaded delivered projects', MODAL_UPDATE, 1000);
                 updateDelivered(dispatch, deliveredProjects);
             })
             .catch((err) => {
-                // TODO - update UI
-                console.error(`Failed to retrieve projects: ${err}`);
+                sendUpdate(modalUpdater, 'Failed to load delivered projects', MODAL_ERROR, 5000);
             });
         getUndeliveredProjectsRequest()
             .then((projectList) => {
@@ -51,16 +56,19 @@ function App() {
                         unDelivered[requestId] = null;
                     }
                 }
+                sendUpdate(modalUpdater, 'Loaded pending projects', MODAL_UPDATE, 1000);
                 updateUndelivered(dispatch, unDelivered);
             })
             .catch((err) => {
-                // TODO - update UI
-                console.error(`Failed to retrieve projects: ${err}`);
+                sendUpdate(modalUpdater, 'Failed to load pending projects', MODAL_ERROR, 5000);
             });
     }, [dispatch]);
 
     return (
         <div className="App">
+            {
+                Object.keys(modalUpdater).length > 0 ? <Modal modalUpdater={modalUpdater}/> : <div></div>
+            }
             <Router basename={"/"}>
                 <header className="App-header padding-vert-10">
                     <span className={"float-left inline-block width-100 padding-vert-10"}>

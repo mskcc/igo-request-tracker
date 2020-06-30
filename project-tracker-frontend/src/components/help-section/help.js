@@ -42,7 +42,7 @@ function HelpSection() {
                 <FontAwesomeIcon className="project-selector-icon inline-block float-right" icon={ showProjectsections ? faAngleDown : faAngleRight }/>
             </div>
             {
-                showProjectsections ? <div>
+                showProjectsections ? <div className={"margin-left-20"}>
                     <p>There are two sections for for {getHumanReadable(STATE_UNDELIVERED_PROJECTS)} and {getHumanReadable(STATE_DELIVERED_PROJECTS)}</p>
                     <h3>{getHumanReadable(STATE_UNDELIVERED_PROJECTS)}</h3>
                     <p>These projects have never been marked IGO-complete</p>
@@ -58,7 +58,7 @@ function HelpSection() {
                 <FontAwesomeIcon className="project-selector-icon inline-block float-right" icon={ showProjectView ? faAngleDown : faAngleRight }/>
             </div>
             {
-                showProjectView ? <div>
+                showProjectView ? <div className={"margin-left-20"}>
                     <p>In each section, projects available to the logged-in user will begin populating. Loading projects will have an ellipsis icon.</p>
                     <img className={"help-img"} src={projectViewMultiple} alt={"project-view-multiple"}></img>
                     <p>Once loaded, projects will display an icon on the right that indicates the stage completion status of the project samples in the workflow.
@@ -89,7 +89,7 @@ function HelpSection() {
                 <FontAwesomeIcon className="project-selector-icon inline-block float-right" icon={ showStageSection ? faAngleDown : faAngleRight }/>
             </div>
             {
-                showStageSection ? <div>
+                showStageSection ? <div className={"margin-left-20"}>
                     <p> Stages are the steps an IGO sample must progress through before being delivered.
                         Workflows are categorized into the stage they belong to. For example, the "10x Genomics Library
                         Preparation" workflow belongs to the "Library Prepration" stage.

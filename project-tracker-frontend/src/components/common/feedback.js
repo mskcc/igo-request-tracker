@@ -1,16 +1,18 @@
 import React, { useEffect, useState }  from "react";
-import MuiButton from "@material-ui/core/Button/Button";
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MuiDownshift from 'mui-downshift'
-import {faTimes} from "@fortawesome/free-solid-svg-icons";
-import {submitFeedbackRequest} from "../../services/feedback";
 import {useSelector} from "react-redux";
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../../redux/reducers";
+import PropTypes from "prop-types";
+import MuiDownshift from 'mui-downshift'
+import MuiButton from "@material-ui/core/Button/Button";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import TextField from "@material-ui/core/TextField";
+import {faTimes} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
+
+import {submitFeedbackRequest} from "../../services/feedback";
+import {STATE_DELIVERED_PROJECTS, STATE_MODAL_UPDATER, STATE_UNDELIVERED_PROJECTS} from "../../redux/reducers";
 
 const INCORRECT_STATUS = "INCORRECT_STATUS";
 const OTHER = "OTHER";
@@ -26,6 +28,7 @@ const Feedback = (props) => {
 
     const unDelivered = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
     const delivered =  useSelector(state => state[STATE_DELIVERED_PROJECTS] );
+    const modalUpdater =  useSelector(state => state[STATE_MODAL_UPDATER] );
 
     const updateProjectList = (projectState) => {
         const pList = Object.keys(projectState);
@@ -124,20 +127,19 @@ const Feedback = (props) => {
             subjectLine = `Project: ${bugProject}, Stages: ${bugStages.substring(0,15)}`;
         }
 
-        submitFeedbackRequest(feedbackBody, subjectLine,feedbackType)
+        const requestBody = {
+            body: feedbackBody,
+            subject: subjectLine,
+            type: feedbackType,
+            project: bugProject
+        };
+
+        submitFeedbackRequest(requestBody)
             .then(() => {
-                console.log("Success");
-                /*
-                props.addModalUpdate(MODAL_UPDATE, "Feedback Submitted. Thanks!", 3000);
-                props.closeFeedback();
-                */
+                sendUpdate(modalUpdater, "Feedback Submitted. Thanks!", MODAL_SUCCESS);
             })
             .catch((err) => {
-                console.error(err.message);
-                /*
-                props.addModalUpdate(MODAL_ERROR, "Error submitting feedback. Email streidd@mskcc.org", 5000)
-                props.closeFeedback();
-                */
+                sendUpdate(modalUpdater, "Error submitting feedback. Email streidd@mskcc.org", MODAL_ERROR, 5000);
             })
     };
 

@@ -14,6 +14,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "mui-downshift": "^1.4.2",
+    "object-modal": "^0.1.1",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-d3-tree": "^1.16.1",
@@ -21,7 +22,8 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "rxjs": "^6.5.5"
   },
   "scripts": {
     "start": "npm run config-qa && react-scripts start",

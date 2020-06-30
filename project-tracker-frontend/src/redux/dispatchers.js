@@ -3,7 +3,14 @@
  *
  * @param resp, { [PROJECT_KEY]: {...}, ... }
  */
-import {SET_DELIVERED, SET_UNDELIVERED} from "./actionTypes";
+import {SET_DELIVERED, SET_UNDELIVERED, SET_MODAL_UPDATER} from "./actionTypes";
+
+export const updateModalUpdater = (dispatch, payload) => {
+    dispatch({
+        type: SET_MODAL_UPDATER,
+        payload
+    });
+};
 
 export const updateDelivered = (dispatch, payload) => {
     dispatch({
