@@ -1,4 +1,4 @@
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import TextField from "@material-ui/core/TextField/TextField";
 import React from "react";
 
@@ -9,8 +9,8 @@ export function convertUnixTimeToDate(UNIX_Timestamp) {
 
 export function getHumanReadable(name) {
     const mapping = {
-        [STATE_DELIVERED_PROJECTS]: "Delivered Projects",
-        [STATE_UNDELIVERED_PROJECTS]: "Pending Projects"
+        [STATE_DELIVERED_REQUESTS]: "Delivered Requests",
+        [STATE_PENDING_REQUESTS]: "Pending Requests"
     };
     return mapping[name] || name;
 }

@@ -11,7 +11,7 @@ import { Container } from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
 import ProjectSection from "./components/project-section/project-section";
-import {STATE_DELIVERED_PROJECTS, STATE_MODAL_UPDATER, STATE_UNDELIVERED_PROJECTS} from "./redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
@@ -19,8 +19,8 @@ import {Subject} from "rxjs";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(false);
-    const deliveredProjects = useSelector(state => state[STATE_DELIVERED_PROJECTS] );
-    const undeliveredProjects = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
+    const deliveredProjects = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
+    const undeliveredProjects = useSelector(state => state[STATE_PENDING_REQUESTS] );
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
 
@@ -70,6 +70,9 @@ function App() {
                     sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 2000);
                 }
             })
+            .catch((err) => {
+                console.error("Failed to retrieve user data");
+            });
     }, [dispatch]);
 
     return (
@@ -97,15 +100,15 @@ function App() {
                     </IconButton>
                 </header>
                 { showFeedback ? <Feedback closeFeedback={() => setShowFeedback(false)}/> : <div></div> }
-                <body>
+                <div className={"body"}>
                     <Container className={"margin-vert-20"}>
                         <Switch>
                             <Route exact path={`${HOME}/`}>
                                 <div className={"border"}>
                                     <ProjectSection projectMapping={undeliveredProjects}
-                                                    projectState={STATE_UNDELIVERED_PROJECTS}></ProjectSection>
+                                                    projectState={STATE_PENDING_REQUESTS}></ProjectSection>
                                     <ProjectSection projectMapping={deliveredProjects}
-                                                    projectState={STATE_DELIVERED_PROJECTS}></ProjectSection>
+                                                    projectState={STATE_DELIVERED_REQUESTS}></ProjectSection>
                                 </div>
                             </Route>
                             <Route exact path={`${HOME}/help`}>
@@ -113,7 +116,7 @@ function App() {
                             </Route>
                         </Switch>
                     </Container>
-                </body>
+                </div>
             </Router>
         </div>
     );

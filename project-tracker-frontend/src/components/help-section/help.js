@@ -1,4 +1,4 @@
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../../redux/reducers";
 import React, {useState} from "react";
 import {getHumanReadable} from "../../utils/utils";
 import projectView from './assets/project_view.png';
@@ -43,10 +43,10 @@ function HelpSection() {
             </div>
             {
                 showProjectsections ? <div className={"margin-left-20"}>
-                    <p>There are two sections for for {getHumanReadable(STATE_UNDELIVERED_PROJECTS)} and {getHumanReadable(STATE_DELIVERED_PROJECTS)}</p>
-                    <h3>{getHumanReadable(STATE_UNDELIVERED_PROJECTS)}</h3>
+                    <p>There are two sections for for {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}</p>
+                    <h3>{getHumanReadable(STATE_PENDING_REQUESTS)}</h3>
                     <p>These projects have never been marked IGO-complete</p>
-                    <h3>{getHumanReadable(STATE_DELIVERED_PROJECTS)}</h3>
+                    <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
                     <p>These projects have been marekd IGO-complete</p>
                 </div>
                     : <div></div>

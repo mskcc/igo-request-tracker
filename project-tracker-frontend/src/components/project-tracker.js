@@ -7,7 +7,7 @@ import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleRight, faAngleDown, faCheck, faEllipsisH, faFlask} from "@fortawesome/free-solid-svg-icons";
 import Project from '../utils/Project';
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 
 function ProjectTracker({projectName, projectState}) {
     const store = useStore();
@@ -35,9 +35,9 @@ function ProjectTracker({projectName, projectState}) {
                     const storeProjects = store.getState()[projectState] || {};  // Retrieve latest version of the store
                     const clone = Object.assign({}, storeProjects);
                     clone[projectName] = new Project(data);
-                    if(STATE_DELIVERED_PROJECTS === projectState){
+                    if(STATE_DELIVERED_REQUESTS === projectState){
                         updateDelivered(dispatch, clone);
-                    } else if(STATE_UNDELIVERED_PROJECTS === projectState) {
+                    } else if(STATE_PENDING_REQUESTS === projectState) {
                         updateUndelivered(dispatch, clone);
                     }
 

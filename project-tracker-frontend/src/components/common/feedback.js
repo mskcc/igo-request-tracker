@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
 
 import {submitFeedbackRequest} from "../../services/feedback";
-import {STATE_DELIVERED_PROJECTS, STATE_MODAL_UPDATER, STATE_UNDELIVERED_PROJECTS} from "../../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "../../redux/reducers";
 import IconButton from "@material-ui/core/IconButton";
 
 const INCORRECT_STATUS = "INCORRECT_STATUS";
@@ -27,8 +27,8 @@ const Feedback = ({closeFeedback}) => {
     const [bugStages, setBugStages] = useState("");
     const [projectList, setProjectList] = useState(new Set());
 
-    const unDelivered = useSelector(state => state[STATE_UNDELIVERED_PROJECTS] );
-    const delivered =  useSelector(state => state[STATE_DELIVERED_PROJECTS] );
+    const unDelivered = useSelector(state => state[STATE_PENDING_REQUESTS] );
+    const delivered =  useSelector(state => state[STATE_DELIVERED_REQUESTS] );
 
     useEffect(() => {
         const updatedSet = updateProjectList(unDelivered);
