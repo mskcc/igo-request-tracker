@@ -62,6 +62,7 @@ function HelpSection() {
                     <p>These requests have NOT been marked for delivery in the LIMs.</p>
                     <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
                     <p>These requests have been marked for delivery in the LIMs.</p>
+                    <p>Only requests delivered in the last 7 days are returned.</p>
                 </div>
                     : <div></div>
             }

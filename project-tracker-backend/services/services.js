@@ -14,7 +14,7 @@ const formatAllProjectsResponse = function(resp) {
 	if(invalidProjects.length > 0){
 		const errorIds = invalidProjects.map((entry) => entry.requestId);
 		const allErrors = Array.from(new Set(errorIds));
-		const errMessage = `Failed to retrieve projects. Errors: ${allErrors}`;
+		const errMessage = `Failed to retrieve requests. Errors: ${allErrors}`;
 		logger.error(errMessage);
 		throw new Error(errMessage);
 	}
