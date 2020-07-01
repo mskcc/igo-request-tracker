@@ -84,14 +84,6 @@
 .light-gray-background {
   background-color: #f2f2f2;
 }
-
-.App {
-  text-align: center;
-}
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 .help-img {
   width: 80%;
   margin: auto;

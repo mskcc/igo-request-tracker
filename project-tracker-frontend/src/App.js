@@ -76,12 +76,12 @@ function App() {
     }, [dispatch]);
 
     return (
-        <div className="App">
+        <div>
             {
                 Object.keys(modalUpdater).length > 0 ? <Modal modalUpdater={modalUpdater}/> : <div></div>
             }
             <Router basename={"/"}>
-                <header className="App-header padding-vert-10">
+                <header className="App-header padding-vert-10 text-align-center">
                     <span className={"float-left inline-block width-100 padding-vert-10"}>
                         <Link to={`${HOME}/`}>
                             <FontAwesomeIcon className={"font-1p5em text-align-center white-color"} icon={faHome}/>
@@ -100,23 +100,21 @@ function App() {
                     </IconButton>
                 </header>
                 { showFeedback ? <Feedback closeFeedback={() => setShowFeedback(false)}/> : <div></div> }
-                <div className={"body"}>
-                    <Container className={"margin-vert-20"}>
-                        <Switch>
-                            <Route exact path={`${HOME}/`}>
-                                <div className={"border"}>
-                                    <ProjectSection projectMapping={undeliveredProjects}
-                                                    projectState={STATE_PENDING_REQUESTS}></ProjectSection>
-                                    <ProjectSection projectMapping={deliveredProjects}
-                                                    projectState={STATE_DELIVERED_REQUESTS}></ProjectSection>
-                                </div>
-                            </Route>
-                            <Route exact path={`${HOME}/help`}>
-                                <HelpSection/>
-                            </Route>
-                        </Switch>
-                    </Container>
-                </div>
+                <Container className={"margin-vert-20"}>
+                    <Switch>
+                        <Route exact path={`${HOME}/`}>
+                            <div className={"border"}>
+                                <ProjectSection projectMapping={undeliveredProjects}
+                                                projectState={STATE_PENDING_REQUESTS}></ProjectSection>
+                                <ProjectSection projectMapping={deliveredProjects}
+                                                projectState={STATE_DELIVERED_REQUESTS}></ProjectSection>
+                            </div>
+                        </Route>
+                        <Route exact path={`${HOME}/help`}>
+                            <HelpSection/>
+                        </Route>
+                    </Switch>
+                </Container>
             </Router>
         </div>
     );
