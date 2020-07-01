@@ -88,17 +88,17 @@ function App() {
         console.log(requestQuery);
         console.log(deliveredRequests[requestQuery]);
         if(deliveredRequests[requestQuery] !== undefined){
-            setLocatorPrompt(`Request ${requestQuery} has been delivered`);
+            setLocatorPrompt(`Request '${requestQuery}' has been delivered`);
             setDeliveredQuery(requestQuery);
         } else if(pendingRequests[requestQuery] !== undefined){
-            setLocatorPrompt(`Request ${requestQuery} is pending`);
+            setLocatorPrompt(`Request '${requestQuery}' is pending`);
             setPendingQuery(requestQuery);
         }  else {
             if(requestQuery.length >= 5 && requestQuery.length < 9){
-                setLocatorPrompt(`Request ${requestQuery} not found. If this is a valid project ID, please submit feedback`);
+                setLocatorPrompt(`Request '${requestQuery}' not found. If this is a valid project ID, please submit feedback`);
             } else if (requestQuery.length >= 9){
                 const truncated = requestQuery.substring(0,8);
-                setLocatorPrompt(`Request ${truncated}... not found. If this is a valid project ID, please submit feedback`);
+                setLocatorPrompt(`Request '${truncated}...' not found. If this is a valid project ID, please submit feedback`);
             } else {
                 setLocatorPrompt('');
             }
@@ -145,13 +145,13 @@ function App() {
                                         </Col>
                                     </Row>
                                 </Container>
-                                <ProjectSection projectMapping={pendingRequests}
-                                                projectState={STATE_PENDING_REQUESTS}
-                                                parentQuery={pendingQuery}></ProjectSection>
-                                <ProjectSection projectMapping={deliveredRequests}
-                                                projectState={STATE_DELIVERED_REQUESTS}
-                                                parentQuery={deliveredQuery}></ProjectSection>
                             </div>
+                            <ProjectSection projectMapping={pendingRequests}
+                                            projectState={STATE_PENDING_REQUESTS}
+                                            parentQuery={pendingQuery}></ProjectSection>
+                            <ProjectSection projectMapping={deliveredRequests}
+                                            projectState={STATE_DELIVERED_REQUESTS}
+                                            parentQuery={deliveredQuery}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>

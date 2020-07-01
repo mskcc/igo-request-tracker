@@ -154,6 +154,11 @@
   top: 10px;
 }
 
+.help-stage-mapper {
+  max-width: 600px;
+  margin: auto;
+}
+
 .bold {
   font-weight: bold;
 }

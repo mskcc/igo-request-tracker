@@ -62,7 +62,7 @@ function SampleTree({sample, idx}){
                         <p> {sampleId}</p>
                     </Col>
                     <Col xs={4}>
-                        <p className={"bold"}>Record Name:</p>
+                        <p className={"bold"}>IGO ID:</p>
                     </Col>
                     <Col xs={8}>
                         <p>{root['recordName']}</p>

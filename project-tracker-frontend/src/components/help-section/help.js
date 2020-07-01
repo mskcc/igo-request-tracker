@@ -12,7 +12,14 @@ import conservativeStage from './assets/conservative-stage.png';
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faComment, faUsers} from "@fortawesome/free-solid-svg-icons";
-import IconButton from "@material-ui/core/IconButton";
+import {stagesRows} from './assets/stages-table';
+import TableContainer from "@material-ui/core/TableContainer";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import Paper from "@material-ui/core/Paper";
+import TableBody from "@material-ui/core/TableBody";
 
 function HelpSection() {
     const REQUEST_SECTION = 'REQUEST_SECTION';
@@ -117,6 +124,35 @@ function HelpSection() {
                     <ul>A sample is considered to have completed a stage if it has either failed or moved onto the next stage</ul>
                     <ul>A request is considered to have completed a stage if all of its samples have completed that stage.
                         For example, a request with four samples at stage II and two samples at stage III will report that it is pending stage II.</ul>
+                    <h2>How are stages determined?</h2>
+                    <p> Every sample IGO receives enters a workflow defined in our Laboratory Information Management System (LIMS).
+                        It is tracked in our LIMS through each workflow by creating representative data records at each step in a workflow.
+                        Each one of these data records has a status that summarizes the step the physical sample was at.
+                        This status record of a data record is mapped to a corresponding stage (below).</p>
+                    <div className={"help-stage-mapper"}>
+                        <TableContainer component={Paper}>
+                            <Table aria-label="stage-mapper">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><span className={"bold"}>Stage</span></TableCell>
+                                        <TableCell><span className={"bold"}>Workflow</span></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {stagesRows.map((row) => (
+                                        <TableRow key={`${row.stage}-${row.workflow}`}>
+                                            <TableCell align="right">{row.stage}</TableCell>
+                                            <TableCell align="right">{row.workflow}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                    <h3>Special Cases</h3>
+                    <p><span className={"bold"}>Data QC</span></p>
+                    <p> The Data QC stage is determined by whether a LIMS Sample Data Record is "linked" to a "SeqAnalysisSampleQC" Data Record.
+                        This is unlike the other stages for which there is a direct mapping of status-to-stage, the Data QC stage.</p>
                 </div> : <div></div>
             }
 
