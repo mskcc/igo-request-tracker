@@ -24,18 +24,18 @@ function SampleTree({sample, idx}){
     const plus1Idx = idx+1;
     const status = sample['status'];
 
-    let toggleClasses = "project-selector-icon fa-layers fa-fw hover inline-block";
+    let toggleClasses = "request-selector-icon fa-layers fa-fw hover inline-block";
     if(showTree) {
         toggleClasses += ' fade-color'
     }
 
     // TODO - api constants
     if(status === 'Complete'){
-        toggleClasses += ' black-color';
+        toggleClasses += ' mskcc-black';
     } else if (status === 'Failed'){
-        toggleClasses += ' red-color';
+        toggleClasses += ' mskcc-red';
     } else {
-        toggleClasses += ' blue-color';
+        toggleClasses += ' mskcc-dark-blue';
     }
 
     return <Row key={sampleId} className={"border"}>

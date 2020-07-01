@@ -23,10 +23,17 @@ export const generateTextInput = (label, val, fn, required = false) => {
     return <TextField  id="standard-basic"
                        className={"fill-width"}
                        label={label}
+                       value={val}
                        onChange={(evt) => fn(getTargetValue(evt))}
                        required={required}/>;
 };
 
+export const goToTeamWorks = () => {
+    window.open(
+        'https://mskcc.teamwork.com/#/projects/488973/tasks/board',
+        '_blank' // <- This is what makes it open in a new window.
+    );
+};
 
 /**
  * Prases out the axios data fields & expected "data" field of the node service response

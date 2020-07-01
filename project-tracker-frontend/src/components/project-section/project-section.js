@@ -1,11 +1,17 @@
 import ProjectTracker from "../project-tracker";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import {generateTextInput, getHumanReadable} from "../../utils/utils";
-import TextField from "@material-ui/core/TextField/TextField";
+import {Container} from "react-bootstrap";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-function ProjectSection({projectMapping, projectState}) {
-    const [query, setQuery] = useState('');
+function ProjectSection({projectMapping, projectState, parentQuery}) {
+    const [query, setQuery] = useState(parentQuery);
+
+    useEffect(() => {
+        setQuery(parentQuery);
+    }, [parentQuery]);
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -18,17 +24,29 @@ function ProjectSection({projectMapping, projectState}) {
         const filtered = projects.filter((prj) => {
             return prj.startsWith(query);
         });
-        return filtered.slice(0,5);
+        return filtered.slice(0,3);
     };
+
+    const filtered = getFilteredProjectsFromQuery(projectMapping);
 
     // TODO - pagination
     return <div className={"border"}>
-        <div className={"light-gray-background border padding-vert-10 padding-hor-20"}>
-            <h2>{getHumanReadable(projectState)}</h2>
+            <Container>
+                <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
+                    <Col xs={4}>
+                        <h2>{getHumanReadable(projectState)}</h2>
+                    </Col>
+                    <Col xs={4}></Col>
+                    <Col xs={4}>
+                        <h4>Total {getHumanReadable(projectState)}: {Object.keys(projectMapping).length}</h4>
+                    </Col>
+                    <Col xs={6}>
+                        {generateTextInput("Request ID", query, setQuery)}
+                    </Col>
+                </Row>
+            </Container>
 
-            {generateTextInput("Request ID", query, setQuery)}
-        </div>
-        { getFilteredProjectsFromQuery(projectMapping).map((projectName) => {
+        { filtered.map((projectName) => {
             return <ProjectTracker key={projectName}
                                    projectName={projectName}
                                    projectState={projectState}/>

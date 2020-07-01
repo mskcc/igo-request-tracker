@@ -14,6 +14,7 @@ import {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal
 import {submitFeedbackRequest} from "../../services/feedback";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "../../redux/reducers";
 import IconButton from "@material-ui/core/IconButton";
+import {goToTeamWorks} from "../../utils/utils";
 
 const INCORRECT_STATUS = "INCORRECT_STATUS";
 const OTHER = "OTHER";
@@ -68,14 +69,6 @@ const Feedback = ({closeFeedback}) => {
     };
 
 
-    const goToTeamWorks = () => {
-        window.open(
-            'https://mskcc.teamwork.com/#/projects/488973/tasks/board',
-            '_blank' // <- This is what makes it open in a new window.
-        );
-    };
-
-
     return <div className={"feedback-form padding-24"}>
         <FontAwesomeIcon className={"status-change-close hover"}
                          icon={faTimes}
@@ -86,7 +79,7 @@ const Feedback = ({closeFeedback}) => {
                 <p className={"text-align-left"}>
                     Please fill out a teamworks request
                 </p>
-                <div className={"fill-width"}>
+                <div className={"fill-width text-align-center"}>
                     <IconButton aria-label="teamworks-link"
                                 onClick={goToTeamWorks}
                                 className={"border hover"}>

@@ -49,7 +49,7 @@ function ProjectTracker({projectName, projectState}) {
         const mapping = stateProjects[projectName];
         // If mapping isn't present, or null, this should show a pending icon
         if(mapping === null || mapping === undefined){
-            return <span className={`float-right small-icon width-100 black-color fa-layers fa-fw hover inline-block`}>
+            return <span className={`float-right small-icon width-100 mskcc-black fa-layers fa-fw hover inline-block`}>
             <FontAwesomeIcon icon={faEllipsisH}/>
         </span>;
         }
@@ -59,7 +59,7 @@ function ProjectTracker({projectName, projectState}) {
         // igoComplete projects should just show completed icon
         const isIgoComplete = summary['isIgoComplete'] || false;
         if(isIgoComplete){
-            return <span className={`float-right small-icon black-color fa-layers fa-fw hover inline-block width-100 mskcc-dark-green`}>
+            return <span className={`float-right small-icon fa-layers fa-fw hover inline-block width-100 mskcc-dark-green`}>
                 <FontAwesomeIcon icon={faCheck}/>
             </span>;
         }
@@ -69,8 +69,8 @@ function ProjectTracker({projectName, projectState}) {
         const completed = summary['completed'];
         const failed = summary['failed'];
         const total = summary['total'];
-        const summaryColor = (failed && failed > 0) ? 'red-color' : 'blue-color';
-        return <span className={`float-right large-icon black-color fa-layers fa-fw hover inline-block width-100 ${summaryColor}`}>
+        const summaryColor = (failed && failed > 0) ? 'mskcc-red' : 'mskcc-dark-blue';
+        return <span className={`float-right large-icon fa-layers fa-fw hover inline-block width-100 ${summaryColor}`}>
             <FontAwesomeIcon icon={faFlask}/>
             <span className="fa-layers-bottom fa-layers-text fa-inverse project-summary-text-override">{completed}/{total}</span>
         </span>;
@@ -80,7 +80,7 @@ function ProjectTracker({projectName, projectState}) {
     return <div>
         <div className={"hover border padding-vert-5 padding-hor-20"}
              onClick={() => setShowProject(!showProject)}>
-            <FontAwesomeIcon className="project-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
+            <FontAwesomeIcon className="request-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
             <h1 className={"inline-block"}>{projectName}</h1>
             {
                 (projectHasData(project) && project.getIgoComplete()) ? <FontAwesomeIcon className="request-complete" icon={faCheck}/>
