@@ -39,7 +39,7 @@ function App() {
                         deliveredProjects[requestId] = null;
                     }
                 }
-                sendUpdate(modalUpdater, 'Loaded delivered projects', MODAL_UPDATE, 1000);
+                sendUpdate(modalUpdater, 'Loaded delivered projects', MODAL_SUCCESS, 1000);
                 updateDelivered(dispatch, deliveredProjects);
             })
             .catch((err) => {
@@ -56,7 +56,7 @@ function App() {
                         unDelivered[requestId] = null;
                     }
                 }
-                sendUpdate(modalUpdater, 'Loaded pending projects', MODAL_UPDATE, 1000);
+                sendUpdate(modalUpdater, 'Loaded pending projects', MODAL_SUCCESS, 1000);
                 updateUndelivered(dispatch, unDelivered);
             })
             .catch((err) => {
@@ -67,7 +67,7 @@ function App() {
             .then((session)=> {
                 const greeting = session.firstName;
                 if(greeting) {
-                    sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 2000);
+                    sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 4000);
                 }
             })
             .catch((err) => {
