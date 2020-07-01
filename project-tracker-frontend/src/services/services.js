@@ -1,14 +1,22 @@
 import axios from 'axios';
-import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH} from "../config";
-import API_PROJECT_ID from '../mocks/api-projects-id';
-import API_PROJECT from '../mocks/api-projects';
+import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST} from "../config";
+import {getResponseData} from "../utils/utils";
 
-
-const getData = (resp) => {
-    const content = resp.data || {};
-    const data = content.data || {};
-    return data;
-};
+export function getUserSession() {
+    console.log("Retrieving user session...");
+    return axios
+        .get(`${HOST}/login/api/session/user`)
+        .then(resp => {
+            console.log("Got session");
+            const data = getResponseData(resp);
+            console.log(data);
+            return data;
+        })
+        .catch(error => {
+            checkForAuthorizationError(error);
+            throw new Error('Unable to get Get Events: ' + error)
+        });
+}
 
 /**
  * Checks whether the authorization status
@@ -23,22 +31,81 @@ const checkForAuthorizationError = (error) => {
     }
 };
 
-export function getProjects(projects) {
-    /*
-    return new Promise((resolve) => { resolve(API_PROJECT) })
-        .then(resp => {return getData(resp)})
-        .catch(error => {throw new Error('Unable to get Get Events: ' + error) });
+export function getUndeliveredProjectsRequest(projects) {
+    /**
+     RESP
+     "data": {
+            "requests": [
+                {
+                    "samples": [],
+                    "requestId": "05427_I",
+                    "requestType": "ddPCR",
+                    "investigator": "Parisa Momtaz",
+                    "pi": "Paul Chapman",
+                    "analysisRequested": false,
+                    "recordId": 0,
+                    "sampleNumber": 68,
+                    "restStatus": "SUCCESS",
+                    "deliveryDate": [],
+                    "autorunnable": false
+                },
+                ...
+            ]
+    }
      */
     return axios
-        .get(`${PROJECTS_ENDPOINT}/`)
-        .then(resp => {return getData(resp)})
+        .get(`${PROJECTS_ENDPOINT}/undelivered`)
+        .then(resp => {
+            const data = getResponseData(resp);
+            return data;
+        })
         .catch(error => {
             checkForAuthorizationError(error);
             throw new Error('Unable to get Get Events: ' + error)
         });
 }
 
-export function getProjectTrackingData(project){
+export function getDeliveredProjectsRequest(projects) {
+    /*
+    return new Promise((resolve) => { resolve(API_PROJECT) })
+        .then(resp => {return getData(resp)})
+        .catch(error => {throw new Error('Unable to get Get Events: ' + error) });
+     */
+    /**
+     Resp:
+         data: {
+             reqeusts: [
+                 {
+                    "samples": [],
+                    "requestId": "08822",
+                    "requestType": "DNAExtraction",
+                    "investigator": "Nancy Bouvier",
+                    "pi": "Neerav Shukla",
+                    "projectManager": "NO PM",
+                    "analysisRequested": true,
+                    "recordId": 0,
+                    "sampleNumber": 1,
+                    "restStatus": "SUCCESS",
+                    "autorunnable": false,
+                    "deliveryDate": [
+                        1592599085454
+                    ]
+                },
+                ...
+             ]
+             }
+         }
+     */
+    return axios
+        .get(`${PROJECTS_ENDPOINT}/delivered`)
+        .then(resp => {return getResponseData(resp)})
+        .catch(error => {
+            checkForAuthorizationError(error);
+            throw new Error('Unable to get Get Events: ' + error)
+        });
+}
+
+export function getProjectTrackingDataRequest(project){
     /*
     return new Promise((resolve) => { resolve(API_PROJECT_ID) })
         .then(resp => { return getData(resp) })
@@ -46,7 +113,7 @@ export function getProjectTrackingData(project){
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/${project}`)
-        .then(resp => {return getData(resp) })
+        .then(resp => {return getResponseData(resp) })
         .catch(error => {
             checkForAuthorizationError(error);
             throw new Error('Unable to get Get Events: ' + error)

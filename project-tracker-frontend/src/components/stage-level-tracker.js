@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {convertUnixTimeToDate} from "../utils/utils";
-import {Step, StepLabel, Stepper, Typography, Button} from "@material-ui/core";
+import {Step, StepLabel, Stepper} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 
@@ -32,6 +32,13 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
     };
 
     const generateStageSummary = (stage) => {
+        const stageName = stage['stage'] || '';
+
+        // TODO - Submitted is often inconsistent w/ its number of samples
+        if('Submitted' === stageName){
+            return <span></span>
+        }
+
         const completedCount = stage.completedSamples || 0;
         const failedCount = stage.failedSamples || 0;
         const progressCount = completedCount + failedCount;
@@ -46,14 +53,37 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
             return <span></span>
         };
 
+        // Renders the updated field
+        const updateSpan = (stage) => {
+            let updateField = 'Updated';
+            if(stage.complete){
+                updateField = 'Completed';
+            }
+            if(stage.updateTime === null || stage.updateTime === undefined) {
+                return <p></p>
+            }
+            return <p>
+                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDate(stage.updateTime)}
+            </p>
+        };
+
+        const startedSpan = (stage) => {
+            const startTime = stage.startTime;
+
+            if(startTime === null || startTime === undefined) {
+                return <p></p>
+            }
+            return <p>
+                <span className={"underline"}>Started</span>: {convertUnixTimeToDate(startTime)}
+            </p>
+        };
+
         return <span className={"hover"}>
             <p><span className={"underline"}>
                 Progress</span>: {progressCount}/{total}</p>
             {failedSpan()}
-            <p><span className={"underline"}>
-                Updated</span>: {convertUnixTimeToDate(stage.updateTime)}</p>
-            <p><span className={"underline"}>
-                Started</span>: {convertUnixTimeToDate(stage.startTime)}</p>
+            {startedSpan(stage)}
+            {updateSpan(stage)}
         </span>
     };
 

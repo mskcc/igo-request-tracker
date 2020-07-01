@@ -29,6 +29,8 @@ server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
 server.setTimeout(720000);			// Setting timeout to 12 mimutes
+console.log(`project-tracker running on port: ${port}`);
+
 /**
  * Normalize a port into a number, string, or false.
  */

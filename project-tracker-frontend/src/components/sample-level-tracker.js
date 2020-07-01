@@ -26,7 +26,7 @@ function SampleTree({sample, idx}){
 
     let toggleClasses = "project-selector-icon fa-layers fa-fw hover inline-block";
     if(showTree) {
-        toggleClasses += ' fade-color';
+        toggleClasses += ' fade-color'
     }
 
     // TODO - api constants
@@ -40,9 +40,9 @@ function SampleTree({sample, idx}){
 
     return <Row key={sampleId} className={"border"}>
         <Col xs={3} sm={2} md={1} className={"padding-vert-10"}>
-            <span className={toggleClasses}>
-                <FontAwesomeIcon icon={faFlask}
-                                 onClick={() => setShowTree(!showTree)}/>
+            <span className={toggleClasses}
+                  onClick={() => setShowTree(!showTree)}>
+                <FontAwesomeIcon icon={faFlask}/>
                 <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
             </span>
         </Col>

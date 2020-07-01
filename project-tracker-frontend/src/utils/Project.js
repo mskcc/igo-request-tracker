@@ -1,6 +1,7 @@
 import {convertUnixTimeToDate} from "./utils";
 
 class Project {
+    // API Responses
     /*
         "metaData": {
             "IlabRequest": "IGO-013956",
@@ -15,23 +16,45 @@ class Project {
             "ProjectManager": "NO PM"
         }
      */
-    // API Responses
     #metaData;
     #requestId;
     #bankedSampleId;
     #stages;
     #samples;
     #igoComplete;
+    #summary;
 
     getSamples() {
         return this.#samples;
     }
-
     getRequestId() {
         return this.#requestId;
     }
+
+    /**
+     * Returns whether the project has been marked completed by IGO (This flag is the one used to indicate the project
+     * has been delivered by IGO).
+     *
+     * @returns {*|boolean}
+     */
     getIgoComplete() {
-        return this.#igoComplete;
+        return this.#igoComplete || false;
+    }
+
+    /**
+     * Returns project summary information
+     *
+     *   "summary": {
+     *       "total": 10,
+     *       "RecentDeliveryDate": null,
+     *       "stagesComplete": false,
+     *       "isIgoComplete": false,
+     *       "completed": 9,
+     *       "failed": 0
+     *   }
+     */
+    getSummary(){
+        return this.#summary || {};
     }
 
     /**
@@ -39,7 +62,7 @@ class Project {
      * @returns {*|number}
      */
     getRecentDeliveryDate() {
-        return this.#metaData['RecentDeliveryDate'];
+        return this.#metaData['RecentDeliveryDate'] || 'Not Available';
     }
 
     /**
@@ -47,46 +70,66 @@ class Project {
      * @returns {*|string}
      */
     getTATFromReceiving() {
-        return this.#metaData['RecentDeliveryDate'] || "";
+        return this.#metaData['RecentDeliveryDate'] || 'Not Available';
     }
 
     getGroupLeader() {
-        return this.#metaData['GroupLeader'] || "";
+        return this.#metaData['GroupLeader'] || 'Not Available';
     }
 
     getLabHeadEmail() {
-        return this.#metaData['LabHeadEmail'] || "";
+        return this.#metaData['LabHeadEmail'] || 'Not Available';
     }
 
     getLabHead() {
-        return this.#metaData['LaboratoryHead'] || "";
+        return this.#metaData['LaboratoryHead'] || 'Not Available';
     }
 
     getTATFromInProcessing() {
-        return this.#metaData['TATFromInProcessing'] || '';
+        return this.#metaData['TATFromInProcessing'] || 'Not Available';
     }
 
     getInvestigator() {
-        return this.#metaData['Investigator'] || '';
+        return this.#metaData['Investigator'] || 'Not Available';
     }
 
     getProjectManager() {
-        return this.#metaData['ProjectManager'] || '';
+        return this.#metaData['ProjectManager'] || 'Not Available';
     }
 
     getStages() {
         return this.#stages;
     }
 
+    /**
+     * Returns the time the project was started
+     *
+     * @returns {*}
+     */
     getStartTime() {
-        return this.#metaData['ReceivedDate'] || 0;
+        return this.#metaData['ReceivedDate'];
     }
 
-    // TODO
+    /**
+     * Returns when any of the project stages were last updated
+     *
+     * @returns {*}
+     */
     getUpdateTime() {
-        return 0;
+        return this.#stages.reduce((accumulator, stage) => {
+            const updateTime = stage['updateTime'] || 0;
+            if(accumulator > updateTime){
+                return accumulator;
+            }
+            return updateTime;
+        }, 0);
     }
 
+    /**
+     * Transforms the service response into a Project instance for the client
+     *
+     * @param data
+     */
     processRequest(data){
         const request = data['request'] || {};
 
@@ -96,12 +139,14 @@ class Project {
         const stages = request['stages'] || [];
         const samples = request['samples'] || [];
         const igoComplete = request['igoComplete'] || false;
+        const summary = request['summary'] || {};
 
         this.#metaData = metaData;
         this.#requestId = requestId;
         this.#bankedSampleId = bankedSampleId;
         this.#stages = stages;
         this.#samples = this.processSamples(samples);
+        this.#summary = summary;
         this.#igoComplete = igoComplete;
     }
 
