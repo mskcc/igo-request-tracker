@@ -95,10 +95,10 @@ function App() {
             setPendingQuery(requestQuery);
         }  else {
             if(requestQuery.length >= 5 && requestQuery.length < 9){
-                setLocatorPrompt(`Request '${requestQuery}' not found. If this is a valid project ID, please submit feedback`);
+                setLocatorPrompt(`Request '${requestQuery}' not found. If this is a valid request ID, please submit feedback`);
             } else if (requestQuery.length >= 9){
                 const truncated = requestQuery.substring(0,8);
-                setLocatorPrompt(`Request '${truncated}...' not found. If this is a valid project ID, please submit feedback`);
+                setLocatorPrompt(`Request '${truncated}...' not found. If this is a valid request ID, please submit feedback`);
             } else {
                 setLocatorPrompt('');
             }
