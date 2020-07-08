@@ -1,4 +1,4 @@
-import {STATE_DELIVERED_PROJECTS, STATE_UNDELIVERED_PROJECTS} from "../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import TextField from "@material-ui/core/TextField/TextField";
 import React from "react";
 
@@ -9,8 +9,8 @@ export function convertUnixTimeToDate(UNIX_Timestamp) {
 
 export function getHumanReadable(name) {
     const mapping = {
-        [STATE_DELIVERED_PROJECTS]: "Delivered Projects",
-        [STATE_UNDELIVERED_PROJECTS]: "Pending Projects"
+        [STATE_DELIVERED_REQUESTS]: "Delivered Requests",
+        [STATE_PENDING_REQUESTS]: "Pending Requests"
     };
     return mapping[name] || name;
 }
@@ -23,10 +23,17 @@ export const generateTextInput = (label, val, fn, required = false) => {
     return <TextField  id="standard-basic"
                        className={"fill-width"}
                        label={label}
+                       value={val}
                        onChange={(evt) => fn(getTargetValue(evt))}
                        required={required}/>;
 };
 
+export const goToTeamWorks = () => {
+    window.open(
+        'https://mskcc.teamwork.com/#/projects/488973/tasks/board',
+        '_blank' // <- This is what makes it open in a new window.
+    );
+};
 
 /**
  * Prases out the axios data fields & expected "data" field of the node service response

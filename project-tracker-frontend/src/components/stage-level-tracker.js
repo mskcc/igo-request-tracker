@@ -3,6 +3,15 @@ import {convertUnixTimeToDate} from "../utils/utils";
 import {Step, StepLabel, Stepper} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
+import {
+    faAngleDown,
+    faAngleRight,
+    faCheck,
+    faCheckCircle,
+    faCircle,
+    faDotCircle, faEllipsisH, faSpinner
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const getPendingIndex = (stages) => {
     let stage;
@@ -78,12 +87,18 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
             </p>
         };
 
-        return <span className={"hover"}>
+        /*
+        {startedSpan(stage)}
+        {updateSpan(stage)}
+        */
+
+        return <span>
+            { stage.complete ? <FontAwesomeIcon className="stage-tracker-icon mskcc-dark-green" icon={ faCheck }/>
+                : <FontAwesomeIcon className="stage-tracker-icon mskcc-dark-blue" icon={ faEllipsisH }/> }
             <p><span className={"underline"}>
-                Progress</span>: {progressCount}/{total}</p>
+                Progress</span>: {progressCount}/{total}
+            </p>
             {failedSpan()}
-            {startedSpan(stage)}
-            {updateSpan(stage)}
         </span>
     };
 

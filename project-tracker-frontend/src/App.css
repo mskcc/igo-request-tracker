@@ -46,6 +46,10 @@
   padding-left: 20px;
   padding-right: 20px;
 }
+.padding-vert-20 {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 .padding-vert-10 {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -81,17 +85,7 @@
 .overflow-x-auto {
   overflow-x: auto;
 }
-.light-gray-background {
-  background-color: #f2f2f2;
-}
 
-.App {
-  text-align: center;
-}
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 .help-img {
   width: 80%;
   margin: auto;
@@ -100,7 +94,6 @@
 
 .request-complete {
   font-size: 38px;
-  color: green;
   margin-left: 40px;
 }
 
@@ -111,7 +104,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -153,11 +145,18 @@
 .text-input-single-line-container {
   height: 35px;
 }
-
+.black-border {
+  border: 1px solid #a8b3bd;
+}
 .status-change-close{
   position: absolute;
   right: 10px;
   top: 10px;
+}
+
+.help-stage-mapper {
+  max-width: 600px;
+  margin: auto;
 }
 
 .bold {
@@ -204,10 +203,15 @@
 .completed-step {
   background-color: #f2f2f2;
 }
-.project-selector-icon{
+.request-selector-icon{
   font-size: 3.5em;
   display: inline-block;
   margin-right: 20px;
+}
+.stage-tracker-icon{
+  width: 25px;
+  display: block;
+  margin: 5px auto 5px;
 }
 .small-icon{
   font-size: 2.5em;
@@ -217,15 +221,12 @@
   font-size: 3.5em;
   display: inline-block;
 }
-.border {
-  border: 1px solid #dee2e6;
-}
 .sample-tree-container {
   margin-top: 20px;
   border: 1px solid #dee2e6;
 }
 .parent-sample-level-stages{
-  min-height: 250px;
+  min-height: 150px;
 }
 .sample-viewer-toggle {
   vertical-align: bottom;
@@ -234,19 +235,151 @@
 .fade-color {
   opacity: 0.5;
 }
-/* TODO: MSKCC colors */
-.black-color {
-  color: black;
+
+/* MSKCC Colors */
+.background-mskcc-blue {
+  background-color: #007cba;
 }
-.red-color {
-  color: #ff9999;
+.mskcc-blue {
+  color: #007cba;
 }
-.blue-color {
-  color: #1f3d7a;
+.background-mskcc-orange{
+  background-color: #df4602;
 }
-.white-color {
-  color: white;
+.mskcc-orange{
+  color: #df4602;
+}
+.background-mskcc-dark-blue{
+  background-color: #006098;
+}
+.mskcc-dark-blue{
+  color: #006098;
+}
+.background-mskcc-medium-blue{
+  background-color: #40b4e5;
+}
+.mskcc-medium-blue{
+  color: #40b4e5;
+}
+.background-mskcc-light-blue{
+  background-color: #8fc7e8;
+}
+.mskcc-light-blue{
+  color: #8fc7e8;
+}
+.background-mskcc-dark-orange{
+  background-color: #c24d00;
+}
+.mskcc-dark-orange{
+  color: #c24d00;
+}
+.background-mskcc-medium-orange{
+  background-color: #f29934;
+}
+.mskcc-medium-orange{
+  color: #f29934;
+}
+.background-mskcc-light-orange{
+  background-color: #f6c65b;
+}
+.mskcc-light-orange{
+  color: #f6c65b;
+}
+.background-mskcc-dark-violet{
+  background-color: #83276b;
+}
+.mskcc-dark-violet{
+  color: #83276b;
+}
+.background-mskcc-light-violet{
+  background-color: #b687b8;
+}
+.mskcc-light-violet{
+  color: #b687b8;
+}
+.background-mskcc-dark-magenta{
+  background-color: #e92076;
+}
+.mskcc-dark-magenta{
+  color: #e92076;
+}
+.background-mskcc-light-magenta{
+  background-color: #efb3cb;
+}
+.mskcc-light-magenta{
+  color: #efb3cb;
+}
+.background-mskcc-red{
+  background-color: #b1132d;
+}
+.mskcc-red {
+  color: #b1132d;
+}
+/* This is not mskcc, but the other red is too dark */
+.light-red {
+  color: #f5a3b0;
+}
+.background-mskcc-dark-green{
+  background-color: #4c8b2b;
 }
 .mskcc-dark-green {
   color: #4c8b2b;
+}
+.background-mskcc-light-green{
+  background-color: #a6ce39;
+}
+.mskcc-light-green{
+  color: #a6ce39;
+}
+.background-mskcc-dark-turquoise{
+  background-color: #006c68;
+}
+.mskcc-dark-turquoise{
+  color: #006c68;
+}
+.background-mskcc-light-turquoise{
+  background-color: #009490;
+}
+.mskcc-light-turquoise{
+  color: #009490;
+}
+.background-mskcc-dark-yellow{
+  background-color: #ffc20e;
+}
+.mskcc-dark-yellow{
+  color: #ffc20e;
+}
+.background-mskcc-light-yellow{
+  background-color: #ffe100;
+}
+.mskcc-light-yellow{
+  color: #ffe100;
+}
+.background-mskcc-dark-gray{
+  background-color: #9e9e98;
+}
+.mskcc-dark-gray{
+  color: #9e9e98;
+}
+.background-mskcc-light-gray{
+  background-color: #d5d4c7;
+}
+.mskcc-light-gray{
+  color: #d5d4c7;
+}
+/* Not mskcc, but more pleasant */
+.backgorund-light-gray {
+  background-color: #e6e6e6;
+}
+.background-mskcc-white {
+  background-color: white;
+}
+.mskcc-white {
+  color: white;
+}
+.background-mskcc-black {
+  background-color: black;
+}
+.mskcc-black {
+  color: black;
 }

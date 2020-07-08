@@ -51,14 +51,28 @@ function ProjectLevelTracker({project}) {
     if(showCompleted) {
         filteredSamples = filteredSamples.concat(completedSamples);
     }
+
+    const getOtherTimeField = () => {
+        if(recentDeliveryDate && "Not Available" !== recentDeliveryDate) {
+            return <Col xs={12} sm={6}>
+                <p className={"text-align-left"}><span className={"bold"}>Recent Delivery Date</span>: {recentDeliveryDate}</p>
+            </Col>
+        } else if(tatFromInProcessing){
+            return <Col xs={12} sm={6}>
+                <p className={"text-align-left"}><span className={"bold"}>Turn Around Time From In Processing</span>: {tatFromInProcessing}</p>
+            </Col>
+        }
+        return <Col xs={12} sm={6}>
+            <p className={"text-align-left"}><span className={"bold"}>Turn Around Time From Receiving</span>: {tatFromReceiving}</p>
+        </Col>
+    }
+
     return <Container className={"border"}>
                     <Row className={"padding-vert-10 border"}>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Project Start</span>: {startTime}</p>
                         </Col>
-                        <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Project Updated</span>: {updateTime}</p>
-                        </Col>
+                        {getOtherTimeField()}
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Group Leader</span>: {groupLeader}</p>
                         </Col>
@@ -66,22 +80,10 @@ function ProjectLevelTracker({project}) {
                             <p className={"text-align-left"}><span className={"bold"}>Investigator</span>: {investigator}</p>
                         </Col>
                         <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Project Manager</span>: {projectManager}</p>
-                        </Col>
-                        <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Lab Head Email</span>: {labHeadEmail}</p>
                         </Col>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Laboratory Head</span>: {labHead}</p>
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Turn Around Time From Receiving</span>: {tatFromReceiving}</p>
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Turn Around Time From In Processing</span>: {tatFromInProcessing}</p>
-                        </Col>
-                        <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Recent Delivery Date</span>: {recentDeliveryDate}</p>
                         </Col>
                     </Row>
                     <Row className={"parent-sample-level-stages"}>
@@ -91,7 +93,7 @@ function ProjectLevelTracker({project}) {
                     </Row>
                     <Row className={"padding-vert-10"}>
                         <Col xs={6} className={"hover"} onClick={() => setViewSamples(!viewSamples)}>
-                            <FontAwesomeIcon className="project-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
+                            <FontAwesomeIcon className="request-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
                             <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
                         </Col>
                         {
@@ -101,7 +103,7 @@ function ProjectLevelTracker({project}) {
                                         {
                                             completedSamples.length > 0 ? <Col xs={6} sm={4}>
                                                 Completed
-                                                <span className={`small-icon black-color fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
+                                                <span className={`small-icon mskcc-black fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
                                                       onClick={() => setShowCompleted(!showCompleted)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>
@@ -111,7 +113,7 @@ function ProjectLevelTracker({project}) {
                                         {
                                             failedSamples.length > 0 ? <Col xs={6} sm={4}>
                                                 Failed
-                                                <span className={`small-icon red-color fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
+                                                <span className={`small-icon mskcc-red fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
                                                       onClick={() => setShowFailed(!showFailed)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
@@ -121,7 +123,7 @@ function ProjectLevelTracker({project}) {
                                         {
                                             pendingSamples.length > 0 ? <Col xs={6} sm={4}>
                                                 Pending
-                                                <span className={`small-icon blue-color fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
+                                                <span className={`small-icon mskcc-dark-blue fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
                                                       onClick={() => setShowPending(!showPending)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>
