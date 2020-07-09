@@ -1,15 +1,15 @@
 import axios from 'axios';
-import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST} from "../config";
-import {getResponseData} from "../utils/utils";
+import { PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST } from '../config';
+import { getResponseData } from '../utils/utils';
 
 export function getUserSession() {
     return axios
         .get(`${HOST}/login/api/session/user`)
-        .then(resp => {
+        .then((resp) => {
             const data = getResponseData(resp);
             return data;
         })
-        .catch(error => {
+        .catch((error) => {
             checkForAuthorizationError(error);
             return {};
         });
@@ -22,7 +22,7 @@ export function getUserSession() {
 const checkForAuthorizationError = (error) => {
     const resp = error.response || {};
     const status = resp.status;
-    if(status === 401){
+    if (status === 401) {
         // Automatically redirect client to the login page
         window.location.href = `${LOGIN_PAGE_URL}/${HOME_PAGE_PATH}`;
     }
@@ -52,13 +52,13 @@ export function getUndeliveredProjectsRequest(projects) {
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/undelivered`)
-        .then(resp => {
+        .then((resp) => {
             const data = getResponseData(resp);
             return data;
         })
-        .catch(error => {
+        .catch((error) => {
             checkForAuthorizationError(error);
-            throw new Error('Unable to get Get Events: ' + error)
+            throw new Error('Unable to get Get Events: ' + error);
         });
 }
 
@@ -95,14 +95,16 @@ export function getDeliveredProjectsRequest(projects) {
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/delivered`)
-        .then(resp => {return getResponseData(resp)})
-        .catch(error => {
+        .then((resp) => {
+            return getResponseData(resp);
+        })
+        .catch((error) => {
             checkForAuthorizationError(error);
-            throw new Error('Unable to get Get Events: ' + error)
+            throw new Error('Unable to get Get Events: ' + error);
         });
 }
 
-export function getProjectTrackingDataRequest(project){
+export function getProjectTrackingDataRequest(project) {
     /*
     return new Promise((resolve) => { resolve(API_PROJECT_ID) })
         .then(resp => { return getData(resp) })
@@ -110,9 +112,11 @@ export function getProjectTrackingDataRequest(project){
      */
     return axios
         .get(`${PROJECTS_ENDPOINT}/${project}`)
-        .then(resp => {return getResponseData(resp) })
-        .catch(error => {
+        .then((resp) => {
+            return getResponseData(resp);
+        })
+        .catch((error) => {
             checkForAuthorizationError(error);
-            throw new Error('Unable to get Get Events: ' + error)
+            throw new Error('Unable to get Get Events: ' + error);
         });
 }

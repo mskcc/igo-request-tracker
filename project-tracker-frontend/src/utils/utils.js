@@ -1,6 +1,6 @@
-import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
-import TextField from "@material-ui/core/TextField/TextField";
-import React from "react";
+import { STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS } from '../redux/reducers';
+import TextField from '@material-ui/core/TextField/TextField';
+import React from 'react';
 
 export function convertUnixTimeToDate(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
@@ -9,8 +9,8 @@ export function convertUnixTimeToDate(UNIX_Timestamp) {
 
 export function getHumanReadable(name) {
     const mapping = {
-        [STATE_DELIVERED_REQUESTS]: "Delivered Requests",
-        [STATE_PENDING_REQUESTS]: "Pending Requests"
+        [STATE_DELIVERED_REQUESTS]: 'Delivered Requests',
+        [STATE_PENDING_REQUESTS]: 'Pending Requests',
     };
     return mapping[name] || name;
 }
@@ -20,12 +20,16 @@ const getTargetValue = (evt) => {
 };
 
 export const generateTextInput = (label, val, fn, required = false) => {
-    return <TextField  id="standard-basic"
-                       className={"fill-width"}
-                       label={label}
-                       value={val}
-                       onChange={(evt) => fn(getTargetValue(evt))}
-                       required={required}/>;
+    return (
+        <TextField
+            id="standard-basic"
+            className={'fill-width'}
+            label={label}
+            value={val}
+            onChange={(evt) => fn(getTargetValue(evt))}
+            required={required}
+        />
+    );
 };
 
 export const goToTeamWorks = () => {

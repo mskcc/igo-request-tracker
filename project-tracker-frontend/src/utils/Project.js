@@ -1,4 +1,4 @@
-import {convertUnixTimeToDate} from "./utils";
+import { convertUnixTimeToDate } from './utils';
 
 class Project {
     // API Responses
@@ -53,7 +53,7 @@ class Project {
      *       "failed": 0
      *   }
      */
-    getSummary(){
+    getSummary() {
         return this.#summary || {};
     }
 
@@ -118,7 +118,7 @@ class Project {
     getUpdateTime() {
         return this.#stages.reduce((accumulator, stage) => {
             const updateTime = stage['updateTime'] || 0;
-            if(accumulator > updateTime){
+            if (accumulator > updateTime) {
                 return accumulator;
             }
             return updateTime;
@@ -130,7 +130,7 @@ class Project {
      *
      * @param data
      */
-    processRequest(data){
+    processRequest(data) {
         const request = data['request'] || {};
 
         const metaData = request['metaData'] || {};
@@ -160,11 +160,11 @@ class Project {
      *  - Formatting of times
      */
     processSamples(samples) {
-        return samples.map(sample => {
+        return samples.map((sample) => {
             const root = sample.root;
-            const stack = [ root ];
+            const stack = [root];
             let next, attributes;
-            while(stack.length > 0){
+            while (stack.length > 0) {
                 next = stack.pop();
 
                 attributes = next.attributes || {};
@@ -174,7 +174,7 @@ class Project {
                     shape: 'circle',
                     shapeProps: {
                         r: 10,
-                        fill: attributes.failed ? 'red' : attributes.complete ? 'green' : 'yellow'
+                        fill: attributes.failed ? 'red' : attributes.complete ? 'green' : 'yellow',
                     },
                 };
 
@@ -183,22 +183,21 @@ class Project {
                 delete next['attributes'].completed;
                 delete next['attributes'].complete;
 
-
                 next['attributes'].startTime = convertUnixTimeToDate(next['attributes'].startTime);
                 next['attributes'].updateTime = convertUnixTimeToDate(next['attributes'].updateTime);
 
-                for(const child of next.children){
-                    stack.push(child)
+                for (const child of next.children) {
+                    stack.push(child);
                 }
             }
 
             sample.root = root;
 
             return sample;
-        })
+        });
     }
 
-    constructor(data){
+    constructor(data) {
         this.processRequest(data);
     }
 }

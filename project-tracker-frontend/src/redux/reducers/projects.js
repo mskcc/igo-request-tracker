@@ -1,4 +1,4 @@
-import {SET_DELIVERED, SET_MODAL_UPDATER, SET_UNDELIVERED} from "../actionTypes";
+import { SET_DELIVERED, SET_MODAL_UPDATER, SET_UNDELIVERED } from '../actionTypes';
 
 const initialState = {};
 

@@ -1,4 +1,3 @@
-
 function createData(stage, workflow) {
     return { stage, workflow };
 }
@@ -84,5 +83,5 @@ export const stagesRows = [
     createData('Sequencing', 'Pool Planning'),
     createData('Sequencing', 'Pooling of Sample Libraries by Volume'),
     createData('Sequencing', 'Pooling of Sample Libraries for Sequencing'),
-    createData('Transfer Tube Samples to Plates', 'Transfer Tube Samples to Plates')
-]
+    createData('Transfer Tube Samples to Plates', 'Transfer Tube Samples to Plates'),
+];

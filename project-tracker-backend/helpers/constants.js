@@ -1,11 +1,10 @@
 exports.constants = {
-	admin: {
-		name: "admin",
-		email: "admin@admin.com"
-	},
-	confirmEmails: {
-		from : "no-reply@test-app.com"
-	},
-	logger: "project-tracker"
+    admin: {
+        name: 'admin',
+        email: 'admin@admin.com',
+    },
+    confirmEmails: {
+        from: 'no-reply@test-app.com',
+    },
+    logger: 'project-tracker',
 };
-
