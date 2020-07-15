@@ -72,10 +72,6 @@ function ProjectLevelTracker({project}) {
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Project Start</span>: {startTime}</p>
                         </Col>
-                        {getOtherTimeField()}
-                        <Col xs={12} sm={6}>
-                            <p className={"text-align-left"}><span className={"bold"}>Group Leader</span>: {groupLeader}</p>
-                        </Col>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Investigator</span>: {investigator}</p>
                         </Col>
