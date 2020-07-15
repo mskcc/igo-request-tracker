@@ -1,6 +1,8 @@
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import TextField from "@material-ui/core/TextField/TextField";
 import React from "react";
+import XLSX from "xlsx";
+import FileSaver from "file-saver";
 
 export function convertUnixTimeToDate(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
@@ -44,4 +46,26 @@ export const getResponseData = (resp) => {
     const content = resp.data || {};
     const data = content.data || {};
     return data;
+};
+
+
+/**
+ * Downloads data to excel format
+ *
+ * @param data
+ * @param fileName
+ */
+export const downloadExcel = (data, fileName) => {
+    debugger;
+    const xlsxData = Object.assign([], data);
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+    const ws = XLSX.utils.json_to_sheet(xlsxData);
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, {
+        bookType: "xlsx",
+        type: "array"
+    });
+    const blob = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(blob, fileName + fileExtension);
 };

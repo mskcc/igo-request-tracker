@@ -24,6 +24,10 @@ function App() {
     const [showFeedback, setShowFeedback] = useState(false);
     const deliveredRequests = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
     const pendingRequests = useSelector(state => state[STATE_PENDING_REQUESTS] );
+
+    const [xlsxDeliveredList, setXlsxDeliveredList] = useState([]);
+    const [xlsxPendingRequests, setXlsxPendingRequests] = useState([]);
+
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
 
@@ -40,6 +44,7 @@ function App() {
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
+                setXlsxDeliveredList(requests);
                 const deliveredProjects = {};
                 for (const project of requests) {
                     // TODO - api
@@ -57,6 +62,7 @@ function App() {
         getUndeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = projectList['requests'] || [];
+                setXlsxPendingRequests(requests);
                 const unDelivered = {};
                 for (const project of requests) {
                     // TODO - api
@@ -148,9 +154,11 @@ function App() {
                             </div>
                             <ProjectSection projectMapping={pendingRequests}
                                             projectState={STATE_PENDING_REQUESTS}
+                                            xlsxData={xlsxPendingRequests}
                                             parentQuery={pendingQuery}></ProjectSection>
                             <ProjectSection projectMapping={deliveredRequests}
                                             projectState={STATE_DELIVERED_REQUESTS}
+                                            xlsxData={xlsxDeliveredList}
                                             parentQuery={deliveredQuery}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>

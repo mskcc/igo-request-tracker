@@ -1,12 +1,14 @@
 import ProjectTracker from "../project-tracker";
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import {generateTextInput, getHumanReadable} from "../../utils/utils";
+import {downloadExcel, generateTextInput, getHumanReadable} from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-function ProjectSection({projectMapping, projectState, parentQuery}) {
+function ProjectSection({projectMapping, projectState, parentQuery, xlsxData}) {
     const [query, setQuery] = useState(parentQuery);
 
     useEffect(() => {
@@ -29,16 +31,24 @@ function ProjectSection({projectMapping, projectState, parentQuery}) {
 
     const filtered = getFilteredProjectsFromQuery(projectMapping);
 
+    const projectSection = getHumanReadable(projectState);
+
     // TODO - pagination
     return <div className={"border"}>
             <Container>
                 <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
                     <Col xs={4}>
-                        <h2>{getHumanReadable(projectState)}</h2>
+                        <h2>{projectSection}</h2>
                     </Col>
-                    <Col xs={4}></Col>
+                    <Col xs={2}></Col>
                     <Col xs={4}>
                         <h4>Total {getHumanReadable(projectState)}: {Object.keys(projectMapping).length}</h4>
+                    </Col>
+                    <Col xs={2}>
+                        <div onClick={() => downloadExcel(xlsxData, getHumanReadable(projectState))}>
+                            <FontAwesomeIcon className={"small-icon float-right hover"}
+                                             icon={faFileExcel}/>
+                        </div>
                     </Col>
                     <Col xs={6}>
                         {generateTextInput("Request ID", query, setQuery)}
