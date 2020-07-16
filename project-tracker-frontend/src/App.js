@@ -26,8 +26,8 @@ function App() {
     const deliveredRequests = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
     const pendingRequests = useSelector(state => state[STATE_PENDING_REQUESTS] );
 
-    const [xlsxDeliveredList, setXlsxDeliveredList] = useState([]);
-    const [xlsxPendingRequests, setXlsxPendingRequests] = useState([]);
+    const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
+    const [pendingRequestsList, setPendingRequestsList] = useState([]);
 
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
@@ -45,7 +45,7 @@ function App() {
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
-                setXlsxDeliveredList(requests);
+                setDeliveredRequestsList(requests);
                 const deliveredRequests = getRequestState(requests);
 
                 sendUpdate(modalUpdater, 'Loaded delivered requests', MODAL_SUCCESS, 1000);
@@ -57,7 +57,7 @@ function App() {
         getUndeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
-                setXlsxPendingRequests(requests);
+                setPendingRequestsList(requests);
                 const pendingRequests = getRequestState(requests);
                 sendUpdate(modalUpdater, 'Loaded pending requests', MODAL_SUCCESS, 1000);
                 updateUndelivered(dispatch, pendingRequests);
@@ -140,13 +140,11 @@ function App() {
                                     </Row>
                                 </Container>
                             </div>
-                            <ProjectSection projectMapping={pendingRequests}
+                            <ProjectSection requestList={pendingRequestsList}
                                             projectState={STATE_PENDING_REQUESTS}
-                                            xlsxData={xlsxPendingRequests}
                                             parentQuery={pendingQuery}></ProjectSection>
-                            <ProjectSection projectMapping={deliveredRequests}
+                            <ProjectSection requestList={deliveredRequestsList}
                                             projectState={STATE_DELIVERED_REQUESTS}
-                                            xlsxData={xlsxDeliveredList}
                                             parentQuery={deliveredQuery}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>

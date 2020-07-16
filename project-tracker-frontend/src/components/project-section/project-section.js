@@ -1,7 +1,7 @@
 import ProjectTracker from "../project-tracker";
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import {downloadExcel, generateTextInput, getHumanReadable} from "../../utils/utils";
+import {convertUnixTimeToDate, downloadExcel, generateTextInput, getHumanReadable} from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,7 +9,7 @@ import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getRequestId} from "../../utils/api-util";
 
-function ProjectSection({projectState, parentQuery, xlsxData}) {
+function ProjectSection({requestList, projectState, parentQuery}) {
     const [query, setQuery] = useState(parentQuery);
 
     useEffect(() => {
@@ -30,9 +30,51 @@ function ProjectSection({projectState, parentQuery, xlsxData}) {
         return filtered.slice(0,5);
     };
 
-    const filtered = getFilteredProjectsFromQuery(xlsxData);
+    const filtered = getFilteredProjectsFromQuery(requestList);
 
     const projectSection = getHumanReadable(projectState);
+
+    const convertToXlsx = (requestList) => {
+        const xlsxObjList = [];
+        const boolFields = [ "analysisRequested" ];
+        const stringFields = [
+            "requestId",
+            "requestType",
+            "pi",
+            "investigator",
+            "analysisType",
+            "dataAccessEmails",
+            "labHeadEmail",
+            "qcAccessEmail"
+        ];
+        const dateFields = ["receivedDate", "deliveryDate"];
+        const numFields = [
+            "recordId",
+            "sampleNumber"
+        ];
+        const noFormattingFields = [...stringFields, ...numFields];
+
+        for(const request of requestList){
+            const xlsxObj = {};
+            for(const field of noFormattingFields){
+                const val = request[field];
+                xlsxObj[field] = val ? val : "Not Available";
+            }
+            for(const dField of dateFields){
+                const val = request[dField];
+                xlsxObj[dField] = val ? convertUnixTimeToDate(val) : "Not Available";
+            }
+            for(const field of boolFields){
+                const val = request[field];
+                xlsxObj[field] = val ? "yes" : "no";
+            }
+            xlsxObjList.push(xlsxObj);
+        }
+
+        return xlsxObjList;
+    };
+
+    convertToXlsx(requestList);
 
     // TODO - pagination
     return <div className={"border"}>
@@ -43,10 +85,10 @@ function ProjectSection({projectState, parentQuery, xlsxData}) {
                     </Col>
                     <Col xs={2}></Col>
                     <Col xs={4}>
-                        <h4>Total {getHumanReadable(projectState)}: {Object.keys(xlsxData).length}</h4>
+                        <h4>Total {getHumanReadable(projectState)}: {requestList.length}</h4>
                     </Col>
                     <Col xs={2}>
-                        <div onClick={() => downloadExcel(xlsxData, getHumanReadable(projectState))}>
+                        <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
                             <FontAwesomeIcon className={"small-icon float-right hover"}
                                              icon={faFileExcel}/>
                         </div>
