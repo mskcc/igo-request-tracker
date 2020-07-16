@@ -14,16 +14,20 @@ import Col from "react-bootstrap/Col";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getRequestId} from "../../utils/api-util";
-import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 
-function ProjectSection({requestList, projectState, parentQuery}) {
+export const DF_WEEK = "7";
+export const DF_MONTH = "30";
+export const DF_YEAR = "365";
+export const DF_ALL = "5000";
+
+function ProjectSection({initialDateFilter, requestList, projectState, parentQuery}) {
     const [query, setQuery] = useState(parentQuery);
-    const [dateFilter, setDateFilter] = useState("7");
+    const [dateFilter, setDateFilter] = useState(initialDateFilter);
 
     const handleDateFilterToggle = (evt) => {
         const val = evt.target.value;
@@ -32,7 +36,8 @@ function ProjectSection({requestList, projectState, parentQuery}) {
 
     useEffect(() => {
         setQuery(parentQuery);
-    }, [parentQuery]);
+        setDateFilter(initialDateFilter);
+    }, [parentQuery, initialDateFilter]);
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -139,13 +144,14 @@ function ProjectSection({requestList, projectState, parentQuery}) {
                             <FormLabel component="legend">From Past</FormLabel>
                             <RadioGroup value={dateFilter}
                                         onChange={handleDateFilterToggle}
+                                        defaultValue={initialDateFilter}
                                         row
                                         name="dateFilter"
                                         aria-label="date-filter">
-                                <FormControlLabel value="7" control={<Radio color={"black"}/>} label="Week" />
-                                <FormControlLabel value="30" control={<Radio color={"black"}/>} label="Month" />
-                                <FormControlLabel value="365" control={<Radio color={"black"}/>} label="Year" />
-                                <FormControlLabel value="5000" control={<Radio color={"black"}/>} label="Show All" />
+                                <FormControlLabel value={DF_WEEK} control={<Radio color={"black"}/>} label="Week" />
+                                <FormControlLabel value={DF_MONTH} control={<Radio color={"black"}/>} label="Month" />
+                                <FormControlLabel value={DF_YEAR} control={<Radio color={"black"}/>} label="Year" />
+                                <FormControlLabel value={DF_ALL} control={<Radio color={"black"}/>} label="Show All" />
                             </RadioGroup>
                         </FormControl>
                     </Col>

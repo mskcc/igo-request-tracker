@@ -10,7 +10,7 @@ import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/di
 import {Col, Container} from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
-import ProjectSection from "./components/project-section/project-section";
+import ProjectSection, {DF_ALL, DF_WEEK} from "./components/project-section/project-section";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
@@ -37,6 +37,8 @@ function App() {
     const [pendingQuery, setPendingQuery] = useState('');
     const [deliveredQuery, setDeliveredQuery] = useState('');
     const [locatorPrompt, setLocatorPrompt] = useState('');
+    const [pendingDateFilter, setPendingDateFilter] = useState(DF_WEEK);
+    const [deliveredDateFilter, setDeliveredDateFilter] = useState(DF_WEEK);
 
     useEffect(() => {
         const modalUpdater = new Subject();
@@ -79,14 +81,14 @@ function App() {
     }, [dispatch]);
 
     useEffect(() => {
-        console.log(requestQuery);
-        console.log(deliveredRequests[requestQuery]);
         if(deliveredRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' has been delivered`);
             setDeliveredQuery(requestQuery);
+            setDeliveredDateFilter(DF_ALL);
         } else if(pendingRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' is pending`);
             setPendingQuery(requestQuery);
+            setPendingDateFilter(DF_ALL);
         }  else {
             if(requestQuery.length >= 5 && requestQuery.length < 9){
                 setLocatorPrompt(`Request '${requestQuery}' not found. If this is a valid request ID, please submit feedback`);
@@ -142,10 +144,12 @@ function App() {
                             </div>
                             <ProjectSection requestList={pendingRequestsList}
                                             projectState={STATE_PENDING_REQUESTS}
-                                            parentQuery={pendingQuery}></ProjectSection>
+                                            parentQuery={pendingQuery}
+                                            initialDateFilter={pendingDateFilter}></ProjectSection>
                             <ProjectSection requestList={deliveredRequestsList}
                                             projectState={STATE_DELIVERED_REQUESTS}
-                                            parentQuery={deliveredQuery}></ProjectSection>
+                                            parentQuery={deliveredQuery}
+                                            initialDateFilter={deliveredDateFilter}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>
