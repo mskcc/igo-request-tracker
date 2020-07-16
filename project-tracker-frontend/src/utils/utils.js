@@ -5,9 +5,23 @@ import XLSX from "xlsx";
 import FileSaver from "file-saver";
 import {getRequestId} from "./api-util";
 
-export function convertUnixTimeToDate(UNIX_Timestamp) {
+export function convertUnixTimeToDateString(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
     return date.toLocaleString();
+}
+
+export function getDateFromNow(year, month, day){
+    const date = new Date();
+
+    const newYear = date.getFullYear() + year;
+    const newMonth = date.getMonth() + month;
+    const newDay = date.getDate() + day;
+
+    date.setFullYear(newYear);
+    date.setMonth(newMonth);
+    date.setDate(newDay);
+
+    return date;
 }
 
 export function getHumanReadable(name) {

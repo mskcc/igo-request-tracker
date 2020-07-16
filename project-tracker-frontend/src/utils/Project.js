@@ -1,4 +1,4 @@
-import {convertUnixTimeToDate} from "./utils";
+import {convertUnixTimeToDateString} from "./utils";
 
 class Project {
     // API Responses
@@ -184,8 +184,8 @@ class Project {
                 delete next['attributes'].complete;
 
 
-                next['attributes'].startTime = convertUnixTimeToDate(next['attributes'].startTime);
-                next['attributes'].updateTime = convertUnixTimeToDate(next['attributes'].updateTime);
+                next['attributes'].startTime = convertUnixTimeToDateString(next['attributes'].startTime);
+                next['attributes'].updateTime = convertUnixTimeToDateString(next['attributes'].updateTime);
 
                 for(const child of next.children){
                     stack.push(child)

@@ -1,15 +1,11 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDate} from "../utils/utils";
+import {convertUnixTimeToDateString} from "../utils/utils";
 import {Step, StepLabel, Stepper} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 import {
-    faAngleDown,
-    faAngleRight,
     faCheck,
-    faCheckCircle,
-    faCircle,
-    faDotCircle, faEllipsisH, faSpinner
+    faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -72,7 +68,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
                 return <p></p>
             }
             return <p>
-                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDate(stage.updateTime)}
+                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDateString(stage.updateTime)}
             </p>
         };
 
@@ -83,7 +79,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
                 return <p></p>
             }
             return <p>
-                <span className={"underline"}>Started</span>: {convertUnixTimeToDate(startTime)}
+                <span className={"underline"}>Started</span>: {convertUnixTimeToDateString(startTime)}
             </p>
         };
 
