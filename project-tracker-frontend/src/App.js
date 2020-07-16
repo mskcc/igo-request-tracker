@@ -17,9 +17,7 @@ import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
 import {generateTextInput, getHumanReadable, getRequestState, getSortedRequests} from "./utils/utils";
-import ProjectTracker from "./components/project-tracker";
 import Row from "react-bootstrap/Row";
-import {getRequestId} from "./utils/api-util";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(false);

@@ -92,7 +92,8 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
             "labHeadEmail",
             "qcAccessEmail"
         ];
-        const dateFields = ["receivedDate", "deliveryDate"];
+        const dateFields = ["receivedDate"];
+        const dateListFields = ["deliveryDate"];
         const numFields = [
             "recordId",
             "sampleNumber"
@@ -107,7 +108,13 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
             }
             for(const dField of dateFields){
                 const val = request[dField];
-                xlsxObj[dField] = val ? convertUnixTimeToDateString(val) : "Not Available";
+                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
+            }
+            for(const dFieldList of dateListFields){
+                const dates = request[dFieldList] || [];
+                for(const val of dates){
+                    xlsxObj[dFieldList] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
+                }
             }
             for(const field of boolFields){
                 const val = request[field];
