@@ -45,9 +45,23 @@ function App() {
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
+
+                // Take the deliveryDate that is the most recent (greatest)
+                requests.map((req) => {
+                    const deliveryDate = req["deliveryDate"] || [];
+                    if(deliveryDate.length > 0){
+                        req["deliveryDate"] = deliveryDate.reduce(
+                            (accumulator, currentValue) => {
+                                return (accumulator > currentValue) ? accumulator : currentValue;
+                            }, 0
+                        );
+                    } else {
+                        req["deliveryDate"] = null;
+                    }
+                });
+
                 setDeliveredRequestsList(requests);
                 const deliveredRequests = getRequestState(requests);
-
                 sendUpdate(modalUpdater, 'Loaded delivered requests', MODAL_SUCCESS, 1000);
                 updateDelivered(dispatch, deliveredRequests);
             })
@@ -143,11 +157,13 @@ function App() {
                             <ProjectSection requestList={pendingRequestsList}
                                             projectState={STATE_PENDING_REQUESTS}
                                             parentQuery={pendingQuery}
-                                            initialDateFilter={pendingDateFilter}></ProjectSection>
+                                            initialDateFilter={pendingDateFilter}
+                                            dateFilterField={"receivedDate"}></ProjectSection>
                             <ProjectSection requestList={deliveredRequestsList}
                                             projectState={STATE_DELIVERED_REQUESTS}
                                             parentQuery={deliveredQuery}
-                                            initialDateFilter={deliveredDateFilter}></ProjectSection>
+                                            initialDateFilter={deliveredDateFilter}
+                                            dateFilterField={"deliveryDate"}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>

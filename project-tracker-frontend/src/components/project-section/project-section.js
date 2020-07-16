@@ -26,7 +26,7 @@ export const DF_MONTH = "30";
 export const DF_YEAR = "365";
 export const DF_ALL = "5000";
 
-function ProjectSection({initialDateFilter, requestList, projectState, parentQuery}) {
+function ProjectSection({initialDateFilter, requestList, projectState, parentQuery, dateFilterField}) {
     const [query, setQuery] = useState(parentQuery);
     const [dateFilter, setDateFilter] = useState(initialDateFilter);
 
@@ -60,7 +60,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
 
         const dateFilteredList = [];
         for(const req of requestList){
-            const receivedDate = req["receivedDate"];
+            const receivedDate = req[dateFilterField];
             if(!receivedDate){
                 // When the receivedDate isn't present, that usually means it is new
                 dateFilteredList.push(req);
@@ -93,8 +93,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
             "labHeadEmail",
             "qcAccessEmail"
         ];
-        const dateFields = ["receivedDate"];
-        const dateListFields = ["deliveryDate"];
+        const dateFields = ["receivedDate", "deliveryDate"];
         const numFields = [
             "recordId",
             "sampleNumber"
@@ -111,12 +110,6 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
                 const val = request[dField];
                 xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
             }
-            for(const dFieldList of dateListFields){
-                const dates = request[dFieldList] || [];
-                for(const val of dates){
-                    xlsxObj[dFieldList] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
-                }
-            }
             for(const field of boolFields){
                 const val = request[field];
                 xlsxObj[field] = val ? "yes" : "no";
@@ -127,7 +120,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
         return xlsxObjList;
     };
 
-    // TODO - pagination
+    const formLabel = STATE_DELIVERED_REQUESTS === projectState ? "Delivered in past" : "Received in past";
     return <div className={"border"}>
             <Container>
                 <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
@@ -149,24 +142,24 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
                     </Col>
                     <Col xs={6}>
                         <FormControl component="fieldset">
-                            <FormLabel component="legend">From Past</FormLabel>
+                            <FormLabel component="legend">{formLabel}</FormLabel>
                             <RadioGroup value={dateFilter}
                                         onChange={handleDateFilterToggle}
                                         defaultValue={initialDateFilter}
                                         row
                                         name="dateFilter"
                                         aria-label="date-filter">
-                                <FormControlLabel value={DF_WEEK} control={<Radio color={"black"}/>} label="Week" />
-                                <FormControlLabel value={DF_MONTH} control={<Radio color={"black"}/>} label="Month" />
+                                <FormControlLabel value={DF_WEEK} control={<Radio color={"default"}/>} label="Week" />
+                                <FormControlLabel value={DF_MONTH} control={<Radio color={"default"}/>} label="Month" />
                                 {
                                     (STATE_DELIVERED_REQUESTS !== projectState) ?
-                                        <FormControlLabel value={DF_YEAR} control={<Radio color={"black"}/>} label="Year" />
+                                        <FormControlLabel value={DF_YEAR} control={<Radio color={"default"}/>} label="Year" />
                                         :
                                         <span></span>
                                 }
                                 {
                                     (STATE_DELIVERED_REQUESTS !== projectState) ?
-                                        <FormControlLabel value={DF_ALL} control={<Radio color={"black"}/>} label="Show All" />
+                                        <FormControlLabel value={DF_ALL} control={<Radio color={"default"}/>} label="All" />
                                         :
                                         <span></span>
                                 }
