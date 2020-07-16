@@ -34,7 +34,7 @@ const agent = new https.Agent({
 });
 
 exports.getUndeliveredProjects = () => {
-	const url = `${LIMS_API}/getUndeliveredProjects?time=7`;
+	const url = `${LIMS_API}/getUndeliveredProjects`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
@@ -52,8 +52,7 @@ exports.getUndeliveredProjects = () => {
 
 // TODO - Actually get all projects
 exports.getRecentDeliveries = () => {
-	const url = `${LIMS_API}/getRecentDeliveries?time=7&units=d`;
-	// return axios.get(`${LIMS_API}/getRecentDeliveries?time=2&units=d`,
+	const url = `${LIMS_API}/getRecentDeliveries?time=30&units=d`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {

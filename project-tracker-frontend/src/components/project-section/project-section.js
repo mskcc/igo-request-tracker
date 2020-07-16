@@ -19,6 +19,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
+import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
 
 export const DF_WEEK = "7";
 export const DF_MONTH = "30";
@@ -157,8 +158,18 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
                                         aria-label="date-filter">
                                 <FormControlLabel value={DF_WEEK} control={<Radio color={"black"}/>} label="Week" />
                                 <FormControlLabel value={DF_MONTH} control={<Radio color={"black"}/>} label="Month" />
-                                <FormControlLabel value={DF_YEAR} control={<Radio color={"black"}/>} label="Year" />
-                                <FormControlLabel value={DF_ALL} control={<Radio color={"black"}/>} label="Show All" />
+                                {
+                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
+                                        <FormControlLabel value={DF_YEAR} control={<Radio color={"black"}/>} label="Year" />
+                                        :
+                                        <span></span>
+                                }
+                                {
+                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
+                                        <FormControlLabel value={DF_ALL} control={<Radio color={"black"}/>} label="Show All" />
+                                        :
+                                        <span></span>
+                                }
                             </RadioGroup>
                         </FormControl>
                     </Col>
