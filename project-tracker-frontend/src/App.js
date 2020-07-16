@@ -10,7 +10,7 @@ import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/di
 import {Col, Container} from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
-import ProjectSection, {DF_ALL, DF_WEEK} from "./components/project-section/project-section";
+import ProjectSection, {DF_ALL, DF_MONTH, DF_WEEK} from "./components/project-section/project-section";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
@@ -18,6 +18,7 @@ import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
 import {generateTextInput, getHumanReadable, getRequestState, getSortedRequests} from "./utils/utils";
 import Row from "react-bootstrap/Row";
+import {REQ_deliveryDate, REQ_receivedDate} from "./utils/api-util";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(false);
@@ -46,7 +47,14 @@ function App() {
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
 
-                // Take the deliveryDate that is the most recent (greatest)
+                /** Take the deliveryDate that is the most recent (greatest)
+                 * req: {
+                 *     deliveryDate: [
+                 *         UNIX_TIMESTAMP               <-- Have yet to see more than one
+                 *     ],
+                 *     receivedDate: UNIX_TIMESTAMP     <-- Want this format
+                 * }
+                 */
                 requests.map((req) => {
                     const deliveryDate = req["deliveryDate"] || [];
                     if(deliveryDate.length > 0){
@@ -96,7 +104,7 @@ function App() {
         if(deliveredRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' has been delivered`);
             setDeliveredQuery(requestQuery);
-            setDeliveredDateFilter(DF_ALL);
+            setDeliveredDateFilter(DF_MONTH);
         } else if(pendingRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' is pending`);
             setPendingQuery(requestQuery);
@@ -158,12 +166,12 @@ function App() {
                                             projectState={STATE_PENDING_REQUESTS}
                                             parentQuery={pendingQuery}
                                             initialDateFilter={pendingDateFilter}
-                                            dateFilterField={"receivedDate"}></ProjectSection>
+                                            dateFilterField={REQ_receivedDate}></ProjectSection>
                             <ProjectSection requestList={deliveredRequestsList}
                                             projectState={STATE_DELIVERED_REQUESTS}
                                             parentQuery={deliveredQuery}
                                             initialDateFilter={deliveredDateFilter}
-                                            dateFilterField={"deliveryDate"}></ProjectSection>
+                                            dateFilterField={REQ_deliveryDate}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>

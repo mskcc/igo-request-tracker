@@ -13,7 +13,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {getRequestId} from "../../utils/api-util";
+import {getRequestId, REQ_receivedDate} from "../../utils/api-util";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -21,6 +21,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
 
+// Time, in days, from now for which to search the request list on the @dateFilterField
 export const DF_WEEK = "7";
 export const DF_MONTH = "30";
 export const DF_YEAR = "365";
@@ -54,6 +55,12 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
         return filtered.slice(0,5);
     };
 
+    /**
+     * Returns a list of requests that have been filtered on the date field specified in props
+     *
+     * @param requestList
+     * @returns {[]}
+     */
     const getDateFilteredList = (requestList) => {
         const numDays = parseInt(dateFilter);
         const oldestDate = getDateFromNow(0, 0, -numDays);
@@ -93,7 +100,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
             "labHeadEmail",
             "qcAccessEmail"
         ];
-        const dateFields = ["receivedDate", "deliveryDate"];
+        const dateFields = [REQ_receivedDate, "deliveryDate"];
         const numFields = [
             "recordId",
             "sampleNumber"
@@ -181,5 +188,10 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
 export default ProjectSection;
 
 ProjectSection.propTypes = {
-    projectName: PropTypes.object
+    projectName: PropTypes.object,
+    initialDateFilter: PropTypes.string,
+    requestList: PropTypes.array,
+    projectState: PropTypes.string,
+    parentQuery: PropTypes.string,
+    dateFilterField: PropTypes.string
 };

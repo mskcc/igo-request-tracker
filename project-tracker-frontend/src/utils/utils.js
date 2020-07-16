@@ -10,7 +10,14 @@ export function convertUnixTimeToDateString(UNIX_Timestamp) {
     return date.toLocaleString();
 }
 
-export function getDateFromNow(year, month, day){
+/**
+ * Returns the Date element w/ a year, month, day offset
+ * @param year
+ * @param month
+ * @param day
+ * @returns {Date}
+ */
+export function getDateFromNow(year = 0, month = 0, day = 0){
     const date = new Date();
 
     const newYear = date.getFullYear() + year;
@@ -84,7 +91,11 @@ export const downloadExcel = (data, fileName) => {
     FileSaver.saveAs(blob, fileName + fileExtension);
 };
 
-
+/**
+ * Performs sorting of the request list on
+ * @param requests
+ * @returns {*}
+ */
 export const getSortedRequests = (requests) => {
     const sortedRequests = requests.sort(function(r1, r2) {
         const d1 = r1['receivedDate'] || -1;
