@@ -10,20 +10,24 @@ import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/di
 import {Col, Container} from "react-bootstrap";
 import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
-import ProjectSection from "./components/project-section/project-section";
+import ProjectSection, {DF_ALL, DF_MONTH, DF_WEEK} from "./components/project-section/project-section";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "./redux/reducers";
 import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
-import {generateTextInput, getHumanReadable} from "./utils/utils";
-import ProjectTracker from "./components/project-tracker";
+import {generateTextInput, getHumanReadable, getRequestState, getSortedRequests} from "./utils/utils";
 import Row from "react-bootstrap/Row";
+import {REQ_deliveryDate, REQ_receivedDate} from "./utils/api-util";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(false);
     const deliveredRequests = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
     const pendingRequests = useSelector(state => state[STATE_PENDING_REQUESTS] );
+
+    const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
+    const [pendingRequestsList, setPendingRequestsList] = useState([]);
+
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
 
@@ -32,6 +36,8 @@ function App() {
     const [pendingQuery, setPendingQuery] = useState('');
     const [deliveredQuery, setDeliveredQuery] = useState('');
     const [locatorPrompt, setLocatorPrompt] = useState('');
+    const [pendingDateFilter, setPendingDateFilter] = useState(DF_WEEK);
+    const [deliveredDateFilter, setDeliveredDateFilter] = useState(DF_WEEK);
 
     useEffect(() => {
         const modalUpdater = new Subject();
@@ -39,34 +45,44 @@ function App() {
 
         getDeliveredProjectsRequest()
             .then((projectList) => {
-                const requests = projectList['requests'] || [];
-                const deliveredProjects = {};
-                for (const project of requests) {
-                    // TODO - api
-                    const requestId = project['requestId'];
-                    if(requestId){
-                        deliveredProjects[requestId] = null;
+                const requests = getSortedRequests(projectList['requests'] || []);
+
+                /** Take the deliveryDate that is the most recent (greatest)
+                 * req: {
+                 *     deliveryDate: [
+                 *         UNIX_TIMESTAMP               <-- Have yet to see more than one
+                 *     ],
+                 *     receivedDate: UNIX_TIMESTAMP     <-- Want this format
+                 * }
+                 */
+                requests.map((req) => {
+                    const deliveryDate = req["deliveryDate"] || [];
+                    if(deliveryDate.length > 0){
+                        req["deliveryDate"] = deliveryDate.reduce(
+                            (accumulator, currentValue) => {
+                                return (accumulator > currentValue) ? accumulator : currentValue;
+                            }, 0
+                        );
+                    } else {
+                        req["deliveryDate"] = null;
                     }
-                }
+                });
+
+                setDeliveredRequestsList(requests);
+                const deliveredRequests = getRequestState(requests);
                 sendUpdate(modalUpdater, 'Loaded delivered requests', MODAL_SUCCESS, 1000);
-                updateDelivered(dispatch, deliveredProjects);
+                updateDelivered(dispatch, deliveredRequests);
             })
             .catch((err) => {
                 sendUpdate(modalUpdater, 'Failed to load delivered requests', MODAL_ERROR, 5000);
             });
         getUndeliveredProjectsRequest()
             .then((projectList) => {
-                const requests = projectList['requests'] || [];
-                const unDelivered = {};
-                for (const project of requests) {
-                    // TODO - api
-                    const requestId = project['requestId'];
-                    if(requestId){
-                        unDelivered[requestId] = null;
-                    }
-                }
+                const requests = getSortedRequests(projectList['requests'] || []);
+                setPendingRequestsList(requests);
+                const pendingRequests = getRequestState(requests);
                 sendUpdate(modalUpdater, 'Loaded pending requests', MODAL_SUCCESS, 1000);
-                updateUndelivered(dispatch, unDelivered);
+                updateUndelivered(dispatch, pendingRequests);
             })
             .catch((err) => {
                 sendUpdate(modalUpdater, 'Failed to load pending requests', MODAL_ERROR, 5000);
@@ -85,14 +101,14 @@ function App() {
     }, [dispatch]);
 
     useEffect(() => {
-        console.log(requestQuery);
-        console.log(deliveredRequests[requestQuery]);
         if(deliveredRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' has been delivered`);
             setDeliveredQuery(requestQuery);
+            setDeliveredDateFilter(DF_MONTH);
         } else if(pendingRequests[requestQuery] !== undefined){
             setLocatorPrompt(`Request '${requestQuery}' is pending`);
             setPendingQuery(requestQuery);
+            setPendingDateFilter(DF_ALL);
         }  else {
             if(requestQuery.length >= 5 && requestQuery.length < 9){
                 setLocatorPrompt(`Request '${requestQuery}' not found. If this is a valid request ID, please submit feedback`);
@@ -146,12 +162,16 @@ function App() {
                                     </Row>
                                 </Container>
                             </div>
-                            <ProjectSection projectMapping={pendingRequests}
+                            <ProjectSection requestList={pendingRequestsList}
                                             projectState={STATE_PENDING_REQUESTS}
-                                            parentQuery={pendingQuery}></ProjectSection>
-                            <ProjectSection projectMapping={deliveredRequests}
+                                            parentQuery={pendingQuery}
+                                            initialDateFilter={pendingDateFilter}
+                                            dateFilterField={REQ_receivedDate}></ProjectSection>
+                            <ProjectSection requestList={deliveredRequestsList}
                                             projectState={STATE_DELIVERED_REQUESTS}
-                                            parentQuery={deliveredQuery}></ProjectSection>
+                                            parentQuery={deliveredQuery}
+                                            initialDateFilter={deliveredDateFilter}
+                                            dateFilterField={REQ_deliveryDate}></ProjectSection>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>
