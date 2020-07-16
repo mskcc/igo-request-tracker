@@ -1,17 +1,45 @@
 import ProjectTracker from "../project-tracker";
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import {generateTextInput, getHumanReadable} from "../../utils/utils";
+import {
+    convertUnixTimeToDateString,
+    downloadExcel,
+    generateTextInput,
+    getDateFromNow,
+    getHumanReadable
+} from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {getRequestId, REQ_receivedDate} from "../../utils/api-util";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
+import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
 
-function ProjectSection({projectMapping, projectState, parentQuery}) {
+// Time, in days, from now for which to search the request list on the @dateFilterField
+export const DF_WEEK = "7";
+export const DF_MONTH = "30";
+export const DF_YEAR = "365";
+export const DF_ALL = "5000";
+
+function ProjectSection({initialDateFilter, requestList, projectState, parentQuery, dateFilterField}) {
     const [query, setQuery] = useState(parentQuery);
+    const [dateFilter, setDateFilter] = useState(initialDateFilter);
+
+    const handleDateFilterToggle = (evt) => {
+        const val = evt.target.value;
+        setDateFilter(val);
+    };
 
     useEffect(() => {
         setQuery(parentQuery);
-    }, [parentQuery]);
+        setDateFilter(initialDateFilter);
+    }, [parentQuery, initialDateFilter]);
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -19,36 +47,139 @@ function ProjectSection({projectMapping, projectState, parentQuery}) {
      * @param mapping
      * @returns {string[]}
      */
-    const getFilteredProjectsFromQuery = (mapping) => {
-        const projects = Object.keys(projectMapping);
-        const filtered = projects.filter((prj) => {
-            return prj.startsWith(query);
+    const getFilteredProjectsFromQuery = (requests) => {
+        const filtered = requests.filter((req) => {
+            const requestId = getRequestId(req);
+            return requestId.startsWith(query);
         });
-        return filtered.slice(0,3);
+        return filtered.slice(0,5);
     };
 
-    const filtered = getFilteredProjectsFromQuery(projectMapping);
+    /**
+     * Returns a list of requests that have been filtered on the date field specified in props
+     *
+     * @param requestList
+     * @returns {[]}
+     */
+    const getDateFilteredList = (requestList) => {
+        const numDays = parseInt(dateFilter);
+        const oldestDate = getDateFromNow(0, 0, -numDays);
 
-    // TODO - pagination
+        const dateFilteredList = [];
+        for(const req of requestList){
+            const receivedDate = req[dateFilterField];
+            if(!receivedDate){
+                // When the receivedDate isn't present, that usually means it is new
+                dateFilteredList.push(req);
+            } else {
+                if(receivedDate > oldestDate){
+                    dateFilteredList.push(req);
+                }
+            }
+        }
+        return dateFilteredList;
+    };
+
+    const dateFilteredList = getDateFilteredList(requestList);
+
+    const filtered = getFilteredProjectsFromQuery(dateFilteredList);
+
+    const projectSection = getHumanReadable(projectState);
+
+    const convertToXlsx = (requestList) => {
+        const xlsxObjList = [];
+        // TODO - constants
+        const boolFields = [ "analysisRequested" ];
+        const stringFields = [
+            "requestId",
+            "requestType",
+            "pi",
+            "investigator",
+            "analysisType",
+            "dataAccessEmails",
+            "labHeadEmail",
+            "qcAccessEmail"
+        ];
+        const dateFields = [REQ_receivedDate, "deliveryDate"];
+        const numFields = [
+            "recordId",
+            "sampleNumber"
+        ];
+        const noFormattingFields = [...stringFields, ...numFields];
+
+        for(const request of requestList){
+            const xlsxObj = {};
+            for(const field of noFormattingFields){
+                const val = request[field];
+                xlsxObj[field] = val ? val : "Not Available";
+            }
+            for(const dField of dateFields){
+                const val = request[dField];
+                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
+            }
+            for(const field of boolFields){
+                const val = request[field];
+                xlsxObj[field] = val ? "yes" : "no";
+            }
+            xlsxObjList.push(xlsxObj);
+        }
+
+        return xlsxObjList;
+    };
+
+    const formLabel = STATE_DELIVERED_REQUESTS === projectState ? "Delivered in past" : "Received in past";
     return <div className={"border"}>
             <Container>
                 <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
                     <Col xs={4}>
-                        <h2>{getHumanReadable(projectState)}</h2>
+                        <h2>{projectSection}</h2>
                     </Col>
-                    <Col xs={4}></Col>
+                    <Col xs={2}></Col>
                     <Col xs={4}>
-                        <h4>Total {getHumanReadable(projectState)}: {Object.keys(projectMapping).length}</h4>
+                        <h4>Total {getHumanReadable(projectState)}: {dateFilteredList.length}</h4>
+                    </Col>
+                    <Col xs={2}>
+                        <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
+                            <FontAwesomeIcon className={"small-icon float-right hover"}
+                                             icon={faFileExcel}/>
+                        </div>
                     </Col>
                     <Col xs={6}>
                         {generateTextInput("Request ID", query, setQuery)}
                     </Col>
+                    <Col xs={6}>
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">{formLabel}</FormLabel>
+                            <RadioGroup value={dateFilter}
+                                        onChange={handleDateFilterToggle}
+                                        defaultValue={initialDateFilter}
+                                        row
+                                        name="dateFilter"
+                                        aria-label="date-filter">
+                                <FormControlLabel value={DF_WEEK} control={<Radio color={"default"}/>} label="Week" />
+                                <FormControlLabel value={DF_MONTH} control={<Radio color={"default"}/>} label="Month" />
+                                {
+                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
+                                        <FormControlLabel value={DF_YEAR} control={<Radio color={"default"}/>} label="Year" />
+                                        :
+                                        <span></span>
+                                }
+                                {
+                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
+                                        <FormControlLabel value={DF_ALL} control={<Radio color={"default"}/>} label="All" />
+                                        :
+                                        <span></span>
+                                }
+                            </RadioGroup>
+                        </FormControl>
+                    </Col>
                 </Row>
             </Container>
 
-        { filtered.map((projectName) => {
-            return <ProjectTracker key={projectName}
-                                   projectName={projectName}
+        { filtered.map((request) => {
+            const reqId = getRequestId(request);
+            return <ProjectTracker key={reqId}
+                                   projectName={reqId}
                                    projectState={projectState}/>
         })}
     </div>
@@ -57,5 +188,10 @@ function ProjectSection({projectMapping, projectState, parentQuery}) {
 export default ProjectSection;
 
 ProjectSection.propTypes = {
-    projectName: PropTypes.object
+    projectName: PropTypes.object,
+    initialDateFilter: PropTypes.string,
+    requestList: PropTypes.array,
+    projectState: PropTypes.string,
+    parentQuery: PropTypes.string,
+    dateFilterField: PropTypes.string
 };
