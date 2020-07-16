@@ -16,7 +16,7 @@ import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
-import {generateTextInput, getHumanReadable} from "./utils/utils";
+import {generateTextInput, getHumanReadable, getSortedRequests} from "./utils/utils";
 import ProjectTracker from "./components/project-tracker";
 import Row from "react-bootstrap/Row";
 
@@ -43,7 +43,8 @@ function App() {
 
         getDeliveredProjectsRequest()
             .then((projectList) => {
-                const requests = projectList['requests'] || [];
+                const requests = getSortedRequests(projectList['requests'] || []);
+
                 setXlsxDeliveredList(requests);
                 const deliveredProjects = {};
                 for (const project of requests) {
@@ -61,7 +62,7 @@ function App() {
             });
         getUndeliveredProjectsRequest()
             .then((projectList) => {
-                const requests = projectList['requests'] || [];
+                const requests = getSortedRequests(projectList['requests'] || []);
                 setXlsxPendingRequests(requests);
                 const unDelivered = {};
                 for (const project of requests) {

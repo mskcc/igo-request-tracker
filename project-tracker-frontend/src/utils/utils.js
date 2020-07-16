@@ -69,3 +69,16 @@ export const downloadExcel = (data, fileName) => {
     const blob = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(blob, fileName + fileExtension);
 };
+
+
+export const getSortedRequests = (requests) => {
+    console.log(requests[0].receivedDate);
+    const sortedRequests = requests.sort(function(r1, r2) {
+        const d1 = r1['receivedDate'] || -1;
+        const d2 = r2['receivedDate'] || -1;
+
+        return (d1 > d2) ? -1 : (d1 < d2) ? 1 : 0;
+    });
+    console.log(sortedRequests[0].receivedDate);
+    return sortedRequests;
+};

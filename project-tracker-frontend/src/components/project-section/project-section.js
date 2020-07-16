@@ -7,8 +7,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {getRequestId} from "../../utils/api-util";
 
-function ProjectSection({projectMapping, projectState, parentQuery, xlsxData}) {
+function ProjectSection({projectState, parentQuery, xlsxData}) {
     const [query, setQuery] = useState(parentQuery);
 
     useEffect(() => {
@@ -21,15 +22,15 @@ function ProjectSection({projectMapping, projectState, parentQuery, xlsxData}) {
      * @param mapping
      * @returns {string[]}
      */
-    const getFilteredProjectsFromQuery = (mapping) => {
-        const projects = Object.keys(projectMapping);
-        const filtered = projects.filter((prj) => {
-            return prj.startsWith(query);
+    const getFilteredProjectsFromQuery = (requests) => {
+        const filtered = requests.filter((req) => {
+            const requestId = getRequestId(req);
+            return requestId.startsWith(query);
         });
         return filtered.slice(0,3);
     };
 
-    const filtered = getFilteredProjectsFromQuery(projectMapping);
+    const filtered = getFilteredProjectsFromQuery(xlsxData);
 
     const projectSection = getHumanReadable(projectState);
 
@@ -42,7 +43,7 @@ function ProjectSection({projectMapping, projectState, parentQuery, xlsxData}) {
                     </Col>
                     <Col xs={2}></Col>
                     <Col xs={4}>
-                        <h4>Total {getHumanReadable(projectState)}: {Object.keys(projectMapping).length}</h4>
+                        <h4>Total {getHumanReadable(projectState)}: {Object.keys(xlsxData).length}</h4>
                     </Col>
                     <Col xs={2}>
                         <div onClick={() => downloadExcel(xlsxData, getHumanReadable(projectState))}>
@@ -56,9 +57,10 @@ function ProjectSection({projectMapping, projectState, parentQuery, xlsxData}) {
                 </Row>
             </Container>
 
-        { filtered.map((projectName) => {
-            return <ProjectTracker key={projectName}
-                                   projectName={projectName}
+        { filtered.map((request) => {
+            const reqId = getRequestId(request);
+            return <ProjectTracker key={reqId}
+                                   projectName={reqId}
                                    projectState={projectState}/>
         })}
     </div>
