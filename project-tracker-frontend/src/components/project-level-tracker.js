@@ -15,15 +15,16 @@ function ProjectLevelTracker({project}) {
 
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
-    const startTime = convertUnixTimeToDate(project.getStartTime());
-    const updateTime = convertUnixTimeToDate(project.getUpdateTime());
+
+    const startTime = project.getStartTime() ? convertUnixTimeToDate(project.getStartTime()) : "Not Available";
     const recentDeliveryDate = project.getRecentDeliveryDate();
     const tatFromReceiving = project.getTATFromReceiving();
     const tatFromInProcessing = project.getTATFromInProcessing();
-    const groupLeader = project.getGroupLeader();
     const labHeadEmail = project.getLabHeadEmail();
     const labHead = project.getLabHead();
     const investigator = project.getInvestigator();
+
+    // TODO - delete?
     const projectManager = project.getProjectManager();
 
     // Filter Samples

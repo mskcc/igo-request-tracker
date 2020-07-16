@@ -24,7 +24,8 @@ function ProjectTracker({projectName, projectState}) {
      * @returns {*}
      */
     const projectHasData = (proj) => {
-        return proj !== null;
+        // Possible for proj to be undefined if the state has not been updated
+        return proj !== null && proj !== undefined;
     };
 
     useEffect(() => {

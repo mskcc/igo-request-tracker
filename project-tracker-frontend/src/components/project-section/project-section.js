@@ -27,7 +27,7 @@ function ProjectSection({projectState, parentQuery, xlsxData}) {
             const requestId = getRequestId(req);
             return requestId.startsWith(query);
         });
-        return filtered.slice(0,3);
+        return filtered.slice(0,5);
     };
 
     const filtered = getFilteredProjectsFromQuery(xlsxData);

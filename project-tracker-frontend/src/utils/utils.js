@@ -3,6 +3,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import React from "react";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
+import {getRequestId} from "./api-util";
 
 export function convertUnixTimeToDate(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
@@ -56,7 +57,6 @@ export const getResponseData = (resp) => {
  * @param fileName
  */
 export const downloadExcel = (data, fileName) => {
-    debugger;
     const xlsxData = Object.assign([], data);
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
@@ -72,13 +72,28 @@ export const downloadExcel = (data, fileName) => {
 
 
 export const getSortedRequests = (requests) => {
-    console.log(requests[0].receivedDate);
     const sortedRequests = requests.sort(function(r1, r2) {
         const d1 = r1['receivedDate'] || -1;
         const d2 = r2['receivedDate'] || -1;
 
         return (d1 > d2) ? -1 : (d1 < d2) ? 1 : 0;
     });
-    console.log(sortedRequests[0].receivedDate);
     return sortedRequests;
 };
+
+/**
+ * Returns the state object for delivered/pending requests
+ *
+ * @param requests
+ */
+export const getRequestState = (requests) => {
+    const requestState = {};
+    for (const req of requests) {
+        // TODO - api
+        const requestId = getRequestId(req);
+        if(requestId && requestId !== ""){
+            requestState[requestId] = null;
+        }
+    }
+    return requestState;
+}

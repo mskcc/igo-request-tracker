@@ -16,9 +16,10 @@ import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
-import {generateTextInput, getHumanReadable, getSortedRequests} from "./utils/utils";
+import {generateTextInput, getHumanReadable, getRequestState, getSortedRequests} from "./utils/utils";
 import ProjectTracker from "./components/project-tracker";
 import Row from "react-bootstrap/Row";
+import {getRequestId} from "./utils/api-util";
 
 function App() {
     const [showFeedback, setShowFeedback] = useState(false);
@@ -44,18 +45,11 @@ function App() {
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
-
                 setXlsxDeliveredList(requests);
-                const deliveredProjects = {};
-                for (const project of requests) {
-                    // TODO - api
-                    const requestId = project['requestId'];
-                    if(requestId){
-                        deliveredProjects[requestId] = null;
-                    }
-                }
+                const deliveredRequests = getRequestState(requests);
+
                 sendUpdate(modalUpdater, 'Loaded delivered requests', MODAL_SUCCESS, 1000);
-                updateDelivered(dispatch, deliveredProjects);
+                updateDelivered(dispatch, deliveredRequests);
             })
             .catch((err) => {
                 sendUpdate(modalUpdater, 'Failed to load delivered requests', MODAL_ERROR, 5000);
@@ -64,16 +58,9 @@ function App() {
             .then((projectList) => {
                 const requests = getSortedRequests(projectList['requests'] || []);
                 setXlsxPendingRequests(requests);
-                const unDelivered = {};
-                for (const project of requests) {
-                    // TODO - api
-                    const requestId = project['requestId'];
-                    if(requestId){
-                        unDelivered[requestId] = null;
-                    }
-                }
+                const pendingRequests = getRequestState(requests);
                 sendUpdate(modalUpdater, 'Loaded pending requests', MODAL_SUCCESS, 1000);
-                updateUndelivered(dispatch, unDelivered);
+                updateUndelivered(dispatch, pendingRequests);
             })
             .catch((err) => {
                 sendUpdate(modalUpdater, 'Failed to load pending requests', MODAL_ERROR, 5000);
