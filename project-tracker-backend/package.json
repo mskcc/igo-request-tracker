@@ -7,7 +7,7 @@
     "dev": "ENV=QA nodemon ./bin/www",
     "config-qa": "cp services/qa.config.js services/config.js",
     "config-prod": "cp services/prod.config.js services/config.js",
-    "test": "JWT_SECRET={ADD_JWT_SECRET} nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
+    "test": "nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
   },
   "dependencies": {
@@ -38,6 +38,7 @@
     "eslint": "^6.5.1",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "sinon": "^9.0.3"
   }
 }
