@@ -129,7 +129,9 @@ const retrieveManagerUserName = async function(client, user) {
  */
 const retrieveHierarchy = function(userName) {
 	// TODO - needs to change to an IGO user
-	client.bind(`streidd@mskcc.org`, "3ffectiveJava", function(err) {
+	const IGO_USER = "SAMPLE_USER";
+	const IGO_PWD = "IGO_PWD";
+	client.bind(IGO_USER, IGO_PWD, function(err) {
 		if(err){
 			const errorMsg = `Failed bind to LDAP client (User: ${userName}) - ${err.message}`;
 			reject(new Error(errorMsg));
