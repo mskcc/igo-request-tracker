@@ -12,7 +12,7 @@ container.add(constants.logger, {
 		label({label: "Project-Tracker"}),
 		json()
 	),
-	transports: [new winston.transports.Console({level: "info"})]
+	transports: [new winston.transports.File({level: "info", filename: "request_tracker.log"})]
 });
 
 exports.logger = container.get(constants.logger);

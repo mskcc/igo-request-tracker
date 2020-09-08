@@ -23,6 +23,7 @@
     "express-validator": "^6.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-in-cookie": "^1.0.16",
+    "ldapjs": "^2.1.1",
     "mocha-lcov-reporter": "^1.3.0",
     "moment": "^2.24.0",
     "mongoose": "^5.7.6",
