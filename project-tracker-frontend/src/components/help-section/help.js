@@ -57,12 +57,15 @@ function HelpSection() {
             </div>
             {
                 showRequestSections ? <div className={"margin-left-20"}>
-                    <p>There are two sections for for {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}</p>
+                    <p>
+                        There are two sections for for {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}.
+                        The metadata for all returned requests in that category can be downlaoded via an excel.
+                    </p>
                     <h3>{getHumanReadable(STATE_PENDING_REQUESTS)}</h3>
                     <p>These requests have NOT been marked for delivery in the LIMs.</p>
                     <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
                     <p>These requests have been marked for delivery in the LIMs.</p>
-                    <p>Only requests delivered in the last 7 days are returned.</p>
+                    <p>Only requests delivered in the last 30 days are returned.</p>
                 </div>
                     : <div></div>
             }
