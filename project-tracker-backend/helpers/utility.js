@@ -20,9 +20,6 @@ const client = ldap.createClient({
  * @param req
  */
 exports.isUser = (req) => {
-	// TODO - remove default search for true
-	return true;
-
 	const userData = jwtInCookie.validateJwtToken(req);
 	// TODO - constant
 	if(!userData.hasOwnProperty("isUser")){
@@ -35,7 +32,7 @@ exports.isUser = (req) => {
 /**
  * Filters projects for representatives that should be viewable to the user
  *
- * @param data
+ * @param data, [] - Array of project objects
  */
 exports.filterProjectsOnHierarchy = async (req, projects) => {
 	const filteredProjects = [];
@@ -43,7 +40,7 @@ exports.filterProjectsOnHierarchy = async (req, projects) => {
 	// TODO - can send and then await later?
 	// TODO - cache
 	const userData = jwtInCookie.validateJwtToken(req);
-	const userName = "chant"; // userData["username"];		// TODO - take name userName from userData
+	const userName = userData["username"];
 
 	const hierarchy = await retrieveHierarchy(userName);
 	const usersWithVisibility = hierarchy.map(manager => HIERARCHY_FILTERS.map(field => manager[field]));
