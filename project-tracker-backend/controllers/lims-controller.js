@@ -1,10 +1,8 @@
 const apiResponse = require("../helpers/apiResponse");
 const {authenticateRequest} = require("../middlewares/jwt-cookie");
 const {getRecentDeliveries, getUndeliveredProjects, getProjectTrackingInfo} = require("../services/services");
-const Cache = require("../helpers/cache");
-const ttl = 60 * 60 * 1; 			// cache for 1 Hour
-const cache = new Cache(ttl); 		// create a new cache service instance
 const { filterProjectsOnHierarchy, isUser } = require("../helpers/utility");
+const cache = require("../helpers/cache");
 
 /**
  * Returns a list of all projects the user is able to see
