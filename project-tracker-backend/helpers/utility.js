@@ -1,6 +1,7 @@
 const jwtInCookie = require("jwt-in-cookie");
 const { logger } = require("../helpers/winston");
 const ldap = require("ldapjs");
+const cache = require("../helpers/cache");
 
 // Fields in the ldap response that will be used to filter projects on
 const HIERARCHY_FILTERS = ["sn", "givenName"];
@@ -42,9 +43,12 @@ exports.filterProjectsOnHierarchy = async (req, projects) => {
 	const userData = jwtInCookie.validateJwtToken(req);
 	const userName = userData["username"];
 
-	const hierarchy = await retrieveHierarchy(userName);
+	const key = `HIERARCHY_${userName}`;
+	const retrievalFunc = () => retrieveHierarchy(userName);
+	const hierarchy = await cache.get(key, retrievalFunc);
+
 	const usersWithVisibility = hierarchy.map(manager => HIERARCHY_FILTERS.map(field => manager[field]));
-	logger.info( `Filtering visible projects for user: "${userName}" w/ representatives: ${(usersWithVisibility)}`);
+	logger.info( `Filtering visible projects for user: '${userName}' w/ representatives: ${(usersWithVisibility)}`);
 	for(const project of projects){
 		const projectRepresentatives = HIERARCHY_TARGETS.map(field => project[field]).filter(rep => rep !== undefined);
 		let hasProjectRepresentative = false;
