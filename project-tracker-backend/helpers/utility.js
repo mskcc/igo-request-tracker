@@ -122,16 +122,17 @@ const retrieveManagerUserName = async function(client, user) {
  * Retrieves hierarchy of users from the user data contained in the request token
  *
  * @param req
- * @returns {{requests: *}}
+ * @returns [] - list of hierarchy objects containing data of managers
  */
 const retrieveHierarchy = function(userName) {
 	// TODO - needs to change to an IGO user
 	const IGO_USER = "SAMPLE_USER";
 	const IGO_PWD = "IGO_PWD";
-	client.bind(IGO_USER, IGO_PWD, function(err) {
+	const dn=`CN=${IGO_USER},OU=Sloan Kettering Institute,OU=SKI,DC=MSKCC,DC=ROOT,DC=MSKCC,DC=ORG`;
+	client.bind(dn, IGO_PWD, function(err) {
 		if(err){
-			const errorMsg = `Failed bind to LDAP client (User: ${userName}) - ${err.message}`;
-			reject(new Error(errorMsg));
+			const errorMsg = `Failed bind to LDAP client (User: ${IGO_USER}) - ${err.message}`;
+			logger.error(errorMsg);
 		}
 	});
 
