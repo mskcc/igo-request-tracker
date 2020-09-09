@@ -21,7 +21,14 @@ const client = ldap.createClient({
  * @param req
  */
 exports.isUser = (req) => {
-	const userData = jwtInCookie.validateJwtToken(req);
+	if(process.env.ENV === "QA") return false;
+
+	let userData;
+	try {
+		userData = jwtInCookie.validateJwtToken(req);
+	} catch (err) {
+		return true; // Default to true
+	}
 	// TODO - constant
 	if(!userData.hasOwnProperty("isUser")){
 		logger.log("error", `Couldn't retrieve "isUser" value from cookie: ${JSON.stringify(userData)}`);
