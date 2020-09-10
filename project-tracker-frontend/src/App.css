@@ -155,25 +155,46 @@
 }
 
 .search-container {
-  height: 45px;
+  height: 50px;
 }
-.search-container .search-icon {
+.search-icon-container {
+  height: inherit;
+  width: 55px;
+  border-right: 1px solid white;
+  display: inline-block;
+}
+.search-icon-container .search-icon {
   background-color: #e26d37;
   color: white;
-  width: 35px;
-  height: inherit;
-  padding: 5px;
-  vertical-align: bottom;
+  width: 30px;
+  height: 30px;
+  margin: 10px;
 }
 .search-box {
   width: 250px;
   display: inline-block;
+  border: 1px solid white;
   vertical-align: top;
 }
 .advanced-search {
   vertical-align: bottom;
   color: white;
   margin-bottom: 0px;
+}
+.filters-container{
+  display: inline;
+  float: right;
+}
+.filters-toggle-container {
+  margin-left: 10px;
+}
+.filters-icon {
+  background-color: #e26d37;
+  color: white;
+  width: 30px !important;
+  height: 25px;
+  margin: auto;
+  display: block;
 }
 
 .help-stage-mapper {
