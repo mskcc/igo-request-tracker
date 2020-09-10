@@ -43,7 +43,6 @@ function ProjectSection({dateFilter, requestList, projectState, parentQuery, dat
      * @returns {[]}
      */
     const getDateFilteredList = (requestList) => {
-        debugger;
         const numDays = parseInt(dateFilter);
         const oldestDate = getDateFromNow(0, 0, -numDays);
 
