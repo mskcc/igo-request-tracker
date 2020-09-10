@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {
     convertUnixTimeToDateString,
     downloadExcel,
-    generateTextInput,
     getDateFromNow,
     getHumanReadable
 } from "../../utils/utils";
@@ -14,32 +13,14 @@ import Col from "react-bootstrap/Col";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getRequestId, REQ_receivedDate} from "../../utils/api-util";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
 import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
 
-// Time, in days, from now for which to search the request list on the @dateFilterField
-export const DF_WEEK = "7";
-export const DF_MONTH = "30";
-export const DF_YEAR = "365";
-export const DF_ALL = "5000";
-
-function ProjectSection({initialDateFilter, requestList, projectState, parentQuery, dateFilterField}) {
+function ProjectSection({dateFilter, requestList, projectState, parentQuery, dateFilterField}) {
     const [query, setQuery] = useState(parentQuery);
-    const [dateFilter, setDateFilter] = useState(initialDateFilter);
-
-    const handleDateFilterToggle = (evt) => {
-        const val = evt.target.value;
-        setDateFilter(val);
-    };
 
     useEffect(() => {
         setQuery(parentQuery);
-        setDateFilter(initialDateFilter);
-    }, [parentQuery, initialDateFilter]);
+    }, [parentQuery]);
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -127,7 +108,6 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
         return xlsxObjList;
     };
 
-    const formLabel = STATE_DELIVERED_REQUESTS === projectState ? "Delivered in past" : "Received in past";
     return <div className={"border"}>
             <Container>
                 <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
@@ -144,34 +124,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
                                              icon={faFileExcel}/>
                         </div>
                     </Col>
-                    <Col xs={6}>
-                        {generateTextInput("Request ID", query, setQuery)}
-                    </Col>
-                    <Col xs={6}>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">{formLabel}</FormLabel>
-                            <RadioGroup value={dateFilter}
-                                        onChange={handleDateFilterToggle}
-                                        defaultValue={initialDateFilter}
-                                        row
-                                        name="dateFilter"
-                                        aria-label="date-filter">
-                                <FormControlLabel value={DF_WEEK} control={<Radio color={"default"}/>} label="Week" />
-                                <FormControlLabel value={DF_MONTH} control={<Radio color={"default"}/>} label="Month" />
-                                {
-                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
-                                        <FormControlLabel value={DF_YEAR} control={<Radio color={"default"}/>} label="Year" />
-                                        :
-                                        <span></span>
-                                }
-                                {
-                                    (STATE_DELIVERED_REQUESTS !== projectState) ?
-                                        <FormControlLabel value={DF_ALL} control={<Radio color={"default"}/>} label="All" />
-                                        :
-                                        <span></span>
-                                }
-                            </RadioGroup>
-                        </FormControl>
+                    <Col xs={12}>
                     </Col>
                 </Row>
             </Container>
@@ -189,7 +142,7 @@ export default ProjectSection;
 
 ProjectSection.propTypes = {
     projectName: PropTypes.object,
-    initialDateFilter: PropTypes.string,
+    dateFilter: PropTypes.string,
     requestList: PropTypes.array,
     projectState: PropTypes.string,
     parentQuery: PropTypes.string,
