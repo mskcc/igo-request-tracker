@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {
     convertUnixTimeToDateString,
     downloadExcel,
-    generateTextInput,
     getDateFromNow,
     getHumanReadable
 } from "../../utils/utils";
@@ -144,10 +143,7 @@ function ProjectSection({initialDateFilter, requestList, projectState, parentQue
                                              icon={faFileExcel}/>
                         </div>
                     </Col>
-                    <Col xs={6}>
-                        {generateTextInput("Request ID", query, setQuery)}
-                    </Col>
-                    <Col xs={6}>
+                    <Col xs={12}>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">{formLabel}</FormLabel>
                             <RadioGroup value={dateFilter}

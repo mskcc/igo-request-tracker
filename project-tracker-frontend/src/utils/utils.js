@@ -1,5 +1,4 @@
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
-import TextField from "@material-ui/core/TextField/TextField";
 import React from "react";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
@@ -38,19 +37,6 @@ export function getHumanReadable(name) {
     };
     return mapping[name] || name;
 }
-
-const getTargetValue = (evt) => {
-    return evt.target.value;
-};
-
-export const generateTextInput = (label, val, fn, required = false) => {
-    return <TextField  id="standard-basic"
-                       className={"fill-width"}
-                       label={label}
-                       value={val}
-                       onChange={(evt) => fn(getTargetValue(evt))}
-                       required={required}/>;
-};
 
 export const goToTeamWorks = () => {
     window.open(

@@ -2,13 +2,13 @@ import React, {useEffect, useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Modal, {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
+import Modal, { sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS } from "object-modal";
 
 import './App.css';
 import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest, getUserSession} from "./services/services";
 import {updateDelivered, updateModalUpdater, updateUndelivered} from "./redux/dispatchers";
 import {Col, Container} from "react-bootstrap";
-import {faHome, faQuestion, faComment} from "@fortawesome/free-solid-svg-icons";
+import {faHome, faQuestion, faComment, faSearch, faToggleOff, faToggleOn} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
 import ProjectSection, {DF_ALL, DF_MONTH, DF_WEEK} from "./components/project-section/project-section";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "./redux/reducers";
@@ -16,15 +16,45 @@ import {HOME} from "./config";
 import HelpSection from "./components/help-section/help";
 import Feedback from "./components/common/feedback";
 import {Subject} from "rxjs";
-import {generateTextInput, getHumanReadable, getRequestState, getSortedRequests} from "./utils/utils";
+import {getRequestState, getSortedRequests} from "./utils/utils";
 import Row from "react-bootstrap/Row";
 import {REQ_deliveryDate, REQ_receivedDate} from "./utils/api-util";
+import TextField from "@material-ui/core/TextField/TextField";
+
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+const useStyles = makeStyles({
+    root: {
+        'border-bottom': '1px solid white',
+        '& label': {
+            'color': 'white !important'
+        },
+        '& Mui-focused': {
+            'color': 'white !important'
+        },
+        '& input': {
+            'caret-color': 'white',
+            'color': 'white'
+        }
+    }
+});
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: 'rgb(255,255,255)',
+        },
+        secondary: {
+            main: 'rgb(255,255,255)',
+        },
+    },
+});
 
 function App() {
+    const classes = useStyles();
+
     const [showFeedback, setShowFeedback] = useState(false);
     const deliveredRequests = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
     const pendingRequests = useSelector(state => state[STATE_PENDING_REQUESTS] );
-
+    const [showFilters, setShowFilters] = useState(false);
     const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
     const [pendingRequestsList, setPendingRequestsList] = useState([]);
 
@@ -121,6 +151,41 @@ function App() {
         }
     }, [requestQuery]);
 
+    const getTargetValue = (evt) => {
+        return evt.target.value;
+    };
+
+    /**
+     * Generates the search input box to query projects
+     *
+     * @param label, e.g. "Request ID"
+     * @param val, e.g. requestQuery
+     * @param fn, e.g. setRequestQuery
+     * @param required, e.g. t/f
+     * @returns {*}
+     */
+    const generateTextInput = (label, val, fn, required = false) => {
+        return <div className={"search-container"}>
+            <div className={"search-box"}>
+                <FontAwesomeIcon className={"inline search-icon"} icon={faSearch}/>
+                <TextField  id="standard-basic"
+                            label={label}
+                            value={val}
+                            onChange={(evt) => fn(getTargetValue(evt))}
+                            required={required}
+                            className={classes.root}
+                            color="primary"
+                            InputProps={{ disableUnderline: true }}/>
+            </div>
+            <div className={"inline-block"}>
+                <p className={"advanced-search"}>Filters</p>
+                <FontAwesomeIcon className={"hover search-icon"}
+                                 icon={showFilters ? faToggleOn : faToggleOff}
+                                 onClick={() => setShowFilters(!showFilters)}/>
+            </div>
+        </div>;
+    };
+
     return (
         <div>
             {
@@ -151,11 +216,11 @@ function App() {
                         <Route exact path={`${HOME}/`}>
                             <div className={"border"}>
                                 <Container>
-                                    <Row className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
+                                    <Row className={"black-border background-igo-orange padding-vert-20 padding-hor-20"}>
                                         <Col xs={12}>
-                                            <h2>Where is my request?</h2>
+                                            {generateTextInput("Request ID", requestQuery, setRequestQuery)}
                                         </Col>
-                                        <Col xs={6}>{generateTextInput("Request ID", requestQuery, setRequestQuery)}</Col>
+                                        <Col xs={6}></Col>
                                         <Col xs={6}>
                                             <h5 className={"italic"}>{locatorPrompt}</h5>
                                         </Col>

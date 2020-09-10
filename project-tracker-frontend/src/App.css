@@ -154,6 +154,28 @@
   top: 10px;
 }
 
+.search-container {
+  height: 45px;
+}
+.search-container .search-icon {
+  background-color: #e26d37;
+  color: white;
+  width: 35px;
+  height: inherit;
+  padding: 5px;
+  vertical-align: bottom;
+}
+.search-box {
+  width: 250px;
+  display: inline-block;
+  vertical-align: top;
+}
+.advanced-search {
+  vertical-align: bottom;
+  color: white;
+  margin-bottom: 0px;
+}
+
 .help-stage-mapper {
   max-width: 600px;
   margin: auto;
@@ -248,6 +270,12 @@
 }
 .mskcc-orange{
   color: #df4602;
+}
+.background-igo-orange {
+  background-color: #e26d37;
+}
+.igo-orange {
+  color: #e26d37
 }
 .background-mskcc-dark-blue{
   background-color: #006098;
