@@ -29,6 +29,8 @@ import {
 } from "./components/common/project-filters";
 import { makeStyles } from '@material-ui/core/styles';
 import FilterIndicator from './components/common/filter-indicator';
+import Header from "./components/common/header";
+import Paper from "@material-ui/core/Paper";
 const useStyles = makeStyles({
     root: {
         'margin': '5px 0px 0px 5px',
@@ -40,19 +42,32 @@ const useStyles = makeStyles({
             'color': 'white'
         }
     },
+    secondary: {
+        'background-color': '319AE8'
+    },
     positionBottom: {
         'position': 'absolute',
         'padding': '0px',
         'bottom': '0px',
         'left': '50%',
         'transform': 'translate(-50%,0%)'
-    }
+    },
+    container: {
+        gridArea: 'form',
+        display: 'grid',
+        justifyItems: 'center',
+        width: '100%',
+        margin: '2em auto',
+        padding: '2em',
+        marginBottom: '4em',
+    },
 });
+
 
 function App() {
     const classes = useStyles();
 
-    const [showFeedback, setShowFeedback] = useState(false);
+
     const [showFilters, setShowFilters] = useState(false);
     const [recipeSet, setRecipeSet] = useState(new Set());
     const [filteredRecipes, setFilteredRecipes] = useState(new Set());
@@ -169,110 +184,81 @@ function App() {
      * @returns {*}
      */
     const generateSearchContainer = (label, val, fn, required = false) => {
-        return <Container className={"black-border background-igo-orange padding-vert-20"}>
-                <Row>
-                    <Col xs={12} md={6} lg={4}
-                        className={'search-container'}>
-                        <div className={'search-box'}>
-                            <div className={'search-icon-container'}>
-                                <FontAwesomeIcon className={'inline search-icon'} icon={faSearch}/>
-                            </div>
-                            <TextField  id='standard-basic'
-                                        label={label}
-                                        value={val}
-                                        onChange={(evt) => fn(getTargetValue(evt))}
-                                        required={required}
-                                        className={classes.root}
-                                        InputProps={{ disableUnderline: true }}/>
-                        </div>
-                        <div className={'filters-toggle-container inline-block'}>
-                            <p className={'advanced-search'}>Filters</p>
-                            <FontAwesomeIcon className={'filters-icon hover'}
-                                             icon={showFilters ? faToggleOn : faToggleOff}
-                                             onClick={() => setShowFilters(!showFilters)}/>
-                        </div>
-                    </Col>
-                    {
-                        showFilters ?  <Col xs={12} md={8}>
-                            <div className={'filters-container'}>
-                                <div>
-                                    {renderDateFilter('Submitted/Delivered in past: ', dateFilter, handleDateFilterToggle, dateFilter)}
+        return  <Container className={"black-border background-mskcc-dark-gray padding-vert-20"}>
+                        <Row>
+                            <Col xs={12} md={6} lg={4}
+                                className={'search-container'}>
+                                <div className={'search-box'}>
+                                    <div className={'search-icon-container'}>
+                                        <FontAwesomeIcon className={'inline search-icon'} icon={faSearch}/>
+                                    </div>
+                                    <TextField  id='standard-basic'
+                                                label={label}
+                                                value={val}
+                                                onChange={(evt) => fn(getTargetValue(evt))}
+                                                required={required}
+                                                className={classes.root}
+                                                InputProps={{ disableUnderline: true }}/>
                                 </div>
-                                <div>
-                                    <RecipeFilter recipeSet={recipeSet} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>
+                                <div className={'filters-toggle-container inline-block'}>
+                                    <p className={'advanced-search'}>Filters</p>
+                                    <FontAwesomeIcon className={'filters-icon hover'}
+                                                     icon={showFilters ? faToggleOn : faToggleOff}
+                                                     onClick={() => setShowFilters(!showFilters)}/>
                                 </div>
-                            </div>
-                        </Col> : <Col xs={12} md={8}>
-                            <div>
-                                <FilterIndicator label={'Past'}
-                                                 value={mapDateFilter(dateFilter)}
-                                                 showCondition={dateFilter !== DF_ALL}
-                                                 clear={console.log}/>
-                                <FilterIndicator label={'Recipes'}
-                                                 value={Array.from(filteredRecipes).join(', ')}
-                                                 showCondition={filteredRecipes.size > 0}
-                                                 clear={console.log}/>
-                            </div>
-                        </Col>
-                    }
-            </Row>
-        </Container>;
+                            </Col>
+                            {
+                                showFilters ?  <Col xs={12} md={8}>
+                                    <div className={'filters-container'}>
+                                        <div>
+                                            {renderDateFilter('Submitted/Delivered in past: ', dateFilter, handleDateFilterToggle, dateFilter)}
+                                        </div>
+                                        <div>
+                                            <RecipeFilter recipeSet={recipeSet} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>
+                                        </div>
+                                    </div>
+                                </Col> : <Col xs={12} md={8}>
+                                    <div>
+                                        <FilterIndicator label={'Past'}
+                                                         value={mapDateFilter(dateFilter)}
+                                                         showCondition={dateFilter !== DF_ALL}
+                                                         clear={console.log}/>
+                                        <FilterIndicator label={'Recipes'}
+                                                         value={Array.from(filteredRecipes).join(', ')}
+                                                         showCondition={filteredRecipes.size > 0}
+                                                         clear={console.log}/>
+                                    </div>
+                                </Col>
+                            }
+                    </Row>
+                </Container>;
     };
 
     return (
-            <div>
+        <div>
             {
                 Object.keys(modalUpdater).length > 0 ? <Modal modalUpdater={modalUpdater}/> : <div></div>
             }
             <Router basename={'/'}>
-
-                <header className='App-header background-sample-sub-blue padding-vert-10 text-align-center'>
-                    <Container>
-                        <Row>
-                            <Col xs={2}>
-                                <span className={'position-bottom'}>
-                                    <Link to={`${HOME}/`}>
-                                        <FontAwesomeIcon className={'font-1p5em text-align-center mskcc-white'} icon={faHome}/>
-                                    </Link>
-                                </span>
-                            </Col>
-                            <Col xs={6} md={8}>
-                                <h1 className={'text-align-center'}>IGO Request Tracker (BETA)</h1>
-                            </Col>
-                            <Col xs={2} md={1}>
-                                <span className={'position-bottom'}>
-                                    <Link to={`${HOME}/help`}>
-                                        <FontAwesomeIcon className={'font-1p5em text-align-center mskcc-white'} icon={faQuestion}/>
-                                    </Link>
-                                </span>
-                            </Col>
-                            <Col xs={2} md={1}>
-                                <IconButton aria-label='feedback'
-                                            onClick={() => setShowFeedback(!showFeedback)}
-                                            className={classes.positionBottom}>
-                                    <FontAwesomeIcon className={'font-2em text-align-center mskcc-white'} icon={faComment}/>
-                                </IconButton>
-                            </Col>
-                        </Row>
-                    </Container>
-                </header>
-                { showFeedback ? <Feedback closeFeedback={() => setShowFeedback(false)}/> : <div></div> }
+                <Header></Header>
                 <Container>
                     <Switch>
                         <Route exact path={`${HOME}/`}>
-                            {generateSearchContainer('Request ID', requestIdQuery, setRequestIdQuery)}
-                            <ProjectSection requestList={pendingRequestsList}
-                                            projectState={STATE_PENDING_REQUESTS}
-                                            dateFilter={dateFilter}
-                                            dateFilterField={REQ_receivedDate}
-                                            requestIdQuery={requestIdQuery}
-                                            filteredRecipes={filteredRecipes}></ProjectSection>
-                            <ProjectSection requestList={deliveredRequestsList}
-                                            projectState={STATE_DELIVERED_REQUESTS}
-                                            dateFilter={dateFilter}
-                                            dateFilterField={REQ_deliveryDate}
-                                            requestIdQuery={requestIdQuery}
-                                            filteredRecipes={filteredRecipes}></ProjectSection>
+                            <Paper className={classes.container} elevation={1}>
+                                {generateSearchContainer('Request ID', requestIdQuery, setRequestIdQuery)}
+                                <ProjectSection requestList={pendingRequestsList}
+                                                projectState={STATE_PENDING_REQUESTS}
+                                                dateFilter={dateFilter}
+                                                dateFilterField={REQ_receivedDate}
+                                                requestIdQuery={requestIdQuery}
+                                                filteredRecipes={filteredRecipes}></ProjectSection>
+                                <ProjectSection requestList={deliveredRequestsList}
+                                                projectState={STATE_DELIVERED_REQUESTS}
+                                                dateFilter={dateFilter}
+                                                dateFilterField={REQ_deliveryDate}
+                                                requestIdQuery={requestIdQuery}
+                                                filteredRecipes={filteredRecipes}></ProjectSection>
+                            </Paper>
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>

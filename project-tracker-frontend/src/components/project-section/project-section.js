@@ -140,7 +140,7 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
     const projectsInView = filteredProjects.slice(0,numProjectsToShow);
 
     return <Container className={"border"}>
-                <Row  className={"black-border backgorund-light-gray padding-vert-20 padding-hor-20"}>
+                <Row  className={"black-border background-mskcc-light-gray padding-vert-10 padding-hor-20"}>
                     <Col xs={4}>
                         <h2>{projectSection}</h2>
                     </Col>

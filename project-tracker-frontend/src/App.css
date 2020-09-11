@@ -138,6 +138,9 @@
   border: 1px solid black;
   z-index: 1;
 }
+.feedback-form p, .feedback-form h5 {
+  color: black;
+}
 .feedback-text {
   height: 150px;
   width: 95%;
@@ -174,7 +177,7 @@
   display: inline-block;
 }
 .search-icon-container .search-icon {
-  background-color: #e26d37;
+  background-color: #9e9e98;
   color: white;
   width: 30px;
   height: 30px;
@@ -199,7 +202,7 @@
   margin-left: 10px;
 }
 .filters-icon {
-  background-color: #e26d37;
+  background-color: #9e9e98;
   color: white;
   width: 30px !important;
   height: 25px;
