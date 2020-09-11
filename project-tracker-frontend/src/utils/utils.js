@@ -56,6 +56,14 @@ export const getResponseData = (resp) => {
     return data;
 };
 
+/**
+ * Returns the value of an event on an Input element
+ * @param evt
+ * @returns {*}
+ */
+export const getTargetValue = (evt) => {
+    return evt.target.value;
+};
 
 /**
  * Downloads data to excel format

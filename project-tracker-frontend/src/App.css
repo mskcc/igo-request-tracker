@@ -19,6 +19,9 @@
 .font-1p5em{
   font-size: 1.5em;
 }
+.font-2em {
+  font-size: 2em;
+}
 .fill-width {
   width: 100%;
 }
@@ -30,6 +33,13 @@
 }
 .pos-rel {
   position: relative;
+}
+.position-bottom {
+  position: absolute;
+  bottom: 0px;
+}
+.margin-auto {
+  margin: auto;
 }
 .float-right {
   float: right;
@@ -183,7 +193,7 @@
 }
 .filters-container{
   display: inline;
-  float: right;
+  float: left;
 }
 .filters-toggle-container {
   margin-left: 10px;
@@ -286,6 +296,12 @@
 .mskcc-blue {
   color: #007cba;
 }
+.background-sample-sub-blue {
+  background-color: #319ae8;
+}
+.sample-sub-blue {
+  background-color: #319ae8;
+}
 .background-mskcc-orange{
   background-color: #df4602;
 }
@@ -296,7 +312,7 @@
   background-color: #e26d37;
 }
 .igo-orange {
-  color: #e26d37
+  color: #e26d37;
 }
 .background-mskcc-dark-blue{
   background-color: #006098;

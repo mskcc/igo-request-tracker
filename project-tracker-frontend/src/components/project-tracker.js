@@ -8,6 +8,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleRight, faAngleDown, faCheck, faEllipsisH, faFlask} from "@fortawesome/free-solid-svg-icons";
 import Project from '../utils/Project';
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function ProjectTracker({projectName, projectState}) {
     const store = useStore();
@@ -78,28 +81,39 @@ function ProjectTracker({projectName, projectState}) {
 
     };
 
-    return <div>
-        <div className={"hover border padding-vert-5 padding-hor-20"}
-             onClick={() => setShowProject(!showProject)}>
-            <FontAwesomeIcon className="request-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
-            <h1 className={"inline-block"}>{projectName}</h1>
-            {
-                (projectHasData(project) && project.getIgoComplete()) ? <FontAwesomeIcon className="request-complete" icon={faCheck}/>
-                    : <span></span>
-            }
-            {getSummaryIcon(projectName)}
-        </div>
-        {
-            showProject ?
-                projectHasData(project) ?
-                    <ProjectLevelTracker project={project}></ProjectLevelTracker>
-                :
-                    <div>
-                        <p>Loading</p>
-                    </div>
-            : <div></div>
-        }
-    </div>
+    return <Container >
+            <Row className={"hover border padding-vert-5 padding-hor-20"}
+                 onClick={() => setShowProject(!showProject)}>
+                <Col xs={1}>
+                    <FontAwesomeIcon className="request-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
+                </Col>
+                <Col xs={3}>
+                    <h1 className={"position-bottom"}>{projectName}</h1>
+                </Col>
+                <Col xs={7}>
+                    <h3 className={"position-bottom"}>{project ? project.getRecipe() : ''}</h3>
+                </Col>
+                <Col xs={1}>
+                    {
+                        (projectHasData(project) && project.getIgoComplete()) ? <FontAwesomeIcon className="request-complete" icon={faCheck}/>
+                            : <span></span>
+                    }
+                    {getSummaryIcon(projectName)}
+                </Col>
+            </Row>
+            <Row>
+                {
+                    showProject ?
+                        projectHasData(project) ?
+                            <ProjectLevelTracker project={project}></ProjectLevelTracker>
+                            :
+                            <div>
+                                <p>Loading</p>
+                            </div>
+                        : <div></div>
+                }
+            </Row>
+        </Container>
 }
 
 export default ProjectTracker;
