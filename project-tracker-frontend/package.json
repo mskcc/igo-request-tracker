@@ -15,7 +15,7 @@
     "bootstrap": "^4.4.1",
     "file-saver": "^2.0.2",
     "mui-downshift": "^1.4.2",
-    "object-modal": "^0.1.1",
+    "object-modal": "^0.1.5",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-d3-tree": "^1.16.1",

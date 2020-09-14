@@ -7,6 +7,14 @@
 .inline {
   display: inline;
 }
+.table {
+  display: table;
+  height: 100%;
+}
+.table-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
 .text-align-center{
   text-align: center;
 }
@@ -19,6 +27,9 @@
 .font-1p5em{
   font-size: 1.5em;
 }
+.font-2em {
+  font-size: 2em;
+}
 .fill-width {
   width: 100%;
 }
@@ -30,6 +41,13 @@
 }
 .pos-rel {
   position: relative;
+}
+.position-bottom {
+  position: absolute;
+  bottom: 0px;
+}
+.margin-auto {
+  margin: auto;
 }
 .float-right {
   float: right;
@@ -85,7 +103,9 @@
 .overflow-x-auto {
   overflow-x: auto;
 }
-
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
 .help-img {
   width: 80%;
   margin: auto;
@@ -128,6 +148,9 @@
   border: 1px solid black;
   z-index: 1;
 }
+.feedback-form p, .feedback-form h5 {
+  color: black;
+}
 .feedback-text {
   height: 150px;
   width: 95%;
@@ -164,7 +187,7 @@
   display: inline-block;
 }
 .search-icon-container .search-icon {
-  background-color: #e26d37;
+  background-color: #9e9e98;
   color: white;
   width: 30px;
   height: 30px;
@@ -183,13 +206,13 @@
 }
 .filters-container{
   display: inline;
-  float: right;
+  float: left;
 }
 .filters-toggle-container {
   margin-left: 10px;
 }
 .filters-icon {
-  background-color: #e26d37;
+  background-color: #9e9e98;
   color: white;
   width: 30px !important;
   height: 25px;
@@ -256,13 +279,20 @@
   display: block;
   margin: 5px auto 5px;
 }
-.small-icon{
+.tiny-icon {
+  font-size: 1.5em;
+  display: block;
+  margin: auto;
+}
+.small-icon {
   font-size: 2.5em;
-  display: inline-block;
+  display: block;
+  margin: auto;
 }
 .large-icon{
   font-size: 3.5em;
-  display: inline-block;
+  display: block;
+  margin: auto;
 }
 .sample-tree-container {
   margin-top: 20px;
@@ -286,6 +316,12 @@
 .mskcc-blue {
   color: #007cba;
 }
+.background-sample-sub-blue {
+  background-color: #319ae8;
+}
+.sample-sub-blue {
+  background-color: #319ae8;
+}
 .background-mskcc-orange{
   background-color: #df4602;
 }
@@ -296,7 +332,7 @@
   background-color: #e26d37;
 }
 .igo-orange {
-  color: #e26d37
+  color: #e26d37;
 }
 .background-mskcc-dark-blue{
   background-color: #006098;
@@ -364,9 +400,19 @@
 .mskcc-red {
   color: #b1132d;
 }
+
 /* This is not mskcc, but the other red is too dark */
 .light-red {
   color: #f5a3b0;
+}
+.fail-red {
+  color: #C03B5A;
+}
+.success-green {
+  color: #49A078;
+}
+.update-blue {
+  color: #006098;
 }
 .background-mskcc-dark-green{
   background-color: #4c8b2b;

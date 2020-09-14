@@ -2,7 +2,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import StageLevelTracker from "./stage-level-tracker";
 import Tree from "react-d3-tree";
 import React, {useState} from "react";
-import {faFlask} from "@fortawesome/free-solid-svg-icons";
+import {faFlask, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const treeContainerHeight = 600;
@@ -20,11 +20,11 @@ function SampleTree({sample, idx}){
     const [showTree, setShowTree] = useState(false);
 
     const root = sample['root'] || {};
-    const sampleId = sample['sampleId'];
+    const sampleId = root['recordName'] || sample['sampleId'];
     const plus1Idx = idx+1;
     const status = sample['status'];
 
-    let toggleClasses = "request-selector-icon fa-layers fa-fw hover inline-block";
+    let toggleClasses = "large-icon fa-layers fa-fw hover inline-block";
     if(showTree) {
         toggleClasses += ' fade-color'
     }
@@ -33,26 +33,36 @@ function SampleTree({sample, idx}){
     if(status === 'Complete'){
         toggleClasses += ' mskcc-black';
     } else if (status === 'Failed'){
-        toggleClasses += ' mskcc-red';
+        toggleClasses += ' fail-red';
     } else {
-        toggleClasses += ' mskcc-dark-blue';
+        toggleClasses += ' update-blue';
     }
 
     return <Row key={sampleId} className={"border"}>
-        <Col xs={3} sm={2} md={1} className={"padding-vert-10"}>
+        <Col xs={3} sm={2} md={1}>
+            <div className={"table"}>
+                <div className={"table-cell"}>
+                    <p>{sampleId}</p>
+                    <FontAwesomeIcon className={"tiny-icon hover"}
+                                     icon={faProjectDiagram}
+                                     onClick={() => setShowTree(!showTree)}/>
+                </div>
+            </div>
+        </Col>
+        <Col xs={6} sm={7} md={9} className={"padding-vert-10 overflow-x-auto"}>
+            <StageLevelTracker label={sample['sampleId']}
+                               stages={sample.stages}
+                               orientation={"horizontal"}
+                               projectView={false}></StageLevelTracker>
+        </Col>
+        <Col xs={3} md={2}  className={"padding-vert-10"}>
             <span className={toggleClasses}
                   onClick={() => setShowTree(!showTree)}>
                 <FontAwesomeIcon icon={faFlask}/>
                 <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
             </span>
         </Col>
-        <Col xs={9} sm={10} md={11} className={"padding-vert-10 overflow-x-auto"}>
-            <StageLevelTracker label={sample['sampleId']}
-                               stages={sample.stages}
-                               orientation={"horizontal"}
-                               projectView={false}></StageLevelTracker>
-        </Col>
-        {
+            {
             showTree ? <Col xs={12} className={"sample-tree-container"} style={treeContainerStyle}>
                 <Row className={"sample-info"}>
                     <Col xs={4}>
@@ -84,6 +94,17 @@ function SampleTree({sample, idx}){
 
 function SampleLevelTracker({samples}) {
     return <Container>
+        <Row>
+            <Col xs={3} sm={2} md={1} className={"padding-vert-10 text-align-center"}>
+                <p>Sample</p>
+            </Col>
+            <Col xs={6} sm={7} md={9} className={"padding-vert-10 text-align-center overflow-x-auto"}>
+                <p>Stage Progress</p>
+            </Col>
+            <Col xs={3} md={2}  className={"padding-vert-10 text-align-center"}>
+                <p>Status</p>
+            </Col>
+        </Row>
         {
             (samples.length > 0) ? samples.map((sample, idx) => {
                 return <SampleTree  sample={sample}

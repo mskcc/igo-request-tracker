@@ -58,6 +58,14 @@ class Project {
     }
 
     /**
+     * Returns recipe from metadata
+     * @returns {*|string}
+     */
+    getRecipe() {
+        return this.#metaData['RequestName'] || 'Not Available';
+    }
+
+    /**
      * RecentDeliveryDate is only set on projects that are IGO Complete
      * @returns {*|number}
      */
