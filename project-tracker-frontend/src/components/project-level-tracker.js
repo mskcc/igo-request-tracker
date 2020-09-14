@@ -99,7 +99,7 @@ function ProjectLevelTracker({project}) {
                                     <Row>
                                         {
                                             completedSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                Completed
+                                                <p>Completed</p>
                                                 <span className={`small-icon mskcc-black fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
                                                       onClick={() => setShowCompleted(!showCompleted)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
@@ -109,8 +109,8 @@ function ProjectLevelTracker({project}) {
                                         }
                                         {
                                             failedSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                Failed
-                                                <span className={`small-icon mskcc-red fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
+                                                <p>Failed</p>
+                                                <span className={`small-icon fail-red fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
                                                       onClick={() => setShowFailed(!showFailed)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
@@ -119,8 +119,8 @@ function ProjectLevelTracker({project}) {
                                         }
                                         {
                                             pendingSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                Pending
-                                                <span className={`small-icon mskcc-dark-blue fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
+                                                <p>Pending</p>
+                                                <span className={`small-icon update-blue fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
                                                       onClick={() => setShowPending(!showPending)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>

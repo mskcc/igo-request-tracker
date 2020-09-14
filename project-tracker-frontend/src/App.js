@@ -8,13 +8,11 @@ import './App.css';
 import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest, getUserSession} from './services/services';
 import {updateDelivered, updateModalUpdater, updateUndelivered} from './redux/dispatchers';
 import {Col, Container} from 'react-bootstrap';
-import {faHome, faQuestion, faComment, faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
-import IconButton from '@material-ui/core/IconButton';
+import {faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
 import ProjectSection from './components/project-section/project-section';
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from './redux/reducers';
 import {HOME} from './config';
 import HelpSection from './components/help-section/help';
-import Feedback from './components/common/feedback';
 import {Subject} from 'rxjs';
 import {getRequestState, getSortedRequests, getTargetValue} from './utils/utils';
 import Row from 'react-bootstrap/Row';
@@ -24,7 +22,6 @@ import {
     renderDateFilter,
     mapDateFilter,
     DF_WEEK,
-    renderRecipeFilters,
     RecipeFilter, DF_ALL
 } from "./components/common/project-filters";
 import { makeStyles } from '@material-ui/core/styles';
@@ -233,11 +230,13 @@ function App() {
                     </Row>
                 </Container>;
     };
-
     return (
         <div>
             {
-                Object.keys(modalUpdater).length > 0 ? <Modal modalUpdater={modalUpdater}/> : <div></div>
+                Object.keys(modalUpdater).length > 0 ? <Modal modalUpdater={modalUpdater}
+                                                              successColor={'#49A078'}
+                                                              updateColor={'#006098'}
+                                                              errorColor={'#C03B5A'}/> : <div></div>
             }
             <Router basename={'/'}>
                 <Header></Header>

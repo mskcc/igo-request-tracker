@@ -8,6 +8,7 @@ import {
     faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SettingsIcon from '@material-ui/icons/Settings';
 
 const getPendingIndex = (stages) => {
     let stage;
@@ -58,6 +59,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
             return <span></span>
         };
 
+        /* TODO: Temporarily removed */
         // Renders the updated field
         const updateSpan = (stage) => {
             let updateField = 'Updated';
@@ -89,8 +91,8 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
         */
 
         return <span>
-            { stage.complete ? <FontAwesomeIcon className="stage-tracker-icon mskcc-dark-green" icon={ faCheck }/>
-                : <FontAwesomeIcon className="stage-tracker-icon mskcc-dark-blue" icon={ faEllipsisH }/> }
+            { stage.complete ? <FontAwesomeIcon className="stage-tracker-icon success-green" icon={ faCheck }/>
+                : <FontAwesomeIcon className="stage-tracker-icon update-blue" icon={ faEllipsisH }/> }
             <p><span className={"underline"}>
                 Progress</span>: {progressCount}/{total}
             </p>
@@ -111,11 +113,12 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
                         if(projectView){
                             labelProps.optional = generateStageSummary(stage);
                         };
-
                         const name = stage.stage;
                         return (
                             <Step key={name} {...stageProps}>
-                                <StepLabel {...labelProps}><span className={"hover bold"}>{name}</span></StepLabel>
+                                <StepLabel {...labelProps}>
+                                    <span className={"hover bold"}>{name}</span>
+                                </StepLabel>
                             </Step>
                         );
                     })}

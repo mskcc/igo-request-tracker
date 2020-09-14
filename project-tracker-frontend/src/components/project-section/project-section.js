@@ -155,6 +155,14 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
                     </Col>
                 </Row>
                 <Row>
+                    <Container>
+                        <Row className={"hover border padding-vert-5"}>
+                            <Col xs={0} sm={1} className={"overflow-x-hidden"}></Col>
+                            <Col xs={4} sm={3} className={"overflow-x-hidden"}><h4>Request Id</h4></Col>
+                            <Col xs={5} md={6} className={"overflow-x-hidden"}><h4>Recipe</h4></Col>
+                            <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Status</h4></Col>
+                        </Row>
+                    </Container>
                     { projectsInView.map((request) => {
                         const reqId = getRequestId(request);
                         return <ProjectTracker key={reqId}

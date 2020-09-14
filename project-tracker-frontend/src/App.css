@@ -7,6 +7,14 @@
 .inline {
   display: inline;
 }
+.table {
+  display: table;
+  height: 100%;
+}
+.table-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
 .text-align-center{
   text-align: center;
 }
@@ -95,7 +103,9 @@
 .overflow-x-auto {
   overflow-x: auto;
 }
-
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
 .help-img {
   width: 80%;
   margin: auto;
@@ -269,13 +279,20 @@
   display: block;
   margin: 5px auto 5px;
 }
-.small-icon{
+.tiny-icon {
+  font-size: 1.5em;
+  display: block;
+  margin: auto;
+}
+.small-icon {
   font-size: 2.5em;
-  display: inline-block;
+  display: block;
+  margin: auto;
 }
 .large-icon{
   font-size: 3.5em;
-  display: inline-block;
+  display: block;
+  margin: auto;
 }
 .sample-tree-container {
   margin-top: 20px;
@@ -383,9 +400,19 @@
 .mskcc-red {
   color: #b1132d;
 }
+
 /* This is not mskcc, but the other red is too dark */
 .light-red {
   color: #f5a3b0;
+}
+.fail-red {
+  color: #C03B5A;
+}
+.success-green {
+  color: #49A078;
+}
+.update-blue {
+  color: #006098;
 }
 .background-mskcc-dark-green{
   background-color: #4c8b2b;

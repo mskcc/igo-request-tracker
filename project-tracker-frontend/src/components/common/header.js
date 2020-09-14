@@ -24,7 +24,6 @@ const styles = theme => ({
         textAlign: 'center',
     },
     title: {
-        marginRight: theme.spacing(3),
         '&:hover': {
             'text-decoration': 'none',
         }
@@ -57,7 +56,9 @@ export function Header({ classes }) {
     return <AppBar position="static" title={image} className={classes.header}>
         <Container>
             <Toolbar>
-                <Avatar alt="mskcc logo" src={image} className={classes.avatar}/>
+                <NavLink to={`${HOME}/`} className={classes.title}>
+                    <Avatar alt="mskcc logo" src={image} className={classes.avatar}/>
+                </NavLink>
                 <NavLink to={`${HOME}/`} className={classes.title}>
                     <Typography color="secondary" variant="h6" className={classes.title}>
                         IGO Request Tracker

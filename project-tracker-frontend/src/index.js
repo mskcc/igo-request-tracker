@@ -35,7 +35,12 @@ const theme = createMuiTheme({
             root: {
                 color: '#FFFFFF'
             }
-        }
+        },
+        MuiStepIcon: {
+            text: {
+                fill: '#FFFFFF'
+            }
+        },
     }
 });
 
