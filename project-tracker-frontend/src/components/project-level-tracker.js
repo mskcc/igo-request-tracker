@@ -7,6 +7,7 @@ import SampleLevelTracker from "./sample-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
 
+// project: Project.js instance
 function ProjectLevelTracker({project}) {
     const [viewSamples, setViewSamples] = useState(false);
     const [showFailed, setShowFailed] = useState(true);
@@ -66,7 +67,7 @@ function ProjectLevelTracker({project}) {
         return <Col xs={12} sm={6}>
             <p className={"text-align-left"}><span className={"bold"}>Turn Around Time From Receiving</span>: {tatFromReceiving}</p>
         </Col>
-    }
+    };
 
     return <Container className={"border"}>
                     <Row className={"padding-vert-10 border"}>
@@ -84,7 +85,8 @@ function ProjectLevelTracker({project}) {
                         </Col>
                     </Row>
                     <Row className={"parent-sample-level-stages"}>
-                        <StageLevelTracker stages={stages}
+                        <StageLevelTracker isProjectComplete={project.getIgoComplete()}
+                                           stages={stages}
                                            orientation={"horizontal"}
                                            projectView={true}></StageLevelTracker>
                     </Row>
@@ -134,7 +136,8 @@ function ProjectLevelTracker({project}) {
                     </Row>
                     {
                         viewSamples ? <Row>
-                            <SampleLevelTracker samples={filteredSamples}></SampleLevelTracker>
+                            <SampleLevelTracker isProjectComplete={project.getIgoComplete()}
+                                                samples={filteredSamples}></SampleLevelTracker>
                         </Row> : <span></span>
                     }
 
