@@ -38,7 +38,8 @@ class Project {
      * @returns {*|boolean}
      */
     getIgoComplete() {
-        return this.#igoComplete || false;
+        const summary = this.#summary || {};
+        return summary['isIgoComplete'] || false;
     }
 
     /**

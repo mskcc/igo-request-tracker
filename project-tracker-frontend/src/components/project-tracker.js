@@ -94,10 +94,6 @@ function ProjectTracker({projectName, projectState}) {
                     <h3 className={"position-bottom"}>{project ? project.getRecipe() : ''}</h3>
                 </Col>
                 <Col xs={3} md={2} className={"overflow-x-hidden"}>
-                    {
-                        (projectHasData(project) && project.getIgoComplete()) ? <FontAwesomeIcon className="request-complete" icon={faCheck}/>
-                            : <span></span>
-                    }
                     {getSummaryIcon(projectName)}
                 </Col>
             </Row>

@@ -18,7 +18,15 @@ const translate = {
     x: 20
 };
 
-function SampleTree({sample, idx}){
+/**
+ *
+ * @param isProjectComplete - Is the project complete?
+ * @param sample
+ * @param idx
+ * @returns {*}
+ * @constructor
+ */
+function SampleTree({isProjectComplete, sample, idx}){
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     // TODO - constant
     const isUser = userSession['isUser'] || false;
@@ -69,7 +77,7 @@ function SampleTree({sample, idx}){
             </div>
         </Col>
         <Col xs={6} sm={7} md={9} className={"padding-vert-10 overflow-x-auto"}>
-            <StageLevelTracker label={sample['sampleId']}
+            <StageLevelTracker isProjectComplete={isProjectComplete}
                                stages={sample.stages}
                                orientation={"horizontal"}
                                projectView={false}></StageLevelTracker>
@@ -111,7 +119,14 @@ function SampleTree({sample, idx}){
     </Row>;
 }
 
-function SampleLevelTracker({samples}) {
+/**
+ *
+ * @param isProjectComplete - Is the project complete?
+ * @param samples
+ * @returns {*}
+ * @constructor
+ */
+function SampleLevelTracker({isProjectComplete, samples}) {
     return <Container>
         <Row>
             <Col xs={3} sm={2} md={1} className={"padding-vert-10 text-align-center"}>
@@ -126,7 +141,8 @@ function SampleLevelTracker({samples}) {
         </Row>
         {
             (samples.length > 0) ? samples.map((sample, idx) => {
-                return <SampleTree  sample={sample}
+                return <SampleTree  isProjectComplete={isProjectComplete}
+                                    sample={sample}
                                     idx={idx}
                                     key={`${sample}-${idx}`}></SampleTree>;
             }) :

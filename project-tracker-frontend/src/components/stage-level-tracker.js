@@ -22,7 +22,16 @@ const getPendingIndex = (stages) => {
 };
 
 
-function StageLevelTracker({label, stages, orientation, projectView}) {
+/**
+ *
+ * @param isProjectComplete - Is the Project complete? This will override all view indications of pending status
+ * @param stages
+ * @param orientation
+ * @param projectView
+ * @returns {*}
+ * @constructor
+ */
+function StageLevelTracker({isProjectComplete, stages, orientation, projectView}) {
     const [pendingIndex, setPendingIndex] = useState(getPendingIndex(stages));     // Index of least-progressed step
     const [activeIndex, setActiveIndex] = useState(pendingIndex);       // Active state to show user
     const [labelSize, setLabelSize] = useState(projectView ? 0 : 2);
@@ -34,10 +43,10 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
      * @returns {boolean}
      */
     const showStepIsCompleted = (stepIdx) => {
-        return stepIdx < pendingIndex
+        return (stepIdx < pendingIndex) || isProjectComplete;
     };
 
-    const generateStageSummary = (stage) => {
+    const generateStageSummary = (stage, isStageComplete) => {
         const stageName = stage['stage'] || '';
 
         // TODO - Submitted is often inconsistent w/ its number of samples
@@ -63,7 +72,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
         // Renders the updated field
         const updateSpan = (stage) => {
             let updateField = 'Updated';
-            if(stage.complete){
+            if(isStageComplete){
                 updateField = 'Completed';
             }
             if(stage.updateTime === null || stage.updateTime === undefined) {
@@ -91,7 +100,7 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
         */
 
         return <span>
-            { stage.complete ? <FontAwesomeIcon className="stage-tracker-icon success-green" icon={ faCheck }/>
+            { isStageComplete ? <FontAwesomeIcon className="stage-tracker-icon success-green" icon={ faCheck }/>
                 : <FontAwesomeIcon className="stage-tracker-icon update-blue" icon={ faEllipsisH }/> }
             <p><span className={"underline"}>
                 Progress</span>: {progressCount}/{total}
@@ -105,13 +114,13 @@ function StageLevelTracker({label, stages, orientation, projectView}) {
             <Col xs={12-labelSize}>
                 <Stepper activeStep={activeIndex} orientation={orientation}>
                     {stages.map((stage, index) => {
-                        const isCompleted = showStepIsCompleted(index);
+                        const isStageComplete = showStepIsCompleted(index);
                         const stageProps = {
-                            completed: isCompleted
+                            completed: isStageComplete
                         };
                         const labelProps = {};
                         if(projectView){
-                            labelProps.optional = generateStageSummary(stage);
+                            labelProps.optional = generateStageSummary(stage, isStageComplete);
                         };
                         const name = stage.stage;
                         return (
