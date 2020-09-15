@@ -51,7 +51,7 @@ exports.getUndeliveredProjects = () => {
 
 // TODO - Actually get all projects
 exports.getRecentDeliveries = () => {
-	const url = `${LIMS_API}/getRecentDeliveries?time=30&units=d`;
+	const url = `${LIMS_API}/getRecentDeliveries?time=31&units=d`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
