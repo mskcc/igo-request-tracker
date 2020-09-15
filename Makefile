@@ -6,7 +6,7 @@ build-fe:
 	cd project-tracker-frontend && npm install && npm run build-qa && cd -
 
 build-be:
-	cd project-tracker-backend && npm run config-prod && npm run test && rm -rf node_modules && cd -
+	cd project-tracker-backend && npm run config-prod && npm install && npm run test && rm -rf node_modules && cd -
 
 move-fe:
 	rm -rf project-tracker-backend/public && cp -rf project-tracker-frontend/build/ project-tracker-backend/public/
