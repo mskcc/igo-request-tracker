@@ -4,6 +4,8 @@ import Tree from "react-d3-tree";
 import React, {useState} from "react";
 import {faFlask, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useSelector} from "react-redux";
+import {STATE_USER_SESSION} from "../redux/reducers";
 
 const treeContainerHeight = 600;
 
@@ -17,6 +19,10 @@ const translate = {
 };
 
 function SampleTree({sample, idx}){
+    const userSession = useSelector(state => state[STATE_USER_SESSION] );
+    // TODO - constant
+    const isUser = userSession['isUser'] || false;
+
     const [showTree, setShowTree] = useState(false);
 
     const root = sample['root'] || {};
@@ -38,14 +44,27 @@ function SampleTree({sample, idx}){
         toggleClasses += ' update-blue';
     }
 
+    /**
+     * Toggles the tree view of a sample
+     *      NOTE - This feature should NOT be available for the user
+     */
+    const toggleTree = () => {
+        if(!isUser){
+            setShowTree(!showTree);
+        }
+    };
+
     return <Row key={sampleId} className={"border"}>
         <Col xs={3} sm={2} md={1}>
             <div className={"table"}>
                 <div className={"table-cell"}>
                     <p>{sampleId}</p>
-                    <FontAwesomeIcon className={"tiny-icon hover"}
-                                     icon={faProjectDiagram}
-                                     onClick={() => setShowTree(!showTree)}/>
+                    {
+                        isUser ? <span></span> : <FontAwesomeIcon className={"tiny-icon hover"}
+                                         icon={faProjectDiagram}
+                                         onClick={toggleTree}/>
+                    }
+
                 </div>
             </div>
         </Col>
@@ -57,7 +76,7 @@ function SampleTree({sample, idx}){
         </Col>
         <Col xs={3} md={2}  className={"padding-vert-10"}>
             <span className={toggleClasses}
-                  onClick={() => setShowTree(!showTree)}>
+                  onClick={toggleTree}>
                 <FontAwesomeIcon icon={faFlask}/>
                 <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
             </span>
