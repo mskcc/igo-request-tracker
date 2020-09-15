@@ -6,7 +6,7 @@ import Modal, { sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS } from 'obj
 
 import './App.css';
 import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest, getUserSession} from './services/services';
-import {updateDelivered, updateModalUpdater, updateUndelivered} from './redux/dispatchers';
+import {updateDelivered, updateModalUpdater, updateUndelivered, updateUserSession} from "./redux/dispatchers";
 import {Col, Container} from 'react-bootstrap';
 import {faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
 import ProjectSection from './components/project-section/project-section';
@@ -139,6 +139,7 @@ function App() {
 
         getUserSession()
             .then((session)=> {
+                updateUserSession(dispatch, session);
                 const greeting = session.firstName;
                 if(greeting) {
                     sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 4000);
