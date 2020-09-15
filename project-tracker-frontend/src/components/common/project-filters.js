@@ -13,7 +13,7 @@ import {makeStyles} from "@material-ui/core/styles";
 
 // Time, in days, from now for which to search the request list on the @dateFilterField
 export const DF_WEEK = "7";
-export const DF_MONTH = "30";
+export const DF_MONTH = "31";
 export const DF_YEAR = "365";
 export const DF_ALL = "5000";
 export const RECIPE_ALL = "ALL";
