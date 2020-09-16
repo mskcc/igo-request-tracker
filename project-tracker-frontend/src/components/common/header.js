@@ -16,6 +16,8 @@ import {faComment, faQuestion} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
 import {Container} from "react-bootstrap";
 import Feedback from "./feedback";
+import {useSelector} from "react-redux";
+import {STATE_USER_SESSION} from "../../redux/reducers";
 
 const styles = theme => ({
     header: {
@@ -48,10 +50,12 @@ const styles = theme => ({
         color: 'white',
         fontSize: '1.5em'
     }
-})
-
+});
 
 export function Header({ classes }) {
+    const userSession = useSelector(state => state[STATE_USER_SESSION] );
+    const userName = userSession['firstName'];
+
     const [showFeedback, setShowFeedback] = useState(false);
     return <AppBar position="static" title={image} className={classes.header}>
         <Container>
@@ -65,6 +69,11 @@ export function Header({ classes }) {
                     </Typography>
                 </NavLink>
                 <div className={classes.iconContainer}>
+                    <div className={"greeting-container"}>
+                        {
+                            userName ? <p className={"italic"}>Hi {userName}</p> : <span></span>
+                        }
+                    </div>
                     <NavLink to={`${HOME}/help`}
                              activeClassName={classes.active}
                              className={classes.navlink}>

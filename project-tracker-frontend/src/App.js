@@ -2,32 +2,33 @@ import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Modal, { sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS } from 'object-modal';
+import Modal, { sendUpdate, MODAL_ERROR } from 'object-modal';
+import LoadingOverlay from 'react-loading-overlay';
+import Paper from "@material-ui/core/Paper";
+import {Col, Container, Row} from 'react-bootstrap';
+import {faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
+import {Subject} from 'rxjs';
+import TextField from '@material-ui/core/TextField/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
-import './App.css';
 import {getDeliveredProjectsRequest, getUndeliveredProjectsRequest, getUserSession} from './services/services';
 import {updateDelivered, updateModalUpdater, updateUndelivered, updateUserSession} from "./redux/dispatchers";
-import {Col, Container} from 'react-bootstrap';
-import {faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
+import Header from "./components/common/header";
 import ProjectSection from './components/project-section/project-section';
+import HelpSection from './components/help-section/help';
+import FilterIndicator from './components/common/filter-indicator';
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from './redux/reducers';
 import {HOME} from './config';
-import HelpSection from './components/help-section/help';
-import {Subject} from 'rxjs';
 import {getRequestState, getSortedRequests, getTargetValue} from './utils/utils';
-import Row from 'react-bootstrap/Row';
 import {REQ_deliveryDate, REQ_receivedDate} from './utils/api-util';
-import TextField from '@material-ui/core/TextField/TextField';
 import {
     renderDateFilter,
     mapDateFilter,
     DF_WEEK,
     RecipeFilter, DF_ALL
 } from "./components/common/project-filters";
-import { makeStyles } from '@material-ui/core/styles';
-import FilterIndicator from './components/common/filter-indicator';
-import Header from "./components/common/header";
-import Paper from "@material-ui/core/Paper";
+import './App.css';
+
 const useStyles = makeStyles({
     root: {
         'margin': '5px 0px 0px 5px',
@@ -64,14 +65,17 @@ const useStyles = makeStyles({
 function App() {
     const classes = useStyles();
 
-
     const [showFilters, setShowFilters] = useState(false);
     const [recipeSet, setRecipeSet] = useState(new Set());
     const [filteredRecipes, setFilteredRecipes] = useState(new Set());
     const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
     const [pendingRequestsList, setPendingRequestsList] = useState([]);
-
     const [dateFilter, setDateFilter] = useState(DF_WEEK);
+
+    // Loading Indicators - Loading message reflects state of loaded* state
+    const [loadingMessage, setLoadingMessage] = useState('Loading projects...');
+    const [loadedDelivered, setLoadedDelivered] = useState(false);
+    const [loadedPending, setLoadedPending] = useState(false);
 
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
@@ -85,6 +89,7 @@ function App() {
 
         getDeliveredProjectsRequest()
             .then((projectList) => {
+                setLoadedDelivered(true);
                 const requests = getSortedRequests(projectList['requests'] || []);
 
                 // TODO - unsafe (if pending and delivered happen at the same time)
@@ -113,7 +118,7 @@ function App() {
 
                 setDeliveredRequestsList(requests);
                 const deliveredRequests = getRequestState(requests);
-                sendUpdate(modalUpdater, 'Loaded delivered requests', MODAL_SUCCESS, 1000);
+                setLoadingMessage('Loaded delivered requests');
                 updateDelivered(dispatch, deliveredRequests);
             })
             .catch((err) => {
@@ -122,14 +127,15 @@ function App() {
             });
         getUndeliveredProjectsRequest()
             .then((projectList) => {
+                setLoadedPending(true);
                 const requests = getSortedRequests(projectList['requests'] || []);
 
                 // TODO - unsafe (if pending and delivered happen at the same time)
-                // updateRecipes(requests);
+                updateRecipes(requests);
 
                 setPendingRequestsList(requests);
                 const pendingRequests = getRequestState(requests);
-                sendUpdate(modalUpdater, 'Loaded pending requests', MODAL_SUCCESS, 1000);
+                setLoadingMessage('Loaded pending requests');
                 updateUndelivered(dispatch, pendingRequests);
             })
             .catch((err) => {
@@ -140,9 +146,9 @@ function App() {
         getUserSession()
             .then((session)=> {
                 updateUserSession(dispatch, session);
-                const greeting = session.firstName;
-                if(greeting) {
-                    sendUpdate(modalUpdater, `Hi ${greeting}`, MODAL_UPDATE, 4000);
+                const userName = session.firstName;
+                if(userName) {
+                    setLoadingMessage(`Hi ${userName}. We're loading your projects...`);
                 }
             })
             .catch((err) => {
@@ -231,6 +237,9 @@ function App() {
                     </Row>
                 </Container>;
     };
+
+    const isLoading = !(loadedDelivered && loadedPending);
+
     return (
         <div>
             {
@@ -244,21 +253,43 @@ function App() {
                 <Container>
                     <Switch>
                         <Route exact path={`${HOME}/`}>
-                            <Paper className={classes.container} elevation={1}>
-                                {generateSearchContainer('Request ID', requestIdQuery, setRequestIdQuery)}
-                                <ProjectSection requestList={pendingRequestsList}
-                                                projectState={STATE_PENDING_REQUESTS}
-                                                dateFilter={dateFilter}
-                                                dateFilterField={REQ_receivedDate}
-                                                requestIdQuery={requestIdQuery}
-                                                filteredRecipes={filteredRecipes}></ProjectSection>
-                                <ProjectSection requestList={deliveredRequestsList}
-                                                projectState={STATE_DELIVERED_REQUESTS}
-                                                dateFilter={dateFilter}
-                                                dateFilterField={REQ_deliveryDate}
-                                                requestIdQuery={requestIdQuery}
-                                                filteredRecipes={filteredRecipes}></ProjectSection>
-                            </Paper>
+                            {
+                                isLoading ? <LoadingOverlay
+                                        active={isLoading}
+                                        spinner
+                                        text={loadingMessage}
+                                        styles={{
+                                            overlay: (base) => ({
+                                                ...base,
+                                                'min-height': '95vh',
+                                                'background': 'rgba(255, 255, 255, 0.8)',
+                                                'color': '#9e9e98',
+                                                'margin-top': '5vh'
+                                            }),
+                                            spinner: (base) => ({
+                                                ...base,
+                                                width: '100px',
+                                                '& svg circle': {
+                                                    stroke: 'rgba(158, 158, 152, 0.8)'
+                                                }
+                                            })
+                                        }}></LoadingOverlay>
+                                    : <Paper className={classes.container} elevation={1}>
+                                        {generateSearchContainer('Request ID', requestIdQuery, setRequestIdQuery)}
+                                        <ProjectSection requestList={pendingRequestsList}
+                                                        projectState={STATE_PENDING_REQUESTS}
+                                                        dateFilter={dateFilter}
+                                                        dateFilterField={REQ_receivedDate}
+                                                        requestIdQuery={requestIdQuery}
+                                                        filteredRecipes={filteredRecipes}></ProjectSection>
+                                        <ProjectSection requestList={deliveredRequestsList}
+                                                        projectState={STATE_DELIVERED_REQUESTS}
+                                                        dateFilter={dateFilter}
+                                                        dateFilterField={REQ_deliveryDate}
+                                                        requestIdQuery={requestIdQuery}
+                                                        filteredRecipes={filteredRecipes}></ProjectSection>
+                                    </Paper>
+                            }
                         </Route>
                         <Route exact path={`${HOME}/help`}>
                             <HelpSection/>
