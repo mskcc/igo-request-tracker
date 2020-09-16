@@ -107,7 +107,7 @@ class Project {
     }
 
     getSourceProjects() {
-        return this.#metaData['sourceProjects'] || 'Not Available';
+        return this.#metaData['sourceProjects'] || [];
     }
 
     getStages() {
