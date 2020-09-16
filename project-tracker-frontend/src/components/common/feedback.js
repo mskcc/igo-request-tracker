@@ -77,7 +77,8 @@ const Feedback = ({closeFeedback}) => {
             <form className={"fill-width"}>
                 <h5 className={"text-align-center bold"}>Feedback?</h5>
                 <p className={"text-align-left"}>
-                    Please fill out a teamworks request
+                    Please fill out a teamworks request. Or, email the IGO data team (
+                    <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>)
                 </p>
                 <div className={"fill-width text-align-center"}>
                     <IconButton aria-label="teamworks-link"
