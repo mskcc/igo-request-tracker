@@ -34,6 +34,9 @@ function SampleTree({isProjectComplete, sample, idx}){
     const [showTree, setShowTree] = useState(false);
 
     const root = sample['root'] || {};
+    const attributes = root['attributes'] || {};
+    const sourceSampleId = attributes['sourceSampleId'] || '';
+
     const sampleId = root['recordName'] || sample['sampleId'];
     const plus1Idx = idx+1;
     const status = sample['status'];
@@ -67,6 +70,10 @@ function SampleTree({isProjectComplete, sample, idx}){
             <div className={"table"}>
                 <div className={"table-cell"}>
                     <p>{sampleId}</p>
+                    {
+                        sourceSampleId && sourceSampleId !== '' ? <p className={"font-p8em"}>({sourceSampleId})</p>
+                            : <span></span>
+                    }
                     {
                         isUser ? <span></span> : <FontAwesomeIcon className={"tiny-icon hover"}
                                          icon={faProjectDiagram}
