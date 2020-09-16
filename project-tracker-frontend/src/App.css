@@ -144,14 +144,14 @@
 }
 /* FEEDBACK FORM */
 .feedback-container {
-  height: 150px;
+  height: 175px;
   margin-bottom: 10px;
   margin-top: 15px;
 }
 .feedback-form {
   position: absolute;
   right: 0px;
-  width: 275px;
+  width: 350px;
   background-color: white;
   border: 1px solid black;
   z-index: 1;
@@ -172,6 +172,10 @@
   width: 50%;
   margin: auto;
   display: block;;
+}
+.help-unit {
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 .text-input-single-line-container {
   height: 35px;
@@ -228,7 +232,7 @@
   display: block;
 }
 
-.help-stage-mapper {
+.help-table {
   max-width: 600px;
   margin: auto;
 }

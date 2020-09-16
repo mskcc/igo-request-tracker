@@ -11,6 +11,7 @@ import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducer
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { IndicatorFlask } from "./common/indicator-icons";
 
 function ProjectTracker({projectName, projectState}) {
     const store = useStore();
@@ -74,11 +75,8 @@ function ProjectTracker({projectName, projectState}) {
         const failed = summary['failed'];
         const total = summary['total'];
         const summaryColor = (failed && failed > 0) ? 'fail-red' : 'update-blue';
-        return <span className={`large-icon fa-layers fa-fw hover inline-block ${summaryColor}`}>
-            <FontAwesomeIcon icon={faFlask}/>
-            <span className="fa-layers-bottom fa-layers-text fa-inverse project-summary-text-override">{completed}/{total}</span>
-        </span>;
-
+        return <IndicatorFlask summaryColorClass={summaryColor}
+                label={`${completed}/${total}`}></IndicatorFlask>;
     };
 
     return <Container>
