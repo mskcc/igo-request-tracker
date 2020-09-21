@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal, { sendUpdate, MODAL_ERROR } from 'object-modal';
 import LoadingOverlay from 'react-loading-overlay';
@@ -17,7 +17,12 @@ import Header from "./components/common/header";
 import ProjectSection from './components/project-section/project-section';
 import HelpSection from './components/help-section/help';
 import FilterIndicator from './components/common/filter-indicator';
-import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from './redux/reducers';
+import {
+    STATE_DELIVERED_REQUESTS,
+    STATE_MODAL_UPDATER,
+    STATE_PENDING_REQUESTS,
+    STATE_USER_SESSION
+} from "./redux/reducers";
 import {HOME} from './config';
 import {getRequestState, getTargetValue} from './utils/utils';
 import {
@@ -27,6 +32,7 @@ import {
     RecipeFilter, DF_ALL
 } from "./components/common/project-filters";
 import './App.css';
+import {USER_VIEW} from "./utils/api-util";
 
 const useStyles = makeStyles({
     root: {
@@ -76,8 +82,10 @@ function App() {
     const [loadedDelivered, setLoadedDelivered] = useState(false);
     const [loadedPending, setLoadedPending] = useState(false);
 
-    const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const dispatch = useDispatch();
+    const userSession = useSelector(state => state[STATE_USER_SESSION] );
+    const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
+
 
     // TODO - Temp helpers for locating projects
     const [requestIdQuery, setRequestIdQuery] = useState('');
@@ -86,7 +94,7 @@ function App() {
         const modalUpdater = new Subject();
         updateModalUpdater(dispatch, modalUpdater);
 
-        getDeliveredProjectsRequest()
+        getDeliveredProjectsRequest(userSession[USER_VIEW])
             .then((projectList) => {
                 setLoadedDelivered(true);
                 const requests = projectList['requests'] || [];
@@ -124,7 +132,7 @@ function App() {
                 console.error(err);
                 sendUpdate(modalUpdater, 'Failed to load delivered requests', MODAL_ERROR, 5000);
             });
-        getUndeliveredProjectsRequest()
+        getUndeliveredProjectsRequest(userSession[USER_VIEW])
             .then((projectList) => {
                 setLoadedPending(true);
                 const requests = projectList['requests'] || [];
@@ -141,12 +149,14 @@ function App() {
                 console.error(err);
                 sendUpdate(modalUpdater, 'Failed to load pending requests', MODAL_ERROR, 5000);
             });
+    }, [dispatch, userSession]);
 
+    useEffect(() => {
         getUserSession()
-            .then((session)=> {
+            .then((session) => {
                 updateUserSession(dispatch, session);
                 const userName = session.firstName;
-                if(userName) {
+                if (userName) {
                     setLoadingMessage(`Hi ${userName}. We're loading your projects...`);
                 }
             })

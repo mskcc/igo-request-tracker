@@ -12,12 +12,15 @@ import {
 import image from '../../img/msk.png'
 import {HOME} from "../../config";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faComment, faQuestion} from "@fortawesome/free-solid-svg-icons";
+import {faComment, faQuestion, faToggleOff, faToggleOn} from "@fortawesome/free-solid-svg-icons";
 import IconButton from "@material-ui/core/IconButton";
 import {Container} from "react-bootstrap";
 import Feedback from "./feedback";
-import {useSelector} from "react-redux";
-import {STATE_USER_SESSION} from "../../redux/reducers";
+import {useDispatch, useSelector} from "react-redux";
+import {STATE_MODAL_UPDATER, STATE_USER_SESSION} from "../../redux/reducers";
+import {updateUserSession} from "../../redux/dispatchers";
+import {USER_VIEW} from "../../utils/api-util";
+import {MODAL_UPDATE, sendUpdate} from "object-modal";
 
 const styles = theme => ({
     header: {
@@ -53,10 +56,45 @@ const styles = theme => ({
 });
 
 export function Header({ classes }) {
+    const dispatch = useDispatch();
+
+    const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     const userName = userSession['firstName'];
-
     const [showFeedback, setShowFeedback] = useState(false);
+
+    const showUserViewToggle = userSession['isAdmin'] || userSession['isLabMember'];
+    const showUserView = userSession[USER_VIEW] || false;
+
+    const getUserSessionRole = () => {
+        const isAdmin = userSession['isAdmin'] || false;
+        const isLabMember = userSession['isLabMember'] || false;
+        const isPM =  userSession['isPM'] || false;
+
+        return isAdmin ? 'Admin' :
+            isLabMember ? 'IGO' :
+                isPM ? 'PM' : 'User';   // Everyone is a user if they don't have a special role
+    };
+    const role = showUserView ? 'User' : getUserSessionRole();
+
+    /**
+     * Updates the user session in the store
+     */
+    const toggleUserView = () => {
+        const updated = !showUserView;
+        let message = `Switching back to ${getUserSessionRole()} view`;
+        let messageTime = 3000;
+        if(updated) {
+            message = 'Showing user view (Only projects in your hierarchy will be visible)'
+            messageTime = 7000;
+        }
+        sendUpdate(modalUpdater, message, MODAL_UPDATE, messageTime);
+
+        const updatedSession = { ...userSession };
+        updatedSession[USER_VIEW] = !showUserView;
+        updateUserSession(dispatch, updatedSession);
+    };
+
     return <AppBar position="static" title={image} className={classes.header}>
         <Container>
             <Toolbar>
@@ -71,7 +109,13 @@ export function Header({ classes }) {
                 <div className={classes.iconContainer}>
                     <div className={"greeting-container"}>
                         {
-                            userName ? <p className={"italic"}>Hi {userName}</p> : <span></span>
+                            (userName || true) ? <p className={"italic  no-margin-bottom"}>{userName} ({role})</p> : <span></span>
+                        }
+                        {
+                            showUserViewToggle ? <FontAwesomeIcon className={'hover'}
+                                             icon={showUserView ? faToggleOn : faToggleOff}
+                                             onClick={toggleUserView}/>
+                                : <span></span>
                         }
                     </div>
                     <NavLink to={`${HOME}/help`}

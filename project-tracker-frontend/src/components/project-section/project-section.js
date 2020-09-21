@@ -166,8 +166,7 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                                              icon={faFileExcel}/>
                         </div>
                     </Col>
-                    <Col xs={12}>
-                    </Col>
+                    <Col xs={12}></Col>
                 </Row>
                 <Row>
                     <Container>

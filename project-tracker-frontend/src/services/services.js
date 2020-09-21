@@ -28,7 +28,7 @@ const checkForAuthorizationError = (error) => {
     }
 };
 
-export function getUndeliveredProjectsRequest(projects) {
+export function getUndeliveredProjectsRequest(userView) {
     /**
      RESP
      "data": {
@@ -50,8 +50,12 @@ export function getUndeliveredProjectsRequest(projects) {
             ]
     }
      */
+    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered`;
+    if(userView){
+        baseUrl = `${baseUrl}?userView=true`;
+    }
     return axios
-        .get(`${PROJECTS_ENDPOINT}/undelivered`)
+        .get(baseUrl)
         .then(resp => {
             const data = getResponseData(resp);
             return data;
@@ -62,7 +66,7 @@ export function getUndeliveredProjectsRequest(projects) {
         });
 }
 
-export function getDeliveredProjectsRequest(projects) {
+export function getDeliveredProjectsRequest(userView) {
     /*
     return new Promise((resolve) => { resolve(API_PROJECT) })
         .then(resp => {return getData(resp)})
@@ -93,8 +97,12 @@ export function getDeliveredProjectsRequest(projects) {
              }
          }
      */
+    let baseUrl = `${PROJECTS_ENDPOINT}/delivered`;
+    if(userView){
+        baseUrl = `${baseUrl}?userView=true`;
+    }
     return axios
-        .get(`${PROJECTS_ENDPOINT}/delivered`)
+        .get(baseUrl)
         .then(resp => {return getResponseData(resp)})
         .catch(error => {
             checkForAuthorizationError(error);
