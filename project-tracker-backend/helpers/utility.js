@@ -36,7 +36,14 @@ exports.filterProjectsOnHierarchy = async (req, projects) => {
 
 	const userData = jwtInCookie.validateJwtToken(req);
 	const userName = userData["username"];
-	const hierarchy = userData["hierarchy"] || [];
+
+	const HIERARCHY_KEY = "hierarchy";
+	let hierarchy = [];
+	if ( HIERARCHY_KEY in userData ){
+		hierarchy = userData[HIERARCHY_KEY] || [];
+	} else {
+		logger.error(`User ${userName}'s cookie didn't contain ${HIERARCHY_KEY}. All requests will be filtered out.`);
+	}
 
 	// usersWithVisibility: [ [ LAST_NAME, FIRST_NAME ], ... ]
 	const usersWithVisibility = hierarchy.map(hierarchyObject =>
