@@ -279,13 +279,11 @@ function App() {
                                         <ProjectSection requestList={pendingRequestsList}
                                                         projectState={STATE_PENDING_REQUESTS}
                                                         dateFilter={dateFilter}
-                                                        dateFilterField={REQ_receivedDate}
                                                         requestIdQuery={requestIdQuery}
                                                         filteredRecipes={filteredRecipes}></ProjectSection>
                                         <ProjectSection requestList={deliveredRequestsList}
                                                         projectState={STATE_DELIVERED_REQUESTS}
                                                         dateFilter={dateFilter}
-                                                        dateFilterField={REQ_deliveryDate}
                                                         requestIdQuery={requestIdQuery}
                                                         filteredRecipes={filteredRecipes}></ProjectSection>
                                     </Paper>

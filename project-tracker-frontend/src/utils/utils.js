@@ -2,11 +2,16 @@ import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducer
 import React from "react";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
-import {getRequestId} from "./api-util";
+import {getRequestId, REQ_receivedDate} from "./api-util";
 
-export function convertUnixTimeToDateString(UNIX_Timestamp) {
+export function convertUnixTimeToDateStringFull(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
     return date.toLocaleString();
+}
+
+export function convertUnixTimeToDateString_Day(UNIX_Timestamp) {
+    const date = new Date(UNIX_Timestamp);
+    return date.toLocaleDateString();
 }
 
 /**
@@ -86,14 +91,14 @@ export const downloadExcel = (data, fileName) => {
 };
 
 /**
- * Performs sorting of the request list on
+ * Performs sorting of the request list on @REQ_receivedDate
  * @param requests
  * @returns {*}
  */
 export const getSortedRequests = (requests) => {
     const sortedRequests = requests.sort(function(r1, r2) {
-        const d1 = r1['receivedDate'] || -1;
-        const d2 = r2['receivedDate'] || -1;
+        const d1 = r1[REQ_receivedDate] || -1;
+        const d2 = r2[REQ_receivedDate] || -1;
 
         return (d1 > d2) ? -1 : (d1 < d2) ? 1 : 0;
     });

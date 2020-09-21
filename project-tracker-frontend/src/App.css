@@ -15,7 +15,7 @@
   display: table-cell;
   vertical-align: middle;
 }
-.text-align-center{
+.text-align-center {
   text-align: center;
 }
 .text-align-left{
@@ -78,6 +78,9 @@
 .padding-vert-5 {
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.padding-12 {
+  padding: 12px;
 }
 .no-margin-bottom {
   margin-bottom: 0px;

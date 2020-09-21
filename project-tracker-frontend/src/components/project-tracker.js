@@ -5,19 +5,21 @@ import {getProjectTrackingDataRequest} from "../services/services";
 import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleRight, faAngleDown, faCheck, faEllipsisH, faFlask} from "@fortawesome/free-solid-svg-icons";
+import {faAngleRight, faAngleDown, faCheck, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
 import Project from '../utils/Project';
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { IndicatorFlask } from "./common/indicator-icons";
+import {convertUnixTimeToDateString_Day} from "../utils/utils";
 
 function ProjectTracker({projectName, projectState}) {
     const store = useStore();
     const stateProjects = useSelector(state => state[projectState] );
 
     const project = stateProjects[projectName];
+
     const [showProject, setShowProject] = useState(false);
     const dispatch = useDispatch();
 
@@ -79,17 +81,37 @@ function ProjectTracker({projectName, projectState}) {
                 label={`${completed}/${total}`}></IndicatorFlask>;
     };
 
+    /**
+     * Retrieves human-readable received date from project
+     * @param project
+     * @returns {string}
+     */
+    const getFormattedReceivedDate = (project) => {
+        const deliveredDate = project ? project.getRecentDeliveryDate() : null;
+        const receivedDate = project ? project.getReceivedDate() : null;
+
+        if(STATE_DELIVERED_REQUESTS === projectState){
+            return convertUnixTimeToDateString_Day(deliveredDate);
+        } else if (receivedDate) {
+            return convertUnixTimeToDateString_Day(receivedDate);
+        }
+        return 'Not Available';
+    };
+
     return <Container>
             <Row className={"hover border padding-vert-5"}
                  onClick={() => setShowProject(!showProject)}>
                 <Col xs={1} className={"overflow-x-hidden"}>
                     <FontAwesomeIcon className="request-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
                 </Col>
-                <Col xs={3} className={"overflow-x-hidden"}>
-                    <h1 className={"position-bottom"}>{projectName}</h1>
+                <Col xs={3} sm={2} className={"overflow-x-hidden"}>
+                    <h5 className={"padding-12"}>{projectName}</h5>
                 </Col>
-                <Col xs={5} md={6} className={"overflow-x-hidden"}>
-                    <h3 className={"position-bottom"}>{project ? project.getRecipe() : ''}</h3>
+                <Col xs={2} className={"overflow-x-hidden"}>
+                    <h5 className={"padding-12"}>{getFormattedReceivedDate(project)}</h5>
+                </Col>
+                <Col xs={3} md={5} className={"overflow-x-hidden"}>
+                    <h5 className={"padding-12"}>{project ? project.getRecipe() : ''}</h5>
                 </Col>
                 <Col xs={3} md={2} className={"overflow-x-hidden"}>
                     {getSummaryIcon(projectName)}
