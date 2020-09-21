@@ -8,6 +8,8 @@ export const REQ_recipe = 'requestType';
 export const REQ_receivedDate = 'receivedDate';
 export const REQ_deliveryDate = "deliveryDate";
 
+export const USER_VIEW = 'isUser';
+
 /**
  * Retrieves the requestId from the API response
  * @param request

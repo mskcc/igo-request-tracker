@@ -71,8 +71,6 @@ describe("lims-controller", () => {
             var mock = new MockAdapter(axios);
             const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getRecentDeliveries*");
 
-            // console.log(`REQUESTS: ${JSON.stringify(requests)}`);
-
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */

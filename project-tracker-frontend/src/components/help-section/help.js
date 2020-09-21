@@ -22,6 +22,7 @@ import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
 import {DoneCheck, IndicatorFlask} from "../common/indicator-icons";
 import {useSelector} from "react-redux";
+import {USER_VIEW} from "../../utils/api-util";
 
 function HelpSection() {
     const REQUEST_SECTION = "REQUEST_SECTION";
@@ -34,7 +35,7 @@ function HelpSection() {
 
     // TODO - constants
     const userSession = useSelector(state => state[STATE_USER_SESSION]);
-    const isLabMember = userSession["isLabMember"] || false;
+    const showTreeViewSection = !(userSession[USER_VIEW] || userSession['isPM']);
 
     const toggleShow = (type) => {
         if (REQUEST_SECTION === type) {
@@ -169,7 +170,7 @@ function HelpSection() {
                             display more samples</p>
                     </div>
                     {
-                        isLabMember ? <div className={"help-unit"}>
+                        showTreeViewSection ? <div className={"help-unit"}>
                             <h2 className={"inline-block"}>Tree View</h2>
                             <p>To IGO Lab Members, a tree view is available by clicking on the sample <FontAwesomeIcon
                                 icon={faFlask}/> or tree icon <FontAwesomeIcon
