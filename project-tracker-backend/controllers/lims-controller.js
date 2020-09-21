@@ -1,8 +1,8 @@
-const apiResponse = require("../helpers/apiResponse");
-const {authenticateRequest} = require("../middlewares/jwt-cookie");
-const {getRecentDeliveries, getUndeliveredProjects, getProjectTrackingInfo} = require("../services/services");
-const { filterProjectsOnHierarchy, isUser } = require("../helpers/utility");
 const cache = require("../helpers/cache");
+const apiResponse = require("../helpers/apiResponse");
+const { filterProjectsOnHierarchy, isUser } = require("../helpers/utility");
+const { getRecentDeliveries, getUndeliveredProjects, getProjectTrackingInfo } = require("../services/services");
+const { authenticateRequest } = require("../middlewares/jwt-cookie");
 
 /**
  * Returns a list of all projects the user is able to see
@@ -13,10 +13,10 @@ exports.getDeliveredProjects = [
 	authenticateRequest,
 	async function (req, res) {
 		const key = "GET_DELIVERED";
-		const retrievalFunc = () => getRecentDeliveries();
-		return cache.get(key, retrievalFunc)
+		return cache.get(key, getRecentDeliveries)
 			.then(async (projects) => {
-				if(isUser(req)) {
+				if (isUser(req)) {
+					// Users should have their requests filtered (IGO members will not have their projects filtered)
 					const all = projects["requests"] || [];
 					const filteredRequests = await filterProjectsOnHierarchy(req, all);
 					projects["requests"] = filteredRequests;
@@ -25,7 +25,7 @@ exports.getDeliveredProjects = [
 			})
 			.catch((err) => {
 				return apiResponse.ErrorResponse(res, err.message);
-			});
+			})
 	}
 ];
 
@@ -38,8 +38,7 @@ exports.getUndeliveredProjects = [
 	authenticateRequest,
 	async function (req, res) {
 		const key = "GET_UNDELIVERED";
-		const retrievalFunc = () => getUndeliveredProjects();
-		return cache.get(key, retrievalFunc)
+		return cache.get(key, getUndeliveredProjects)
 			.then(async (projects) => {
 				if(isUser(req)) {
 					const all = projects["requests"] || [];
