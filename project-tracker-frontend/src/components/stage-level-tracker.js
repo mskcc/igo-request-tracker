@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDateString} from "../utils/utils";
+import {convertUnixTimeToDateStringFull} from "../utils/utils";
 import {Step, StepLabel, Stepper} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
@@ -79,7 +79,7 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
                 return <p></p>
             }
             return <p>
-                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDateString(stage.updateTime)}
+                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDateStringFull(stage.updateTime)}
             </p>
         };
 
@@ -90,7 +90,7 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
                 return <p></p>
             }
             return <p>
-                <span className={"underline"}>Started</span>: {convertUnixTimeToDateString(startTime)}
+                <span className={"underline"}>Started</span>: {convertUnixTimeToDateStringFull(startTime)}
             </p>
         };
 

@@ -2,7 +2,7 @@ import ProjectTracker from "../project-tracker";
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import {
-    convertUnixTimeToDateString,
+    convertUnixTimeToDateStringFull,
     downloadExcel,
     getDateFromNow,
     getHumanReadable
@@ -12,9 +12,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {getRecipe, getRequestId, REQ_receivedDate} from "../../utils/api-util";
+import {getRecipe, getRequestId, REQ_deliveryDate, REQ_receivedDate} from "../../utils/api-util";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {makeStyles} from "@material-ui/core/styles";
+import {DF_ALL} from "../common/project-filters";
+import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
 
 const useStyles = makeStyles({
     angleDown: {
@@ -25,7 +27,7 @@ const useStyles = makeStyles({
     }
 });
 
-function ProjectSection({dateFilter, requestList, projectState, dateFilterField, requestIdQuery, filteredRecipes}) {
+function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, filteredRecipes}) {
     const classes = useStyles();
     const [filteredProjects, setFilteredProjects] = useState(requestList)
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
@@ -37,6 +39,9 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
         const recipeFilteredList = getFilteredProjectsFromRecipe(requestIdFilteredList);
         setFilteredProjects(recipeFilteredList);
     }, [requestIdQuery, filteredRecipes, dateFilter, requestList]);
+
+    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_receivedDate;
+    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Received';
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -78,17 +83,15 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
     const getDateFilteredList = (requestList) => {
         const numDays = parseInt(dateFilter);
         const oldestDate = getDateFromNow(0, 0, -numDays);
-
         const dateFilteredList = [];
         for(const req of requestList){
             const receivedDate = req[dateFilterField];
-            if(!receivedDate){
-                // When the receivedDate isn't present, that usually means it is new
+            if(receivedDate && receivedDate > oldestDate){
+                // receivedDate needs to be present and that usually means it is new
                 dateFilteredList.push(req);
-            } else {
-                if(receivedDate > oldestDate){
-                    dateFilteredList.push(req);
-                }
+            } else if (!receivedDate && DF_ALL === dateFilter){
+                // Only add request w/ missing received date if filtering for all projects
+                dateFilteredList.push(req);
             }
         }
         return dateFilteredList;
@@ -125,7 +128,7 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
             }
             for(const dField of dateFields){
                 const val = request[dField];
-                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateString(val) : "Not Available";
+                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateStringFull(val) : "Not Available";
             }
             for(const field of boolFields){
                 const val = request[field];
@@ -158,8 +161,9 @@ function ProjectSection({dateFilter, requestList, projectState, dateFilterField,
                     <Container>
                         <Row className={"hover border padding-vert-5"}>
                             <Col xs={0} sm={1} className={"overflow-x-hidden"}></Col>
-                            <Col xs={4} sm={3} className={"overflow-x-hidden"}><h4>Request Id</h4></Col>
-                            <Col xs={5} md={6} className={"overflow-x-hidden"}><h4>Recipe</h4></Col>
+                            <Col xs={3} sm={2} className={"text-align-center overflow-x-hidden"}><h4>Request Id</h4></Col>
+                            <Col xs={2} className={"text-align-center overflow-x-hidden"}><h4>{dateColumnHeader}</h4></Col>
+                            <Col xs={4} md={5} className={"text-align-center overflow-x-hidden"}><h4>Recipe</h4></Col>
                             <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Status</h4></Col>
                         </Row>
                     </Container>

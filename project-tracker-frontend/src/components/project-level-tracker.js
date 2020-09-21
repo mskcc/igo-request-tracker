@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDateString} from '../utils/utils';
+import {convertUnixTimeToDateStringFull} from '../utils/utils';
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 import StageLevelTracker from "./stage-level-tracker";
@@ -17,7 +17,7 @@ function ProjectLevelTracker({project}) {
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
 
-    const startTime = project.getStartTime() ? convertUnixTimeToDateString(project.getStartTime()) : 'Not Available';
+    const startTime = project.getStartTime() ? convertUnixTimeToDateStringFull(project.getStartTime()) : 'Not Available';
     const recentDeliveryDate = project.getRecentDeliveryDate();
     const tatFromReceiving = project.getTATFromReceiving();
     const tatFromInProcessing = project.getTATFromInProcessing();

@@ -1,4 +1,5 @@
-import {convertUnixTimeToDateString} from "./utils";
+import {convertUnixTimeToDateStringFull} from "./utils";
+import {REQ_receivedDate} from "./api-util";
 
 class Project {
     // API Responses
@@ -71,7 +72,16 @@ class Project {
      * @returns {*|number}
      */
     getRecentDeliveryDate() {
-        return this.#metaData['RecentDeliveryDate'] || 'Not Available';
+        return this.#summary['RecentDeliveryDate'] || 'Not Available';
+    }
+
+    /**
+     * Retruns date project was received
+     *
+     * @returns {*}
+     */
+    getReceivedDate() {
+        return this.#metaData['ReceivedDate'];
     }
 
     /**
@@ -197,8 +207,8 @@ class Project {
                 delete next['attributes'].complete;
 
 
-                next['attributes'].startTime = convertUnixTimeToDateString(next['attributes'].startTime);
-                next['attributes'].updateTime = convertUnixTimeToDateString(next['attributes'].updateTime);
+                next['attributes'].startTime = convertUnixTimeToDateStringFull(next['attributes'].startTime);
+                next['attributes'].updateTime = convertUnixTimeToDateStringFull(next['attributes'].updateTime);
 
                 for(const child of next.children){
                     stack.push(child)
