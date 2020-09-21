@@ -5,7 +5,7 @@ import {
     convertUnixTimeToDateStringFull,
     downloadExcel,
     getDateFromNow,
-    getHumanReadable
+    getHumanReadable, getSortedRequests
 } from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
@@ -29,19 +29,22 @@ const useStyles = makeStyles({
 
 function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, filteredRecipes}) {
     const classes = useStyles();
-    const [filteredProjects, setFilteredProjects] = useState(requestList)
+    const [filteredProjects, setFilteredProjects] = useState([]);
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
+    const [descendingDateSort, setDescendingDateSort] = useState(true);
+    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_receivedDate;
+    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Received';
 
     useEffect(() => {
         // FILTERING
         const dateFilteredList = getDateFilteredList(requestList);
         const requestIdFilteredList = getFilteredProjectsFromQuery(dateFilteredList);
         const recipeFilteredList = getFilteredProjectsFromRecipe(requestIdFilteredList);
-        setFilteredProjects(recipeFilteredList);
+        const sortedRequests = getSortedRequests(recipeFilteredList, descendingDateSort, dateFilterField);
+        setFilteredProjects(sortedRequests);
     }, [requestIdQuery, filteredRecipes, dateFilter, requestList]);
 
-    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_receivedDate;
-    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Received';
+
 
     /**
      * Returning the first 5 results that get returned from the filter
@@ -140,8 +143,17 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
         return xlsxObjList;
     };
 
-    const projectsInView = filteredProjects.slice(0,numProjectsToShow);
+    /**
+     * Reverses sorting order of the filtered Projects in view
+     */
+    const toggleDateSorting = () => {
+        const dateSort = !descendingDateSort;
+        setDescendingDateSort(dateSort);
+        const sorted = getSortedRequests(filteredProjects, dateSort, dateFilterField);
+        setFilteredProjects(sorted);
+    };
 
+    const projectsInView = filteredProjects.slice(0,numProjectsToShow);
     return <Container className={"border"}>
                 <Row  className={"black-border background-mskcc-light-gray padding-vert-10 padding-hor-20"}>
                     <Col xs={4}>
@@ -159,10 +171,11 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                 </Row>
                 <Row>
                     <Container>
-                        <Row className={"hover border padding-vert-5"}>
+                        <Row className={"border padding-vert-5"}>
                             <Col xs={0} sm={1} className={"overflow-x-hidden"}></Col>
                             <Col xs={3} sm={2} className={"text-align-center overflow-x-hidden"}><h4>Request Id</h4></Col>
-                            <Col xs={2} className={"text-align-center overflow-x-hidden"}><h4>{dateColumnHeader}</h4></Col>
+                            <Col xs={2} className={"hover text-align-center overflow-x-hidden"}
+                                 onClick={toggleDateSorting}><h4>{dateColumnHeader}</h4></Col>
                             <Col xs={4} md={5} className={"text-align-center overflow-x-hidden"}><h4>Recipe</h4></Col>
                             <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Status</h4></Col>
                         </Row>

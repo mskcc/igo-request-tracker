@@ -95,12 +95,15 @@ export const downloadExcel = (data, fileName) => {
  * @param requests
  * @returns {*}
  */
-export const getSortedRequests = (requests) => {
+export const getSortedRequests = (requests, descending, dateField) => {
     const sortedRequests = requests.sort(function(r1, r2) {
-        const d1 = r1[REQ_receivedDate] || -1;
-        const d2 = r2[REQ_receivedDate] || -1;
+        const d1 = r1[dateField] || -1;
+        const d2 = r2[dateField] || -1;
 
-        return (d1 > d2) ? -1 : (d1 < d2) ? 1 : 0;
+        if(descending) {
+            return (d1 > d2) ? -1 : (d1 < d2) ? 1 : 0;
+        }
+        return (d1 > d2) ? 1 : (d1 < d2) ? -1 : 0;
     });
     return sortedRequests;
 };

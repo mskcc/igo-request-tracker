@@ -19,8 +19,7 @@ import HelpSection from './components/help-section/help';
 import FilterIndicator from './components/common/filter-indicator';
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from './redux/reducers';
 import {HOME} from './config';
-import {getRequestState, getSortedRequests, getTargetValue} from './utils/utils';
-import {REQ_deliveryDate, REQ_receivedDate} from './utils/api-util';
+import {getRequestState, getTargetValue} from './utils/utils';
 import {
     renderDateFilter,
     mapDateFilter,
@@ -90,7 +89,7 @@ function App() {
         getDeliveredProjectsRequest()
             .then((projectList) => {
                 setLoadedDelivered(true);
-                const requests = getSortedRequests(projectList['requests'] || []);
+                const requests = projectList['requests'] || [];
 
                 // TODO - unsafe (if pending and delivered happen at the same time)
                 updateRecipes(requests);
@@ -128,7 +127,7 @@ function App() {
         getUndeliveredProjectsRequest()
             .then((projectList) => {
                 setLoadedPending(true);
-                const requests = getSortedRequests(projectList['requests'] || []);
+                const requests = projectList['requests'] || [];
 
                 // TODO - unsafe (if pending and delivered happen at the same time)
                 updateRecipes(requests);
