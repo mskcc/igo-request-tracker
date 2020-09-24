@@ -24,7 +24,7 @@ export const undeliveredRequests = (state = initialState, action) => {
     }
 };
 
-export const userSession = (state = initialState, action) => {
+export const userSession = (state = { NOT_INITIALIZED: true }, action) => {
     switch (action.type) {
         case SET_USER_SESSION: {
             return action.payload;

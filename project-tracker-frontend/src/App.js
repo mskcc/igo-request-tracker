@@ -91,6 +91,9 @@ function App() {
     const [requestIdQuery, setRequestIdQuery] = useState('');
 
     useEffect(() => {
+        // NOT_INITIALIZED is in the initial state for the userSession in redux
+        if( userSession['NOT_INITIALIZED'] ) return;
+
         const modalUpdater = new Subject();
         updateModalUpdater(dispatch, modalUpdater);
 
