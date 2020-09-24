@@ -6,7 +6,7 @@
 export const REQ_requstId = 'requestId';
 export const REQ_recipe = 'requestType';
 export const REQ_receivedDate = 'receivedDate';
-export const REQ_deliveryDate = "deliveryDate";
+export const REQ_deliveryDate = 'igoCompleteDate';
 
 export const USER_VIEW = 'isUser';
 
@@ -17,9 +17,9 @@ export const USER_VIEW = 'isUser';
  */
 export const getRequestId = (request) => {
     const reqId = request[REQ_requstId];
-    if(!reqId){
-        console.log("Could not retrieve requestId");
-        return "";
+    if (!reqId) {
+        console.error(`Could not retrieve requestId: ${JSON.stringify(request)}`);
+        return '';
     }
     return reqId;
 };
@@ -31,9 +31,41 @@ export const getRequestId = (request) => {
  */
 export const getRecipe = (request) => {
     const recipe = request[REQ_recipe];
-    if(!recipe){
-        console.log("Could not retrieve requestId");
-        return "";
+    if (!recipe) {
+        // console.log('Could not retrieve requestId');
+        return '';
     }
     return recipe;
-}
+};
+
+/**
+ * Retrieves the recipe from the API response
+ * @param request
+ * @returns {string|*}
+ */
+export const getIgoCompleteDate = (request) => {
+    const igoCompleteDate = request['igoCompleteDate'];
+    if (!igoCompleteDate) {
+        // console.log('Could not retrieve igoCompleteDate');
+        return '';
+    }
+    return igoCompleteDate;
+};
+
+export const getReceivedDate = (request) => {
+    const receivedDate = request['receivedDate'];
+    if (!receivedDate) {
+        // console.log('Could not retrieve receivedDate');
+        return '';
+    }
+    return receivedDate;
+};
+
+export const getIsIgoComplete = (request) => {
+    const isIgoComplete = request['isIgoComplete'];
+    if (undefined === isIgoComplete || null === isIgoComplete) {
+        console.error(`Could not retrieve isIgoComplete. Request: ${JSON.stringify(request)}`);
+        return false;
+    }
+    return ('true' === String(isIgoComplete).toLowerCase());
+};

@@ -33,11 +33,11 @@ describe("lims-controller", () => {
             const GIVEN_MANAGER = "manager_given";
             const SN_MANAGER = "manager_sn";
 
-            const requests = [... createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER) ];
+            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getRecentDeliveries*");
+            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
@@ -65,11 +65,11 @@ describe("lims-controller", () => {
             const SN_USER = "user_sn";
             const GIVEN_MANAGER = "manager_given";
             const SN_MANAGER = "manager_sn";
-            const requests = [... createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER) ];
+            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getRecentDeliveries*");
+            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
 
             mock.onGet(url).reply(200, requests);
 
@@ -101,11 +101,12 @@ describe("lims-controller", () => {
             const SN_USER = "user_sn";
             const GIVEN_MANAGER = "manager_given";
             const SN_MANAGER = "manager_sn";
-            const requests = [... createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER) ];
+            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getUndeliveredProjects");
+
+            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
@@ -133,11 +134,11 @@ describe("lims-controller", () => {
             const SN_USER = "user_sn";
             const GIVEN_MANAGER = "manager_given";
             const SN_MANAGER = "manager_sn";
-            const requests = [... createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER) ];
+            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getUndeliveredProjects");
+            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */

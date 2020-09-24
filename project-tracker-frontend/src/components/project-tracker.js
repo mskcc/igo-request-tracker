@@ -6,7 +6,7 @@ import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleRight, faAngleDown, faCheck, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
-import Project from '../utils/Project';
+
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -35,13 +35,16 @@ function ProjectTracker({projectName, projectState}) {
     };
 
     useEffect(() => {
-        if( !projectHasData(project) ){
+        if( !project || !project.isEnriched() ){
             // Need to request the tracking information of the project
             getProjectTrackingDataRequest(projectName)
                 .then(data => {
                     const storeProjects = store.getState()[projectState] || {};  // Retrieve latest version of the store
                     const clone = Object.assign({}, storeProjects);
-                    clone[projectName] = new Project(data);
+
+                    const request = clone[projectName];
+                    request.addRequestTrackingInfo(data);
+
                     if(STATE_DELIVERED_REQUESTS === projectState){
                         updateDelivered(dispatch, clone);
                     } else if(STATE_PENDING_REQUESTS === projectState) {
@@ -53,16 +56,15 @@ function ProjectTracker({projectName, projectState}) {
     }, [dispatch, project, projectName, store]);
 
     const getSummaryIcon = (projectName) => {
-        const mapping = stateProjects[projectName];
-        // If mapping isn't present, or null, this should show a pending icon
-        if(mapping === null || mapping === undefined){
+        const request = stateProjects[projectName];
+        // If request isn't present, or null, this should show a pending icon
+        if(!request.isEnriched()){
             return <span className={`small-icon mskcc-black fa-layers fa-fw hover inline-block`}>
-            <FontAwesomeIcon icon={faEllipsisH}/>
-        </span>;
+                <FontAwesomeIcon icon={faEllipsisH}/>
+            </span>;
         }
 
-        const summary = mapping.getSummary();
-
+        const summary = request.getSummary();
         // igoComplete projects should just show completed icon
         const isIgoComplete = summary['isIgoComplete'] || false;
         if(isIgoComplete){
@@ -87,9 +89,8 @@ function ProjectTracker({projectName, projectState}) {
      * @returns {string}
      */
     const getFormattedDate = (project) => {
-        const deliveredDate = project ? project.getRecentDeliveryDate() : null;
-        const receivedDate = project ? project.getReceivedDate() : null;
-
+        const deliveredDate = project.getIgoCompleteDate();
+        const receivedDate = project.getReceivedDate();
         if(STATE_DELIVERED_REQUESTS === projectState){
             return convertUnixTimeToDateString_Day(deliveredDate);
         } else if (receivedDate) {
@@ -97,6 +98,10 @@ function ProjectTracker({projectName, projectState}) {
         }
         return '...';
     };
+
+    if(! project){
+        return <Container></Container>
+    }
 
     return <Container>
             <Row className={"hover border padding-vert-5"}
@@ -111,7 +116,7 @@ function ProjectTracker({projectName, projectState}) {
                     <h5 className={"padding-12"}>{getFormattedDate(project)}</h5>
                 </Col>
                 <Col xs={3} md={5} className={"overflow-x-hidden"}>
-                    <h5 className={"padding-12"}>{project ? project.getRecipe() : '...'}</h5>
+                    <h5 className={"padding-12"}>{project.getRecipe()}</h5>
                 </Col>
                 <Col xs={3} md={2} className={"overflow-x-hidden"}>
                     {getSummaryIcon(projectName)}
@@ -120,7 +125,7 @@ function ProjectTracker({projectName, projectState}) {
             <Row>
                 {
                     showProject ?
-                        projectHasData(project) ?
+                        (project && project.isEnriched()) ?
                             <ProjectLevelTracker project={project}></ProjectLevelTracker>
                             :
                             <div>

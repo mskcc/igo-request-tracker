@@ -18,12 +18,54 @@ class Project {
         }
      */
     #metaData;
-    #requestId;
-    #bankedSampleId;
-    #stages;
-    #samples;
-    #igoComplete;
-    #summary;
+    #requestId;         // IGO Id of Request
+    #bankedSampleId;    // ID of banked sample
+    #stages;            // List of tracking stages (E.g. "Awaiting Processing", "SampleQC")
+    #samples;           // List of "Tree" of LIMS sample DataRecords that descend from the root sample record
+    #igoComplete;       // Has the project been marked isIgoComplete
+    #summary;           // Summary of progress of the request, i.e. tracking data
+    #igoRequestInfo;    // Basic information used to initialize the project instance w/o tracking information
+
+    /**
+     * Creation of a project has two steps,
+     *      1) constructor - initializes project w/ basic info
+     *      2) addRequestTrackingInfo - provides tracking info for the request
+     *
+     * @param requestId
+     * @param igoCompleteDate
+     * @param receivedDate
+     * @param recipe
+     */
+    constructor(requestId, igoCompleteDate, receivedDate, recipe, isIgoComplete){
+        this.#igoRequestInfo = {};
+        this.#igoRequestInfo.requestId = requestId;
+        this.#igoRequestInfo.igoCompleteDate = igoCompleteDate;
+        this.#igoRequestInfo.receivedDate = receivedDate;
+        this.#igoRequestInfo.recipe = recipe;
+        this.#igoComplete = isIgoComplete;
+    }
+
+    /**
+     * Enriches the project instance with sample-tracking information
+     *
+     * @param data
+     */
+    addRequestTrackingInfo(data){
+        this.processRequest(data);
+    }
+
+    /**
+     * Returns whether the Project instance has been populated with tracking information via @addRequestTrackingInfo
+     * @returns {boolean}
+     */
+    isEnriched() {
+        return ( this.#metaData !== undefined &&
+            this.#bankedSampleId !== undefined &&
+            this.#stages !== undefined &&
+            this.#samples !== undefined &&
+            this.#summary !== undefined &&
+            this.#igoComplete !== undefined );
+    }
 
     getSamples() {
         return this.#samples;
@@ -42,6 +84,16 @@ class Project {
         const summary = this.#summary || {};
         return summary['isIgoComplete'] || false;
     }
+
+    /**
+     * Returns date IGO project was marked complete
+     *
+     * @returns {*}
+     */
+    getIgoCompleteDate() {
+        return this.#igoRequestInfo.igoCompleteDate;
+    }
+
 
     /**
      * Returns project summary information
@@ -64,7 +116,7 @@ class Project {
      * @returns {*|string}
      */
     getRecipe() {
-        return this.#metaData['RequestName'] || 'Not Available';
+        return this.#igoRequestInfo.recipe || 'Not Available';
     }
 
     /**
@@ -81,7 +133,7 @@ class Project {
      * @returns {*}
      */
     getReceivedDate() {
-        return this.#metaData['ReceivedDate'];
+        return this.#igoRequestInfo['receivedDate'] || 'Not Available';
     }
 
     /**
@@ -170,7 +222,6 @@ class Project {
         this.#stages = stages;
         this.#samples = this.processSamples(samples);
         this.#summary = summary;
-        this.#igoComplete = igoComplete;
     }
 
     /**
@@ -219,10 +270,6 @@ class Project {
 
             return sample;
         })
-    }
-
-    constructor(data){
-        this.processRequest(data);
     }
 }
 

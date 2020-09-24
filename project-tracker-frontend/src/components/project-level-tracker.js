@@ -18,7 +18,7 @@ function ProjectLevelTracker({project}) {
     const stages = project.getStages();
 
     const startTime = project.getStartTime() ? convertUnixTimeToDateStringFull(project.getStartTime()) : 'Not Available';
-    const recentDeliveryDate = project.getRecentDeliveryDate();
+    const igoCompleteDate = project.getIgoCompleteDate();
     const tatFromReceiving = project.getTATFromReceiving();
     const tatFromInProcessing = project.getTATFromInProcessing();
     const labHeadEmail = project.getLabHeadEmail();
@@ -56,9 +56,9 @@ function ProjectLevelTracker({project}) {
     }
 
     const getOtherTimeField = () => {
-        if(recentDeliveryDate && "Not Available" !== recentDeliveryDate) {
+        if(igoCompleteDate && "Not Available" !== igoCompleteDate) {
             return <Col xs={12} sm={6}>
-                <p className={"text-align-left"}><span className={"bold"}>Recent Delivery Date</span>: {recentDeliveryDate}</p>
+                <p className={"text-align-left"}><span className={"bold"}>Recent Delivery Date</span>: {igoCompleteDate}</p>
             </Col>
         } else if(tatFromInProcessing){
             return <Col xs={12} sm={6}>

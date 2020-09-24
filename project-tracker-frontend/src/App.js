@@ -123,10 +123,10 @@ function App() {
                     }
                 });
 
-                setDeliveredRequestsList(requests);
                 const deliveredRequests = getRequestState(requests);
                 setLoadingMessage('Loaded delivered requests');
                 updateDelivered(dispatch, deliveredRequests);
+                setDeliveredRequestsList(requests); // NOTE - MUST update after store so data is available globally
             })
             .catch((err) => {
                 console.error(err);
@@ -140,10 +140,10 @@ function App() {
                 // TODO - unsafe (if pending and delivered happen at the same time)
                 updateRecipes(requests);
 
-                setPendingRequestsList(requests);
                 const pendingRequests = getRequestState(requests);
                 setLoadingMessage('Loaded pending requests');
                 updateUndelivered(dispatch, pendingRequests);
+                setPendingRequestsList(requests); // NOTE - MUST update after store so data is available globally
             })
             .catch((err) => {
                 console.error(err);
@@ -234,12 +234,10 @@ function App() {
                                     <div>
                                         <FilterIndicator label={'Past'}
                                                          value={mapDateFilter(dateFilter)}
-                                                         showCondition={dateFilter !== DF_ALL}
-                                                         clear={console.log}/>
+                                                         showCondition={dateFilter !== DF_ALL}/>
                                         <FilterIndicator label={'Recipes'}
                                                          value={Array.from(filteredRecipes).join(', ')}
-                                                         showCondition={filteredRecipes.size > 0}
-                                                         clear={console.log}/>
+                                                         showCondition={filteredRecipes.size > 0}/>
                                     </div>
                                 </Col>
                             }

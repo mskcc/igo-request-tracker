@@ -38,7 +38,7 @@ describe("utility", () => {
 			const SN_MANAGER = "Lisa";
 			const GIVEN_MANAGER = "Wagner";
 
-			const requests = createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER);
+			const { requests } = createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER);
 
 			/* Performs filtering for requests w/ these representatives */
 			callback.returns({
