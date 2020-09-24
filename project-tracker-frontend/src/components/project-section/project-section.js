@@ -188,9 +188,9 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                 </Row>
                 {
                     (filteredProjects.length > numProjectsToShow) ?
-                        <Row className={"hover border padding-vert-5 padding-hor-20"}>
-                            <div  onClick={() => setNumProjectsToShow(numProjectsToShow + 5)}
-                                    className={"margin-auto"}>
+                        <Row className={"hover border padding-vert-5 padding-hor-20"}
+                             onClick={() => setNumProjectsToShow(numProjectsToShow + 5)}>
+                            <div className={"margin-auto"}>
                                 <p className={"no-margin-bottom text-align-center"}>{`Show More (Remaining: ${filteredProjects.length - numProjectsToShow})`}</p>
                                 <FontAwesomeIcon className={classes.angleDown}
                                                  icon={faAngleDown}/>

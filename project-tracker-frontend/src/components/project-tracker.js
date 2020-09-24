@@ -86,7 +86,7 @@ function ProjectTracker({projectName, projectState}) {
      * @param project
      * @returns {string}
      */
-    const getFormattedReceivedDate = (project) => {
+    const getFormattedDate = (project) => {
         const deliveredDate = project ? project.getRecentDeliveryDate() : null;
         const receivedDate = project ? project.getReceivedDate() : null;
 
@@ -95,7 +95,7 @@ function ProjectTracker({projectName, projectState}) {
         } else if (receivedDate) {
             return convertUnixTimeToDateString_Day(receivedDate);
         }
-        return 'Not Available';
+        return '...';
     };
 
     return <Container>
@@ -108,10 +108,10 @@ function ProjectTracker({projectName, projectState}) {
                     <h5 className={"padding-12"}>{projectName}</h5>
                 </Col>
                 <Col xs={2} className={"overflow-x-hidden"}>
-                    <h5 className={"padding-12"}>{getFormattedReceivedDate(project)}</h5>
+                    <h5 className={"padding-12"}>{getFormattedDate(project)}</h5>
                 </Col>
                 <Col xs={3} md={5} className={"overflow-x-hidden"}>
-                    <h5 className={"padding-12"}>{project ? project.getRecipe() : ''}</h5>
+                    <h5 className={"padding-12"}>{project ? project.getRecipe() : '...'}</h5>
                 </Col>
                 <Col xs={3} md={2} className={"overflow-x-hidden"}>
                     {getSummaryIcon(projectName)}
