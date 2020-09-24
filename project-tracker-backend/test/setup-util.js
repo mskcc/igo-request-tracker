@@ -70,5 +70,5 @@ exports.createRequestList = function(user_given, user_ns, manager_given, manager
         }
     ];
 
-    return requests;
+    return {requests};
 }

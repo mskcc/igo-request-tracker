@@ -27,6 +27,6 @@ test('Shows delivered date field if STATE_DELIVERED_REQUESTS', () => {
                         requestIdQuery={''}
                         filteredRecipes={new Set()}/>
     </Provider>);
-    const linkElement = getByText('Delivered');
+    const linkElement = getByText('Completed');
     expect(linkElement).toBeInTheDocument();
 });

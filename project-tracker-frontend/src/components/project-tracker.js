@@ -88,7 +88,7 @@ function ProjectTracker({projectName, projectState}) {
      * @param project
      * @returns {string}
      */
-    const getFormattedReceivedDate = (project) => {
+    const getFormattedDate = (project) => {
         const deliveredDate = project.getIgoCompleteDate();
         const receivedDate = project.getReceivedDate();
         if(STATE_DELIVERED_REQUESTS === projectState){
@@ -96,7 +96,7 @@ function ProjectTracker({projectName, projectState}) {
         } else if (receivedDate) {
             return convertUnixTimeToDateString_Day(receivedDate);
         }
-        return 'Not Available';
+        return '...';
     };
 
     if(! project){
@@ -113,7 +113,7 @@ function ProjectTracker({projectName, projectState}) {
                     <h5 className={"padding-12"}>{projectName}</h5>
                 </Col>
                 <Col xs={2} className={"overflow-x-hidden"}>
-                    <h5 className={"padding-12"}>{getFormattedReceivedDate(project)}</h5>
+                    <h5 className={"padding-12"}>{getFormattedDate(project)}</h5>
                 </Col>
                 <Col xs={3} md={5} className={"overflow-x-hidden"}>
                     <h5 className={"padding-12"}>{project.getRecipe()}</h5>
