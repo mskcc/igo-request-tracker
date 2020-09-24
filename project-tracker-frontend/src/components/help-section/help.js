@@ -145,8 +145,8 @@ function HelpSection() {
                         </div>
                         <p> NOTE - Even if the sample status icon shows all samples have completed all stages, this does
                             not make the request delivered.
-                            Final delivery is an IGO decision and is done by marking that request for delivery in IGO's
-                            LIMS.
+                            Final delivery is an IGO decision and is done by marking that request as completed
+                            (non-sequencing requests) or for delivery (sequencing requests) in IGO's LIMS.
                         </p>
                     </div>
                     <div className={"help-unit"}>
@@ -173,10 +173,8 @@ function HelpSection() {
                         showTreeViewSection ? <div className={"help-unit"}>
                             <h2 className={"inline-block"}>Tree View</h2>
                             <p>To IGO Lab Members, a tree view is available by clicking on the sample <FontAwesomeIcon
-                                icon={faFlask}/> or tree icon <FontAwesomeIcon
-                                icon={faProjectDiagram}></FontAwesomeIcon></p>
-
-
+                                icon={faFlask}/> or tree <FontAwesomeIcon
+                                icon={faProjectDiagram}></FontAwesomeIcon> icon.</p>
                             <img className={"help-img"} src={treeView} alt={"tree-view"}></img>
                             <Row>
                                 <Col xs={6}>
