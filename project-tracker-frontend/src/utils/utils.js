@@ -1,8 +1,9 @@
-import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
+import { STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS } from "../redux/reducers";
 import React from "react";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
-import {getRequestId, REQ_receivedDate} from "./api-util";
+import { getIgoCompleteDate, getReceivedDate, getRequestId, getRecipe, getIsIgoComplete } from './api-util';
+import Project from './Project';
 
 export function convertUnixTimeToDateStringFull(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
@@ -118,8 +119,13 @@ export const getRequestState = (requests) => {
     for (const req of requests) {
         // TODO - api
         const requestId = getRequestId(req);
+        const recipe = getRecipe(req);
+        const receivedDate = getReceivedDate(req);
+        const igoCompleteDate = getIgoCompleteDate(req);
+        const isIgoComplete = getIsIgoComplete(req);
         if(requestId && requestId !== ""){
-            requestState[requestId] = null;
+            // Initialize an entry for the project - will be enriched later by Project::enrichRequest
+            requestState[requestId] = new Project(requestId, igoCompleteDate, receivedDate, recipe, isIgoComplete);
         }
     }
     return requestState;

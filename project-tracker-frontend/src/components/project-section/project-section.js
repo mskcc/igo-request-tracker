@@ -33,7 +33,7 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
     const [descendingDateSort, setDescendingDateSort] = useState(true);
     const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_receivedDate;
-    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Received';
+    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Completed' : 'Received';
 
     useEffect(() => {
         // FILTERING

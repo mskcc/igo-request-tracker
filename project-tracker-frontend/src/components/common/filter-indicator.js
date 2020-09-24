@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function FilterIndicator({label, value, showCondition, clear}) {
+export default function FilterIndicator({label, value, showCondition}) {
     const classes = useStyles();
     return showCondition ? <div className={classes.container}>
             <p className="inline-block no-margin-bottom">

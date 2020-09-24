@@ -27,8 +27,8 @@ const useStyles = makeStyles({
 const mapFilter = {
     [DF_WEEK]: "Week",
     [DF_MONTH]: "Month",
-    [DF_YEAR]: "Year (Pending Only)",
-    [DF_ALL]: "All (Pending Only)"
+    [DF_YEAR]: "Year",
+    [DF_ALL]: "All"
 };
 export const mapDateFilter = (df) => {
     return mapFilter[df] || 'INVALID';

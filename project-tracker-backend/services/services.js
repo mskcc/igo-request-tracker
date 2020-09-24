@@ -10,21 +10,17 @@ const agent = new https.Agent({
 const formatAllProjectsResponse = function(resp) {
 	// TODO - should add a filter for whoever is logged in
 	// TODO - Should also return a more enirched object for each sample
-	const data = resp.data || [];
+	const payload = resp.data || {};
+	const requests = payload.requests || [];
 
-	// LIMS '/getRecentDeliveries' endpoint handles errors by returning populating the requestId field w/ an "ERROR:"
-	const validProjects = data.filter((entry) => !entry.requestId.startsWith("ERROR:"));
-	const invalidProjects = data.filter((entry) => entry.requestId.startsWith("ERROR:"));
-	if(invalidProjects.length > 0){
-		const errorIds = invalidProjects.map((entry) => entry.requestId);
-		const allErrors = Array.from(new Set(errorIds));
-		const errMessage = `Failed to retrieve requests. Errors: ${allErrors}`;
-		logger.error(errMessage);
-		throw new Error(errMessage);
-	}
-	return {
-		requests: validProjects
-	};
+	requests.map(req => {
+		const recentDeliveryDate = req["recentDeliveryDate"];
+		const completedDate = req["completedDate"];
+		req["igoCompleteDate"] = recentDeliveryDate ? recentDeliveryDate : completedDate;
+		return req;
+	});
+
+	return { requests };
 };
 
 const formatData = function(resp) {
@@ -33,25 +29,19 @@ const formatData = function(resp) {
 };
 
 exports.getUndeliveredProjects = () => {
-	const url = `${LIMS_API}/getUndeliveredProjects`;
+	const url = `${LIMS_API}/getIgoRequests?days=365&complete=false`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getUndeliveredProjects response from ${url}`);
 			return resp;
 		})
-		.then((resp) => {
-			// TODO - should add a filter for whoever is logged in
-			const data = resp.data || [];
-			return {
-				requests: data
-			};
-		});
+		.then(formatAllProjectsResponse);
 };
 
 // TODO - Actually get all projects
 exports.getRecentDeliveries = () => {
-	const url = `${LIMS_API}/getRecentDeliveries?time=31&units=d`;
+	const url = `${LIMS_API}/getIgoRequests?days=365&complete=true`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
