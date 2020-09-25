@@ -29,13 +29,8 @@
     "xlsx": "^0.16.3"
   },
   "scripts": {
-    "start": "npm run config-qa && react-scripts start",
-    "build": "npm run config-prod && react-scripts build",
-    "build-qa": "npm run config-qa && npm run test-build && npm run build",
-    "build-prod": "npm run config-prod && npm run build",
-    "config-qa": "cp src/qa.config.js src/config.js",
-    "config-prod": "cp src/prod.config.js src/config.js",
-    "test-build": "react-scripts test --watchAll=false",
+    "start": "REACT_APP_ENV=dev react-scripts start",
+    "build": "react-scripts test --watchAll=false && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
