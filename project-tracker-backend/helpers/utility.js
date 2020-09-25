@@ -10,7 +10,7 @@ const HIERARCHY_TARGETS = ["investigator", "pi"];
  * @param req
  */
 exports.isUser = (req) => {
-	if(process.env.ENV === "QA") return false;
+	if(process.env.NODE_ENV === "dev") return false;
 
 	let userData;
 	try {

@@ -5,6 +5,7 @@ const sinon = require("sinon");
 var chai = require("chai");
 let should = chai.should();
 
+const { LIMS_API } = require("../services/config.js");
 const cache = require("../helpers/cache");
 const jwtInCookie = require("jwt-in-cookie");
 const { createRequestList, MockResponse } = require("./setup-util");
@@ -37,7 +38,7 @@ describe("lims-controller", () => {
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
+            const url = new RegExp(`${LIMS_API}/getIgoRequests*`);
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
@@ -69,7 +70,7 @@ describe("lims-controller", () => {
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
+            const url = new RegExp(`${LIMS_API}/getIgoRequests*`);
 
             mock.onGet(url).reply(200, requests);
 
@@ -106,7 +107,7 @@ describe("lims-controller", () => {
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
 
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
+            const url = new RegExp(`${LIMS_API}/getIgoRequests*`);
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
@@ -138,7 +139,7 @@ describe("lims-controller", () => {
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
-            const url = new RegExp("https://igolims.mskcc.org:8443/LimsRest/getIgoRequests*");
+            const url = new RegExp(`${LIMS_API}/getIgoRequests*`);
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */

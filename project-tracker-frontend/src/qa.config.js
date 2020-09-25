@@ -1,9 +1,0 @@
-// export const HOME_PAGE_PATH = "project-tracker";
-// export const LOGIN_PAGE_URL = "/login";
-// export const PROJECTS_ENDPOINT = "https://igodev.mskcc.org/project-tracker/api/projects";
-export const HOME = "";
-export const HOME_PAGE_PATH = "";
-export const PROJECTS_ENDPOINT = "http://localhost:4000/api/projects";
-export const FEEDBACK_ENDPOINT = "http://localhost:4000/api/feedback";
-export const LOGIN_PAGE_URL = "http://localhost:4200/";
-export const HOST = "http://localhost:3000/";
