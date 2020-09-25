@@ -11,7 +11,6 @@ import {faComment, faTimes, faUsers} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {sendUpdate, MODAL_UPDATE, MODAL_ERROR, MODAL_SUCCESS} from "object-modal";
 
-import {submitFeedbackRequest} from "../../services/feedback";
 import {STATE_DELIVERED_REQUESTS, STATE_MODAL_UPDATER, STATE_PENDING_REQUESTS} from "../../redux/reducers";
 import IconButton from "@material-ui/core/IconButton";
 import {goToTeamWorks} from "../../utils/utils";
