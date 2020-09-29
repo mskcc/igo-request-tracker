@@ -12,11 +12,11 @@ Request Tracker Application for IGO
 
 ### Frontend
 ```
-cd project-tracker-frontend && npm run start
+cd project-tracker-frontend && npm install && npm run start
 ```
 ### Backend
 ```
-cd project-tracker-backend && npm run dev
+cd project-tracker-backend && npm install && npm run dev
 ```
 
 ## Deployment
