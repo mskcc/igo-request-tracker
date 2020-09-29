@@ -49,11 +49,6 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
     const generateStageSummary = (stage, isStageComplete) => {
         const stageName = stage['stage'] || '';
 
-        // TODO - Submitted is often inconsistent w/ its number of samples
-        if('Submitted' === stageName){
-            return <span></span>
-        }
-
         const completedCount = stage.completedSamples || 0;
         const failedCount = stage.failedSamples || 0;
         const progressCount = completedCount + failedCount;
@@ -70,6 +65,7 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
 
         /* TODO: Temporarily removed */
         // Renders the updated field
+        /*
         const updateSpan = (stage) => {
             let updateField = 'Updated';
             if(isStageComplete){
@@ -93,8 +89,6 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
                 <span className={"underline"}>Started</span>: {convertUnixTimeToDateStringFull(startTime)}
             </p>
         };
-
-        /*
         {startedSpan(stage)}
         {updateSpan(stage)}
         */

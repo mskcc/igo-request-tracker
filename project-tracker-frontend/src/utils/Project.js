@@ -124,7 +124,7 @@ class Project {
      * @returns {*}
      */
     getReceivedDate() {
-        return this.#igoRequestInfo['receivedDate'] || 'Not Available';
+        return this.#igoRequestInfo['receivedDate'];
     }
 
     /**

@@ -25,6 +25,7 @@ function ProjectLevelTracker({project}) {
     const labHead = project.getLabHead();
     const investigator = project.getInvestigator();
     const sourceProjects = project.getSourceProjects();
+    const bankedSampleId = project.getBankedSampleId();
 
     // TODO - delete?
     const projectManager = project.getProjectManager();
@@ -85,7 +86,14 @@ function ProjectLevelTracker({project}) {
                             <p className={"text-align-left"}><span className={"bold"}>Laboratory Head</span>: {labHead}</p>
                         </Col>
                         {
-                            sourceProjects.length > 0 ? <Col xs={12}>
+                            bankedSampleId ?  <Col xs={12} sm={6}>
+                                 <p className={"text-align-left"}>
+                                     <span className={"bold"}>Banked Sample Id: </span>: {bankedSampleId}
+                                 </p>
+                             </Col> : <span></span>
+                        }
+                        {
+                            sourceProjects.length > 0 ? <Col xs={12} sm={6}>
                                 <p className={"text-align-left"}>
                                     <span className={"bold"}>Source Projects</span>: { sourceProjects.join(',') }
                                 </p>

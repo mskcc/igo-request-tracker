@@ -75,7 +75,7 @@ function App() {
     const [filteredRecipes, setFilteredRecipes] = useState(new Set());
     const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
     const [pendingRequestsList, setPendingRequestsList] = useState([]);
-    const [dateFilter, setDateFilter] = useState(DF_WEEK);
+    const [dateFilter, setDateFilter] = useState(DF_ALL);
 
     // Loading Indicators - Loading message reflects state of loaded* state
     const [loadingMessage, setLoadingMessage] = useState('Loading projects...');

@@ -91,7 +91,7 @@ function ProjectTracker({projectName, projectState}) {
     const getFormattedDate = (project) => {
         const deliveredDate = project.getIgoCompleteDate();
         const receivedDate = project.getReceivedDate();
-        if(STATE_DELIVERED_REQUESTS === projectState){
+        if(STATE_DELIVERED_REQUESTS === projectState && deliveredDate){
             return convertUnixTimeToDateString_Day(deliveredDate);
         } else if (receivedDate) {
             return convertUnixTimeToDateString_Day(receivedDate);
