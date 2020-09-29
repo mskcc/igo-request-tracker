@@ -202,7 +202,7 @@ function App() {
     const generateSearchContainer = (label, val, fn, required = false) => {
         return  <Container className={"black-border background-mskcc-dark-gray padding-vert-20"}>
                         <Row>
-                            <Col xs={12} md={6} lg={4}
+                            <Col xs={12} lg={6} xl={5}
                                 className={'search-container'}>
                                 <div className={'search-box'}>
                                     <div className={'search-icon-container'}>
@@ -224,7 +224,7 @@ function App() {
                                 </div>
                             </Col>
                             {
-                                showFilters ?  <Col xs={12} md={8}>
+                                showFilters ?  <Col xs={12} lg={6} xl={7}>
                                     <div className={'filters-container'}>
                                         <div>
                                             {renderDateFilter('Submitted/Delivered in past: ', dateFilter, handleDateFilterToggle, dateFilter)}
@@ -233,7 +233,7 @@ function App() {
                                             <RecipeFilter recipeSet={recipeSet} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>
                                         </div>
                                     </div>
-                                </Col> : <Col xs={12} md={8}>
+                                </Col> : <Col xs={12} lg={6} xl={7}>
                                     <div>
                                         <FilterIndicator label={'Past'}
                                                          value={mapDateFilter(dateFilter)}

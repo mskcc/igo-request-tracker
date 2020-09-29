@@ -193,10 +193,9 @@
 }
 
 .search-container {
-  height: 50px;
+  height: 70px;
 }
 .search-icon-container {
-  height: inherit;
   width: 55px;
   border-right: 1px solid white;
   display: inline-block;
@@ -209,7 +208,7 @@
   margin: 10px;
 }
 .search-box {
-  width: 250px;
+  width: 300px;
   display: inline-block;
   border: 1px solid white;
   vertical-align: top;
