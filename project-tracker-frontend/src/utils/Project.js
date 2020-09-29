@@ -14,7 +14,8 @@ class Project {
             "LaboratoryHead": "Danwei Huangfu",
             "TATFromInProcessing": "00 days 22 hours and 26 min.",
             "Investigator": "Gary Dixon",
-            "ProjectManager": "NO PM"
+            "ProjectManager": "NO PM",
+            "bankedSampleId": "IGO-201927"
         }
      */
     #metaData;
@@ -46,21 +47,11 @@ class Project {
     }
 
     /**
-     * Enriches the project instance with sample-tracking information
-     *
-     * @param data
-     */
-    addRequestTrackingInfo(data){
-        this.processRequest(data);
-    }
-
-    /**
      * Returns whether the Project instance has been populated with tracking information via @addRequestTrackingInfo
      * @returns {boolean}
      */
     isEnriched() {
         return ( this.#metaData !== undefined &&
-            this.#bankedSampleId !== undefined &&
             this.#stages !== undefined &&
             this.#samples !== undefined &&
             this.#summary !== undefined &&
@@ -144,6 +135,14 @@ class Project {
         return this.#metaData['RecentDeliveryDate'] || 'Not Available';
     }
 
+    /**
+     * Turn-Around Time
+     * @returns {*|string}
+     */
+    getBankedSampleId() {
+        return this.#metaData['bankedSampleId'];
+    }
+
     getGroupLeader() {
         return this.#metaData['GroupLeader'] || 'Not Available';
     }
@@ -201,13 +200,11 @@ class Project {
     }
 
     /**
-     * Transforms the service response into a Project instance for the client
+     * Enriches the request instance with sample-tracking information
      *
-     * @param data
+     * @param request
      */
-    processRequest(data){
-        const request = data['request'] || {};
-
+    addRequestTrackingInfo(request){
         const metaData = request['metaData'] || {};
         const requestId = request['requestId'] || '';
         const bankedSampleId = request['bankedSampleId'] || '';
@@ -218,7 +215,6 @@ class Project {
 
         this.#metaData = metaData;
         this.#requestId = requestId;
-        this.#bankedSampleId = bankedSampleId;
         this.#stages = stages;
         this.#samples = this.processSamples(samples);
         this.#summary = summary;
