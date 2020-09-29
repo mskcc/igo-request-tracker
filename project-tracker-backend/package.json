@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon ./bin/www",
     "dev": "NODE_ENV=dev nodemon ./bin/www",
-    "test": "NODE_ENV=dev nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
+    "test": "NODE_ENV=qa nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
   },
   "dependencies": {
