@@ -52,12 +52,12 @@ function HelpSection() {
             <h1>Documentation</h1>
             <p>Welcome to the Request Tracker (Beta), thanks for visiting!</p>
             <p> Below is brief documentation of the request tracker and how it can be used.
-                Feedback is always welcome, if something doesn't make sense or you have questions, please submit a
-                request on Teamworks <span>
+                Feedback is always welcome! If something doesn't make sense or you have questions, please submit a
+                request on Teamwork <span>
                     <FontAwesomeIcon onClick={goToTeamWorks}
                                      className={"hover"}
-                                     icon={faUsers}/></span>.
-                Or email the IGO data team, <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                                     icon={faUsers}/></span>
+                or email the IGO data team, <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
             </p>
         </div>
         <div className={"padding-hor-20 padding-vert-10 border"}>
@@ -70,14 +70,14 @@ function HelpSection() {
                 showRequestSections ? <div className={"margin-left-20"}>
                         <p>
                             There are two sections for
-                            for {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}.
+                            {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}.
                             Each section can be separately downloaded to an excel.
                         </p>
                         <h3>{getHumanReadable(STATE_PENDING_REQUESTS)}</h3>
-                        <p>These requests have NOT been delivered by IGO, which is done by marking them for delivery in
-                            IGO's Laboratory Information Management System (LIMS)</p>
+                        <p>These requests have NOT been delivered by IGO. Marking a request for delivery is done by
+                           by members of IGO in the Laboratory Information Management System (LIMS)</p>
                         <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
-                        <p>These requests have been delivered by IGO by marking them for delivery in the LIMs.</p>
+                        <p>These requests have been delivered by IGO by marking them for delivery in the LIMS.</p>
                         <p>Only requests delivered in the last 30 days are returned.</p>
                     </div>
                     : <div></div>
@@ -167,7 +167,7 @@ function HelpSection() {
                         </Row>
                         <p> Each request can be toggled to view a more detailed description of the request.
                             To investigate individual samples in the request, toggling the "View Samples" button will
-                            display more samples</p>
+                            display more samples.</p>
                     </div>
                     {
                         showTreeViewSection ? <div className={"help-unit"}>
@@ -183,7 +183,7 @@ function HelpSection() {
                                     <img className={"help-img"} src={aliquot} alt={"tree-view"}></img>
                                 </Col>
                                 <Col xs={6}>
-                                    <p>Each node has a status that indicates its status at that step in a workflow</p>
+                                    <p>Each node indicates its status in a workflow</p>
                                     <p>
                                         <span className={"bold"}>Green</span>: Completed Step,
                                         <span className={"bold"}>Yellow</span>: Pending Step,
