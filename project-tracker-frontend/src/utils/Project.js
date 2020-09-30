@@ -139,8 +139,8 @@ class Project {
      * Turn-Around Time
      * @returns {*|string}
      */
-    getBankedSampleId() {
-        return this.#metaData['bankedSampleId'];
+    getServiceId() {
+        return this.#metaData['serviceId'];
     }
 
     getGroupLeader() {
