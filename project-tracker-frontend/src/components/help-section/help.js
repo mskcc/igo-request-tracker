@@ -20,7 +20,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
-import {DoneCheck, IndicatorFlask} from "../common/indicator-icons";
+import {DoneCheck, RequestStatusIndicator} from "../common/indicator-icons";
 import {useSelector} from "react-redux";
 import {USER_VIEW} from "../../utils/api-util";
 
@@ -120,8 +120,8 @@ function HelpSection() {
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>
-                                                <IndicatorFlask summaryColorClass={"update-blue"}
-                                                                label={"3/5"}></IndicatorFlask>
+                                                <RequestStatusIndicator summaryColorClass={"update-blue"}
+                                                                completed={3} total={5}></RequestStatusIndicator>
                                             </TableCell>
                                             <TableCell>
                                                 <p>One or more samples of the request are in the pending stage, e.g.
@@ -131,12 +131,12 @@ function HelpSection() {
                                         </TableRow>
                                         <TableRow>
                                             <TableCell>
-                                                <IndicatorFlask summaryColorClass={"fail-red"}
-                                                                label={"7/13"}></IndicatorFlask>
+                                                <RequestStatusIndicator summaryColorClass={"fail-red"}
+                                                                completed={7} total={13}></RequestStatusIndicator>
                                             </TableCell>
                                             <TableCell>
                                                 <p>One or more samples of the request have failed at some stage, e.g. at
-                                                    least one sample of the thirteen samples has failed</p>
+                                                    least one sample of the thirteen total samples has failed.</p>
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>

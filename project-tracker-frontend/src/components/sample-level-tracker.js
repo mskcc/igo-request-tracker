@@ -4,6 +4,7 @@ import Tree from "react-d3-tree";
 import React, {useState} from "react";
 import {faFlask, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Tooltip from '@material-ui/core/Tooltip';
 import {useSelector} from "react-redux";
 import {STATE_USER_SESSION} from "../redux/reducers";
 
@@ -26,7 +27,7 @@ const translate = {
  * @returns {*}
  * @constructor
  */
-function SampleTree({isProjectComplete, sample, idx}){
+function SampleTree({isProjectComplete, sample}){
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     // TODO - constant
     const isUser = userSession['isUser'] || false;
@@ -38,7 +39,6 @@ function SampleTree({isProjectComplete, sample, idx}){
     const sourceSampleId = attributes['sourceSampleId'] || '';
 
     const sampleId = root['recordName'] || sample['sampleId'];
-    const plus1Idx = idx+1;
     const status = sample['status'];
 
     let toggleClasses = "large-icon fa-layers fa-fw hover inline-block";
@@ -46,13 +46,17 @@ function SampleTree({isProjectComplete, sample, idx}){
         toggleClasses += ' fade-color'
     }
 
+    let tooltip = '';
     // TODO - api constants
     if(status === 'Complete'){
         toggleClasses += ' mskcc-black';
+        tooltip = 'Completed';
     } else if (status === 'Failed'){
         toggleClasses += ' fail-red';
+        tooltip = 'Failed';
     } else {
         toggleClasses += ' update-blue';
+        tooltip = 'Pending';
     }
 
     /**
@@ -90,11 +94,12 @@ function SampleTree({isProjectComplete, sample, idx}){
                                projectView={false}></StageLevelTracker>
         </Col>
         <Col xs={3} md={2}  className={"padding-vert-10"}>
-            <span className={toggleClasses}
-                  onClick={toggleTree}>
-                <FontAwesomeIcon icon={faFlask}/>
-                <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{plus1Idx}</span>
-            </span>
+            <Tooltip title={tooltip} aria-label={tooltip} placement="right">
+                <span className={toggleClasses}
+                      onClick={toggleTree}>
+                    <FontAwesomeIcon icon={faFlask}/>
+                </span>
+            </Tooltip>
         </Col>
             {
             showTree ? <Col xs={12} className={"sample-tree-container"} style={treeContainerStyle}>
@@ -150,7 +155,6 @@ function SampleLevelTracker({isProjectComplete, samples}) {
             (samples.length > 0) ? samples.map((sample, idx) => {
                 return <SampleTree  isProjectComplete={isProjectComplete}
                                     sample={sample}
-                                    idx={idx}
                                     key={`${sample}-${idx}`}></SampleTree>;
             }) :
                 <Row>

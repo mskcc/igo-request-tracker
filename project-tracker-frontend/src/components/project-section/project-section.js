@@ -175,8 +175,8 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                             <Col xs={3} sm={2} className={"text-align-center overflow-x-hidden"}><h4>Request Id</h4></Col>
                             <Col xs={2} className={"hover text-align-center overflow-x-hidden"}
                                  onClick={toggleDateSorting}><h4>{dateColumnHeader}</h4></Col>
-                            <Col xs={4} md={5} className={"text-align-center overflow-x-hidden"}><h4>Recipe</h4></Col>
-                            <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Status</h4></Col>
+                            <Col xs={4} md={5} className={"text-align-center overflow-x-hidden"}><h4>Request Type</h4></Col>
+                            <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Progress</h4></Col>
                         </Row>
                     </Container>
                     { projectsInView.map((request) => {
