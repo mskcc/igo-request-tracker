@@ -11,7 +11,7 @@ import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducer
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { IndicatorFlask } from "./common/indicator-icons";
+import { RequestStatusIndicator } from "./common/indicator-icons";
 import {convertUnixTimeToDateString_Day} from "../utils/utils";
 
 function ProjectTracker({projectName, projectState}) {
@@ -79,8 +79,9 @@ function ProjectTracker({projectName, projectState}) {
         const failed = summary['failed'];
         const total = summary['total'];
         const summaryColor = (failed && failed > 0) ? 'fail-red' : 'update-blue';
-        return <IndicatorFlask summaryColorClass={summaryColor}
-                label={`${completed}/${total}`}></IndicatorFlask>;
+        return <RequestStatusIndicator summaryColorClass={summaryColor}
+                completed={completed}
+                total={total}></RequestStatusIndicator>;
     };
 
     /**
