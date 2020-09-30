@@ -1,6 +1,7 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faFlask} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faCircle} from "@fortawesome/free-solid-svg-icons";
+import Tooltip from '@material-ui/core/Tooltip';
 
 /**
  * Shows progress of a pending request
@@ -10,11 +11,16 @@ import {faCheck, faFlask} from "@fortawesome/free-solid-svg-icons";
  * @returns {*}
  * @constructor
  */
-export function IndicatorFlask({summaryColorClass, label}) {
-    return <span className={`large-icon fa-layers fa-fw hover inline-block ${summaryColorClass}`}>
-            <FontAwesomeIcon icon={faFlask}/>
-            <span className="fa-layers-bottom fa-layers-text fa-inverse project-summary-text-override">{label}</span>
-        </span>;
+export function RequestStatusIndicator({summaryColorClass, completed, total}) {
+    const tooltip = `Completed: ${completed}, Total: ${total}`;
+    return <Tooltip title={tooltip} aria-label={tooltip} placement="right">
+             <span className={`large-icon fa-layers fa-fw hover inline-block ${summaryColorClass}`}>
+                    <FontAwesomeIcon icon={faCircle}/>
+                    <span className="fa-layers-text fa-inverse project-summary-text numerator">{completed}</span>
+                    <span className="fa-layers-text fa-inverse project-summary-text denominator">{total}</span>
+            </span>
+        </Tooltip>
+
 }
 
 /**

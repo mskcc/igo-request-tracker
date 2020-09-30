@@ -269,9 +269,16 @@
   font-size: 12px;
   top: 80% !important;
 }
-.project-summary-text-override {
-    font-size: 10px;
-    top: 80% !important;
+.project-summary-text {
+    font-size: 14px;
+    font-weight: bold;
+}
+.numerator {
+    top: 30% !important;
+}
+.denominator {
+    border-top: 1px solid white;
+    top: 70% !important;
 }
 .sample-info {
   position: absolute;
@@ -426,7 +433,7 @@
   color: #49A078;
 }
 .update-blue {
-  color: #006098;
+  color: #319ae8;
 }
 .background-mskcc-dark-green{
   background-color: #4c8b2b;
