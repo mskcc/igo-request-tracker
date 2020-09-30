@@ -285,7 +285,7 @@ function App() {
                                             })
                                         }}></LoadingOverlay>
                                     : <Paper className={classes.container} elevation={1}>
-                                        {generateSearchContainer('Request ID', requestIdQuery, setRequestIdQuery)}
+                                        {generateSearchContainer('Request ID', requestIdQuery, (query) => {setRequestIdQuery(query.toUpperCase())})}
                                         <ProjectSection requestList={pendingRequestsList}
                                                         projectState={STATE_PENDING_REQUESTS}
                                                         dateFilter={dateFilter}
