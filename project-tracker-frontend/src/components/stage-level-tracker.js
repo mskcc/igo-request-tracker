@@ -18,7 +18,7 @@ const getPendingIndex = (stages) => {
             return i;
         }
     }
-    return stages.length-1;
+    return stages.length;
 };
 
 
