@@ -5,6 +5,7 @@ import {getProjectTrackingDataRequest} from "../services/services";
 import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Tooltip from '@material-ui/core/Tooltip';
 import {faAngleRight, faAngleDown, faCheck, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
 
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
@@ -68,9 +69,11 @@ function ProjectTracker({projectName, projectState}) {
         // igoComplete projects should just show completed icon
         const isIgoComplete = summary['isIgoComplete'] || false;
         if(isIgoComplete){
-            return <span className={`small-icon fa-layers fa-fw hover inline-block success-green`}>
-                <FontAwesomeIcon icon={faCheck}/>
-            </span>;
+            return <Tooltip title={'Complete'} aria-label={'Complete'} placement="right">
+                <span className={`small-icon fa-layers fa-fw hover inline-block success-green`}>
+                    <FontAwesomeIcon icon={faCheck}/>
+                </span>
+            </Tooltip>;
         }
 
         // TODO - api constants

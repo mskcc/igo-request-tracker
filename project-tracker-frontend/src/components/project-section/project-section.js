@@ -10,6 +10,7 @@ import {
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Tooltip from '@material-ui/core/Tooltip';
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getRecipe, getRequestId, REQ_deliveryDate, REQ_receivedDate} from "../../utils/api-util";
@@ -161,10 +162,12 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                     </Col>
                     <Col xs={6}></Col>
                     <Col xs={2}>
-                        <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
-                            <FontAwesomeIcon className={"small-icon float-right hover"}
-                                             icon={faFileExcel}/>
-                        </div>
+                        <Tooltip title={`Download ${projectSection}`} aria-label={'Download'} placement="right">
+                            <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
+                                <FontAwesomeIcon className={"small-icon float-right hover"}
+                                                 icon={faFileExcel}/>
+                            </div>
+                        </Tooltip>
                     </Col>
                     <Col xs={12}></Col>
                 </Row>

@@ -118,7 +118,7 @@ function ProjectLevelTracker({project}) {
                                         {
                                             completedSamples.length > 0 ? <Col xs={6} sm={4}>
                                                 <p>Completed</p>
-                                                <span className={`small-icon mskcc-black fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
+                                                <span className={`small-icon success-green fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
                                                       onClick={() => setShowCompleted(!showCompleted)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>

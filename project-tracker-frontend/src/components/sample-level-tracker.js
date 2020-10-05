@@ -49,7 +49,7 @@ function SampleTree({isProjectComplete, sample}){
     let tooltip = '';
     // TODO - api constants
     if(status === 'Complete'){
-        toggleClasses += ' mskcc-black';
+        toggleClasses += ' success-green';
         tooltip = 'Completed';
     } else if (status === 'Failed'){
         toggleClasses += ' fail-red';
