@@ -24,7 +24,8 @@ function ProjectLevelTracker({project}) {
     const labHeadEmail = project.getLabHeadEmail();
     const labHead = project.getLabHead();
     const investigator = project.getInvestigator();
-    const sourceProjects = project.getSourceProjects();
+    const sourceRequests = project.getSourceRequests().filter( request => request !== "INVALID" );
+    const childRequests = project.getChildRequests();
     const serviceId = project.getServiceId();
 
     // TODO - delete?
@@ -93,9 +94,16 @@ function ProjectLevelTracker({project}) {
                              </Col> : <span></span>
                         }
                         {
-                            sourceProjects.length > 0 ? <Col xs={12} sm={6}>
+                            sourceRequests.length > 0 ? <Col xs={12} sm={6}>
                                 <p className={"text-align-left"}>
-                                    <span className={"bold"}>Source Projects</span>: { sourceProjects.join(',') }
+                                    <span className={"bold"}>Source Requests</span>: { sourceRequests.join(', ') }
+                                </p>
+                            </Col> : <span></span>
+                        }
+                        {
+                            childRequests.length > 0 ? <Col xs={12} sm={6}>
+                                <p className={"text-align-left"}>
+                                    <span className={"bold"}>Child Requests</span>: { childRequests.join(', ') }
                                 </p>
                             </Col> : <span></span>
                         }

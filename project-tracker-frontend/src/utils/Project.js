@@ -167,8 +167,12 @@ class Project {
         return this.#metaData['ProjectManager'] || 'Not Available';
     }
 
-    getSourceProjects() {
-        return this.#metaData['sourceProjects'] || [];
+    getSourceRequests() {
+        return this.#metaData['sourceRequests'] || [];
+    }
+
+    getChildRequests() {
+        return this.#metaData['childRequests'] || [];
     }
 
     getStages() {
