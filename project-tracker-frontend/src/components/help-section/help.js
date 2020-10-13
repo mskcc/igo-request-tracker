@@ -28,10 +28,12 @@ function HelpSection() {
     const REQUEST_SECTION = "REQUEST_SECTION";
     const REQUEST_VIEW = "REQUEST_VIEW";
     const STAGE_SECTION = "STAGE_SECTION";
+    const FAQ_SECTION = "FAQ_SECTION";
 
     const [showRequestSections, setShowRequestSections] = useState(false);
     const [showRequestView, setShowRequestView] = useState(false);
     const [showStageSection, setShowStageSection] = useState(false);
+    const [showFAQ, setShowFAQ] = useState(false)
 
     // TODO - constants
     const userSession = useSelector(state => state[STATE_USER_SESSION]);
@@ -44,6 +46,8 @@ function HelpSection() {
             setShowRequestView(!showRequestView);
         } else if (STAGE_SECTION === type) {
             setShowStageSection(!showStageSection);
+        } else {
+            setShowFAQ(!showFAQ);
         }
     };
 
@@ -56,8 +60,7 @@ function HelpSection() {
                 request on Teamwork <span>
                     <FontAwesomeIcon onClick={goToTeamWorks}
                                      className={"hover"}
-                                     icon={faUsers}/></span>
-                or email the IGO data team, <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                                     icon={faUsers}/></span> or email the IGO data team, <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
             </p>
         </div>
         <div className={"padding-hor-20 padding-vert-10 border"}>
@@ -272,6 +275,21 @@ function HelpSection() {
                                 This is unlike the other stages for which there is a direct mapping of status-to-stage,
                                 the Data QC stage.</p>
                         </div>
+                    </div>
+                </div> : <div></div>
+            }
+        </div>
+        <div className={"padding-hor-20 padding-vert-10 border"}>
+            <div onClick={() => toggleShow(FAQ_SECTION)} className={"hover"}>
+                <h1 className={"inline-block"}>FAQ</h1>
+                <FontAwesomeIcon className="request-selector-icon inline-block float-right"
+                                 icon={showFAQ ? faAngleDown : faAngleRight}/>
+            </div>
+            {
+                showFAQ ? <div className={"margin-left-20"}>
+                    <div className={"help-unit"}>
+                        <h2>How up to date is the information on requests?</h2>
+                        <p>The request tracker updates each request every <span className={"bold"}>12 hours</span>.</p>
                     </div>
                 </div> : <div></div>
             }
