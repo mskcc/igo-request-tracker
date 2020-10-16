@@ -117,7 +117,7 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
             "labHeadEmail",
             "qcAccessEmail"
         ];
-        const dateFields = [REQ_receivedDate, "deliveryDate"];
+        const dateFields = [REQ_receivedDate, REQ_deliveryDate];
         const numFields = [
             "recordId",
             "sampleNumber"
