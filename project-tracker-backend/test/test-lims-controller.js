@@ -29,12 +29,11 @@ describe("lims-controller", () => {
             // Clear cached response
             cache.del("GET_DELIVERED");
 
-            const GIVEN_USER = "user_given";
-            const SN_USER = "user_sn";
-            const GIVEN_MANAGER = "manager_given";
-            const SN_MANAGER = "manager_sn";
-
-            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
+		    const CURRENT_USER="CURRENT_USER";
+		    const CURRENT_USER_EMAIL=`${CURRENT_USER}@mskcc.org`;
+		    const LEGACY_USER="LEGACY_USER";
+		    const LEGACY_USER_EMAIL=`R-LEGACY_USE@ski.mskcc.org`
+			const requests = Object.assign({}, createRequestList(CURRENT_USER_EMAIL, LEGACY_USER_EMAIL));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
@@ -44,10 +43,7 @@ describe("lims-controller", () => {
             /* Performs filtering for requests w/ these representatives */
             validateJwtToken.returns({
                 "isUser": true,
-                "hierarchy": [
-                    { "sn": SN_USER, "givenName": GIVEN_USER },
-                    { "sn": SN_MANAGER, "givenName": GIVEN_MANAGER }
-                ]
+                "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
             // We want to test the function that makes the backend request and filters projects
@@ -62,11 +58,11 @@ describe("lims-controller", () => {
             // Clear cached response
             cache.del("GET_DELIVERED");
 
-            const GIVEN_USER = "user_given";
-            const SN_USER = "user_sn";
-            const GIVEN_MANAGER = "manager_given";
-            const SN_MANAGER = "manager_sn";
-            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
+		    const CURRENT_USER="CURRENT_USER";
+		    const CURRENT_USER_EMAIL=`${CURRENT_USER}@mskcc.org`;
+		    const LEGACY_USER="LEGACY_USER";
+		    const LEGACY_USER_EMAIL=`R-LEGACY_USE@ski.mskcc.org`
+			const requests = Object.assign({}, createRequestList(CURRENT_USER_EMAIL, LEGACY_USER_EMAIL));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
@@ -77,10 +73,7 @@ describe("lims-controller", () => {
             /* Performs filtering for requests w/ these representatives */
             validateJwtToken.returns({
                 "isUser": false,
-                "hierarchy": [
-                    { "sn": SN_USER, "givenName": GIVEN_USER },
-                    { "sn": SN_MANAGER, "givenName": GIVEN_MANAGER }
-                ]
+                "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
             // We want to test the function that makes the backend request and filters projects
@@ -98,11 +91,11 @@ describe("lims-controller", () => {
             // Clear cached response
             cache.del("GET_UNDELIVERED");
 
-            const GIVEN_USER = "user_given";
-            const SN_USER = "user_sn";
-            const GIVEN_MANAGER = "manager_given";
-            const SN_MANAGER = "manager_sn";
-            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
+		    const CURRENT_USER="CURRENT_USER";
+		    const CURRENT_USER_EMAIL=`${CURRENT_USER}@mskcc.org`;
+		    const LEGACY_USER="LEGACY_USER";
+		    const LEGACY_USER_EMAIL=`R-LEGACY_USE@ski.mskcc.org`
+			const requests = Object.assign({}, createRequestList(CURRENT_USER_EMAIL, LEGACY_USER_EMAIL));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
@@ -113,10 +106,7 @@ describe("lims-controller", () => {
             /* Performs filtering for requests w/ these representatives */
             validateJwtToken.returns({
                 "isUser": true,
-                "hierarchy": [
-                    { "sn": SN_USER, "givenName": GIVEN_USER },
-                    { "sn": SN_MANAGER, "givenName": GIVEN_MANAGER }
-                ]
+                "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
             // We want to test the function that makes the backend request and filters projects
@@ -131,11 +121,11 @@ describe("lims-controller", () => {
             // Clear cached response
             cache.del("GET_UNDELIVERED");
 
-            const GIVEN_USER = "user_given";
-            const SN_USER = "user_sn";
-            const GIVEN_MANAGER = "manager_given";
-            const SN_MANAGER = "manager_sn";
-            const requests = Object.assign({}, createRequestList(GIVEN_USER, SN_USER, GIVEN_MANAGER, SN_MANAGER));
+		    const CURRENT_USER="CURRENT_USER";
+		    const CURRENT_USER_EMAIL=`${CURRENT_USER}@mskcc.org`;
+		    const LEGACY_USER="LEGACY_USER";
+		    const LEGACY_USER_EMAIL=`R-LEGACY_USE@ski.mskcc.org`
+			const requests = Object.assign({}, createRequestList(CURRENT_USER_EMAIL, LEGACY_USER_EMAIL));
 
             // This sets the mock adapter on the default instance
             var mock = new MockAdapter(axios);
@@ -145,10 +135,7 @@ describe("lims-controller", () => {
             /* Performs filtering for requests w/ these representatives */
             validateJwtToken.returns({
                 "isUser": false,
-                "hierarchy": [
-                    { "sn": SN_USER, "givenName": GIVEN_USER },
-                    { "sn": SN_MANAGER, "givenName": GIVEN_MANAGER }
-                ]
+                "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
             // We want to test the function that makes the backend request and filters projects

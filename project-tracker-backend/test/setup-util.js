@@ -28,45 +28,42 @@ exports.MockResponse = class MockResponse {
     }
 };
 
-exports.createRequestList = function(user_given, user_ns, manager_given, manager_sn) {
-    const USER_NAME = `${user_given}${user_ns}`;
-    const EXPECTED_MANAGER = `${manager_given} ${manager_sn}`;
-
-    const INVESTIGATOR_USER_ID = "INVESTIGATOR_USER_ID";
-    const PI_USER_ID = "PI_USER_ID";
-    const INVESTIGATOR_HIERARCHY_ID = "INVESTIGATOR_HIERARCHY_ID";
-    const PI_HIERARCHY_ID = "PI_HIERARCHY_ID";
+exports.createRequestList = function(email1, email2) {
+    const CURRENT_DATA_ACCESS_EMAIL = "CURRENT_DATA_ACCESS_EMAIL";
+    const CURRENT_QC_ACCESS_EMAIL = "CURRENT_QC_ACCESS_EMAIL";
+    const LEGACY_DATA_ACCESS_EMAIL = "LEGACY_DATA_ACCESS_EMAIL";
+    const LEGACY_QC_ACCESS_EMAIL = "LEGACY_QC_ACCESS_EMAIL";
 
     const requests = [
         {
-            "requestId": INVESTIGATOR_USER_ID,
-            "investigator": USER_NAME,
-            "pi": ""
+            "requestId": CURRENT_DATA_ACCESS_EMAIL,
+            "dataAccessEmails": `${email1},u1.mskcc.org`,
+            "qcAccessEmail": "",
         },
         {
-            "requestId": PI_USER_ID,
-            "investigator": "",
-            "pi": USER_NAME
+            "requestId": CURRENT_QC_ACCESS_EMAIL,
+            "dataAccessEmails": "",
+            "qcAccessEmail": `${email1},u1.mskcc.org`
         },
         {
-            "requestId": INVESTIGATOR_HIERARCHY_ID,
-            "investigator": EXPECTED_MANAGER,
-            "pi": ""
+            "requestId": LEGACY_DATA_ACCESS_EMAIL,
+            "dataAccessEmails": `${email2},u1.mskcc.org`,
+            "qcAccessEmail": ""
         },
         {
-            "requestId": PI_HIERARCHY_ID,
-            "investigator": "",
-            "pi": EXPECTED_MANAGER
-        },
-        {
-            "requestId": "NOT_RETURNED",
-            "investigator": "Rosalind Franklin",
-            "pi": ""
+            "requestId": LEGACY_QC_ACCESS_EMAIL,
+            "dataAccessEmails": "",
+            "qcAccessEmail": `${email2},u1.mskcc.org`
         },
         {
             "requestId": "NOT_RETURNED",
-            "investigator": "",
-            "pi": "Rosalind Franklin"
+            "dataAccessEmails": "Rosalind Franklin",
+            "qcAccessEmail": ""
+        },
+        {
+            "requestId": "NOT_RETURNED",
+            "dataAccessEmails": "",
+            "qcAccessEmail": "Rosalind Franklin"
         }
     ];
 
