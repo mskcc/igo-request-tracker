@@ -6,13 +6,13 @@ import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Tooltip from '@material-ui/core/Tooltip';
-import {faAngleRight, faAngleDown, faCheck, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
+import {faAngleRight, faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons";
 
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { RequestStatusIndicator } from "./common/indicator-icons";
+import { RequestStatusIndicator, LoadingIcon } from "./common/indicator-icons";
 import {convertUnixTimeToDateString_Day} from "../utils/utils";
 
 function ProjectTracker({projectName, projectState}) {
@@ -60,31 +60,26 @@ function ProjectTracker({projectName, projectState}) {
         const request = stateProjects[projectName];
         // If request isn't present, or null, this should show a pending icon
         if(!request.isEnriched()){
-            return <span className={`small-icon mskcc-black fa-layers fa-fw hover inline-block`}>
-                <FontAwesomeIcon icon={faEllipsisH}/>
-            </span>;
-        }
-
-        const summary = request.getSummary();
-        // igoComplete projects should just show completed icon
-        const isIgoComplete = summary['isIgoComplete'] || false;
-        if(isIgoComplete){
-            return <Tooltip title={'Complete'} aria-label={'Complete'} placement="right">
-                <span className={`small-icon fa-layers fa-fw hover inline-block success-green`}>
-                    <FontAwesomeIcon icon={faCheck}/>
-                </span>
-            </Tooltip>;
+            return <LoadingIcon/>;
         }
 
         // TODO - api constants
         // Show an icon w/ an overall status
-        const completed = summary['completed'];
-        const failed = summary['failed'];
-        const total = summary['total'];
-        const summaryColor = (failed && failed > 0) ? 'fail-red' : 'update-blue';
-        return <RequestStatusIndicator summaryColorClass={summaryColor}
-                completed={completed}
-                total={total}></RequestStatusIndicator>;
+        const summary = request.getSummary();
+        const pendingStage = summary['pendingStage'];
+        const isDelivered = summary['isIgoComplete'] || false;
+        const isComplete = summary['stagesComplete'] || false;
+        const completedCt = summary['completed'];
+        const failedCt = summary['failed'];
+        const totalCt = summary['total'];
+
+        return <RequestStatusIndicator
+                    isDelivered={isDelivered}
+                    isComplete={isComplete}
+                    pendingStage={pendingStage}
+                    completedCt={completedCt}
+                    totalCt={totalCt}
+                    failedCt={failedCt}></RequestStatusIndicator>;
     };
 
     /**

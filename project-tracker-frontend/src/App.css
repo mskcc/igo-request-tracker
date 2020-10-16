@@ -329,6 +329,12 @@
 .fade-color {
   opacity: 0.5;
 }
+.request-pending-stage-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* MSKCC Colors */
 .background-mskcc-blue {

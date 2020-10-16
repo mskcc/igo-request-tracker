@@ -20,7 +20,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Paper from "@material-ui/core/Paper";
 import TableBody from "@material-ui/core/TableBody";
-import {DoneCheck, RequestStatusIndicator} from "../common/indicator-icons";
+import {LoadingIcon, RequestStatusIndicator} from "../common/indicator-icons";
 import {useSelector} from "react-redux";
 import {USER_VIEW} from "../../utils/api-util";
 
@@ -114,43 +114,96 @@ function HelpSection() {
                                     </TableHead>
                                     <TableBody>
                                         <TableRow>
-                                            <TableCell>
-                                                <DoneCheck/>
-                                            </TableCell>
-                                            <TableCell>
-                                                <p>All samples have completed all stages</p>
-                                            </TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>
-                                                <RequestStatusIndicator summaryColorClass={"update-blue"}
-                                                                completed={3} total={5}></RequestStatusIndicator>
-                                            </TableCell>
-                                            <TableCell>
-                                                <p>One or more samples of the request are in the pending stage, e.g.
-                                                    three out of five projects have completed all stages, but two are
-                                                    pending</p>
-                                            </TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>
-                                                <RequestStatusIndicator summaryColorClass={"fail-red"}
-                                                                completed={7} total={13}></RequestStatusIndicator>
-                                            </TableCell>
-                                            <TableCell>
-                                                <p>One or more samples of the request have failed at some stage, e.g. at
-                                                    least one sample of the thirteen total samples has failed.</p>
-                                            </TableCell>
-                                        </TableRow>
+                                           <TableCell>
+                                               <RequestStatusIndicator
+                                                               isDelivered={true}
+                                                               isComplete={true}
+                                                               pendingStage={'Completed'}
+                                                               completedCt={5}
+                                                               totalCt={5}
+                                                               failedCt={0}></RequestStatusIndicator>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p> Request has been delivered </p>
+                                           </TableCell>
+                                       </TableRow>
+                                       <TableRow>
+                                           <TableCell>
+                                               <RequestStatusIndicator
+                                                               isDelivered={false}
+                                                               isComplete={true}
+                                                               pendingStage={'Completed'}
+                                                               completedCt={5}
+                                                               totalCt={5}
+                                                               failedCt={0}></RequestStatusIndicator>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p> Request has completed all stages of the workflow, but has not
+                                                   been delivered. Note - Final delivery is an IGO decision and is
+                                                   done by marking that request as completed (non-sequencing requests)
+                                                   or for delivery (sequencing requests) in IGO's LIMS.
+                                               </p>
+                                           </TableCell>
+                                       </TableRow>
+                                       <TableRow>
+                                           <TableCell>
+                                               <RequestStatusIndicator
+                                                               isDelivered={false}
+                                                               isComplete={true}
+                                                               pendingStage={'Completed'}
+                                                               completedCt={5}
+                                                               totalCt={5}
+                                                               failedCt={3}></RequestStatusIndicator>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p> Request has completed all stages of the workflow, but contains
+                                                   failed samples </p>
+                                           </TableCell>
+                                       </TableRow>
+                                       <TableRow>
+                                           <TableCell>
+                                               <RequestStatusIndicator
+                                                               isDelivered={false}
+                                                               isComplete={false}
+                                                               pendingStage={'Library QC'}
+                                                               completedCt={3}
+                                                               totalCt={5}
+                                                               failedCt={0}></RequestStatusIndicator>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p> Request is pending in the "Library QC" stage of the workflow (On
+                                                   hover: 3/5 of the samples in the request are complete) </p>
+                                           </TableCell>
+                                       </TableRow>
+                                       <TableRow>
+                                           <TableCell>
+                                               <RequestStatusIndicator
+                                                               isDelivered={false}
+                                                               isComplete={false}
+                                                               pendingStage={'Sequencing'}
+                                                               completedCt={3}
+                                                               totalCt={5}
+                                                               failedCt={1}></RequestStatusIndicator>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p>
+                                                   Pending sequencing, but one or more samples of the request have
+                                                   failed at some stage
+                                               </p>
+                                           </TableCell>
+                                       </TableRow>
+                                       <TableRow>
+                                           <TableCell>
+                                               <LoadingIcon/>
+                                           </TableCell>
+                                           <TableCell>
+                                               <p>Tracking information for the request is loading</p>
+                                           </TableCell>
+                                       </TableRow>
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </div>
-                        <p> NOTE - Even if the sample status icon shows all samples have completed all stages, this does
-                            not make the request delivered.
-                            Final delivery is an IGO decision and is done by marking that request as completed
-                            (non-sequencing requests) or for delivery (sequencing requests) in IGO's LIMS.
-                        </p>
                     </div>
                     <div className={"help-unit"}>
                         <h2 className={"inline-block"}>Section View</h2>
