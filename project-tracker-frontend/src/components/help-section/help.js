@@ -54,13 +54,12 @@ function HelpSection() {
     return <div className={"border padding-vert-10 padding-hor-20"}>
         <div className={"padding-hor-20 padding-vert-10"}>
             <h1>Documentation</h1>
-            <p>Welcome to the Request Tracker (Beta), thanks for visiting!</p>
             <p> Below is brief documentation of the request tracker and how it can be used.
-                Feedback is always welcome! If something doesn't make sense or you have questions, please submit a
-                request on Teamwork <span>
+                If you have questions, please submit a request on Teamwork <span>
                     <FontAwesomeIcon onClick={goToTeamWorks}
                                      className={"hover"}
                                      icon={faUsers}/></span> or email the IGO data team, <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                Feedback is always welcome as well.
             </p>
         </div>
         <div className={"padding-hor-20 padding-vert-10 border"}>
@@ -81,7 +80,6 @@ function HelpSection() {
                            by members of IGO in the Laboratory Information Management System (LIMS)</p>
                         <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
                         <p>These requests have been delivered by IGO by marking them for delivery in the LIMS.</p>
-                        <p>Only requests delivered in the last 30 days are returned.</p>
                     </div>
                     : <div></div>
             }
