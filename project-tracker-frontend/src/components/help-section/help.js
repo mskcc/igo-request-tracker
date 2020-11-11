@@ -26,6 +26,7 @@ import {USER_VIEW} from "../../utils/api-util";
 
 function HelpSection() {
     const REQUEST_SECTION = "REQUEST_SECTION";
+    const ACCESS_SECTION = "ACCESS_SECTION";
     const REQUEST_VIEW = "REQUEST_VIEW";
     const STAGE_SECTION = "STAGE_SECTION";
     const FAQ_SECTION = "FAQ_SECTION";
@@ -33,6 +34,7 @@ function HelpSection() {
     const [showRequestSections, setShowRequestSections] = useState(false);
     const [showRequestView, setShowRequestView] = useState(false);
     const [showStageSection, setShowStageSection] = useState(false);
+    const [showAccessSection, setShowAccessSection] = useState(false);
     const [showFAQ, setShowFAQ] = useState(false)
 
     // TODO - constants
@@ -46,6 +48,8 @@ function HelpSection() {
             setShowRequestView(!showRequestView);
         } else if (STAGE_SECTION === type) {
             setShowStageSection(!showStageSection);
+        } else if (ACCESS_SECTION === type) {
+            setShowAccessSection(!showAccessSection);
         } else {
             setShowFAQ(!showFAQ);
         }
@@ -252,6 +256,26 @@ function HelpSection() {
             }
         </div>
         <div className={"padding-hor-20 padding-vert-10 border"}>
+            <div onClick={() => toggleShow(ACCESS_SECTION)} className={"hover"}>
+                <h1 className={"inline-block"}>Request Visibility</h1>
+                <FontAwesomeIcon className="request-selector-icon inline-block float-right"
+                                 icon={showAccessSection ? faAngleDown : faAngleRight}/>
+            </div>
+            {
+                showAccessSection ? <div className={"margin-left-20"}>
+                        <p>
+                            Requests are visible to users if their email has been added to the Data Access or
+                            QC Access sections of the request's iLab form.
+                        </p>
+                        <p>
+                            <span className={"underline"}>Future Development</span>: Currently zzPDL emails added to either the Data Access or QC Access
+                            sections will not give visibility. This is a feature we are working on.
+                        </p>
+                    </div>
+                    : <div></div>
+            }
+        </div>
+        <div className={"padding-hor-20 padding-vert-10 border"}>
             <div onClick={() => toggleShow(STAGE_SECTION)} className={"hover"}>
                 <h1 className={"inline-block"}>Stages</h1>
                 <FontAwesomeIcon className="request-selector-icon inline-block float-right"
@@ -341,6 +365,14 @@ function HelpSection() {
                     <div className={"help-unit"}>
                         <h2>How up to date is the information on requests?</h2>
                         <p>The request tracker updates each request every <span className={"bold"}>12 hours</span>.</p>
+                    </div>
+                    <div className={"help-unit"}>
+                        <h2>I cannot see a request</h2>
+                        <p>
+                            The request tracker only makes requests visible to users that have been added to either the
+                            Data Access or QC Access sections of the request's iLab form. If visibility to a request is
+                            needed, please contact <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                        </p>
                     </div>
                 </div> : <div></div>
             }
