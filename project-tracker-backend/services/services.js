@@ -61,6 +61,10 @@ exports.getProjectTrackingInfo = (requestId) => {
 			logger.log("info", `Successfully retrieved /getProjectTrackingInfo response from ${url}`);
 			return resp;
 		})
-		.then(formatData);
+		.then(formatData)
+		.catch((err) => {
+		    logger.error(`Error retrieving data for Request: ${requestId}`);
+		    return {};
+		});
 };
 
