@@ -32,8 +32,9 @@ exports.isUser = (req) => {
  */
 exports.filterProjectsOnHierarchy = async (apiReq, requests) => {
 	const userData = jwtInCookie.validateJwtToken(apiReq);
-    const userName = userData["username"];
-    const visibilityGroups = createVisibilityGroupsFromUserData(userData);
+    const userNameValue = userData["username"] || "";
+    const userName = userNameValue.toLowerCase();
+    const visibilityGroups = createVisibilityGroupsFromUserData(userName, userData);
 
     // Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
     let accessGroups, reqId;
@@ -70,7 +71,7 @@ const parseGroups = (userData) => {
     for(const cnGroup of cnGroups){
         const groupSplit = cnGroup.split("CN=");
         if(groupSplit.length === 2){
-            groups.push( groupSplit[1] );
+            groups.push( groupSplit[1].toLowerCase() );
         }
     }
     return groups;
@@ -106,7 +107,7 @@ const getAccessGroups = (request) => {
             }
             continue;
         }
-        accessGroups.push(accessGroup);
+        accessGroups.push(accessGroup.toLowerCase());
     }
 
     return accessGroups;
@@ -117,9 +118,8 @@ const getAccessGroups = (request) => {
  *
  * @param userData - { ..., "groups": [ "CN=...,CN=..." ], "username": "user", ... }
  */
-const createVisibilityGroupsFromUserData = (userData) => {
+const createVisibilityGroupsFromUserData = (userName, userData) => {
 	const groups = parseGroups(userData);
-    const userName = userData["username"];
     const visibilityGroups = new Set(groups);
     visibilityGroups.add(userName);
     logger.info(`Filtering requests w/ following groups: ${[... visibilityGroups].join(",")}`);
