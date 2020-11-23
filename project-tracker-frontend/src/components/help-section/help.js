@@ -75,13 +75,10 @@ function HelpSection() {
             {
                 showRequestSections ? <div className={"margin-left-20"}>
                         <p>
-                            There are two sections for
-                            {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}.
-                            Each section can be separately downloaded to an excel.
+                            There are two sections for {getHumanReadable(STATE_PENDING_REQUESTS)} and {getHumanReadable(STATE_DELIVERED_REQUESTS)}. Each section can be separately downloaded to an excel.
                         </p>
                         <h3>{getHumanReadable(STATE_PENDING_REQUESTS)}</h3>
-                        <p>These requests have NOT been delivered by IGO. Marking a request for delivery is done by
-                           by members of IGO in the Laboratory Information Management System (LIMS)</p>
+                        <p>These requests have NOT been delivered by IGO. Marking a request for delivery is done by members of IGO in the Laboratory Information Management System (LIMS)</p>
                         <h3>{getHumanReadable(STATE_DELIVERED_REQUESTS)}</h3>
                         <p>These requests have been delivered by IGO by marking them for delivery in the LIMS.</p>
                     </div>
@@ -264,12 +261,17 @@ function HelpSection() {
             {
                 showAccessSection ? <div className={"margin-left-20"}>
                         <p>
-                            Requests are visible to users if their email has been added to the Data Access or
-                            QC Access sections of the request's iLab form.
+                            Requests are visible to users if their @mskcc.org email or a zzPDL they belong to
+                            has been added to the Data Access or QC Access sections of the request's iLab form.
                         </p>
-                        <p>
-                            <span className={"underline"}>Future Development</span>: Currently zzPDL emails added to either the Data Access or QC Access
-                            sections will not give visibility. This is a feature we are working on.
+                        <p>Visibility is not granted to other email addresses, such as:
+                            <ul>
+                                <li>@sloankettering.edu</li>
+                                <li>@cbio.mskcc.org</li>
+                                <li>@med.cornell.edu</li>
+                                <li>@rockefeller.edu</li>
+                                <li>@gmail.com</li>
+                            </ul>
                         </p>
                     </div>
                     : <div></div>
@@ -369,9 +371,14 @@ function HelpSection() {
                     <div className={"help-unit"}>
                         <h2>I cannot see a request</h2>
                         <p>
-                            The request tracker only makes requests visible to users that have been added to either the
-                            Data Access or QC Access sections of the request's iLab form. If visibility to a request is
-                            needed, please contact <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                            The request tracker only makes requests visible to users if their @mskcc email or a zzPDL
+                            they belong to has been added to the Data Access or QC Access sections of the request's iLab
+                            form.
+                        </p>
+                        <p>
+                            Other email addresses (e.g. @sloankettering.edu, @cbio.mskcc.org, @med.cornell.edu,
+                            @rockefeller.edu, @gmail.com) do not grant visibility. If visibility is needed, please
+                            contact <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
                         </p>
                     </div>
                 </div> : <div></div>
