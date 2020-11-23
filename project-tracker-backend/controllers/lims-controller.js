@@ -12,7 +12,7 @@ const { authenticateRequest } = require("../middlewares/jwt-cookie");
 exports.getDeliveredProjects = [
 	authenticateRequest,
 	async function (req, res) {
-		const key = "GET_DELIVERED";
+		const key = "DELIVERED_REQUESTS";
 
 		// Anyone can mock their user view by providing this parameter (only affects non-users)
 		const query = req.query || {};
@@ -24,7 +24,7 @@ exports.getDeliveredProjects = [
 				if (isUser(req) || showUserView) {
 					// Users should have their requests filtered (IGO members will not have their projects filtered)
 					const all = projects["requests"] || [];
-					const filteredRequests = await filterProjectsOnHierarchy(req, all);
+					const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
 					projects = { ...projects };		// clone - prevents altering the cached value
 					projects["requests"] = filteredRequests;
 				}
@@ -32,7 +32,7 @@ exports.getDeliveredProjects = [
 			})
 			.catch((err) => {
 				return apiResponse.ErrorResponse(res, err.message);
-			})
+			});
 	}
 ];
 
@@ -44,7 +44,7 @@ exports.getDeliveredProjects = [
 exports.getUndeliveredProjects = [
 	authenticateRequest,
 	async function (req, res) {
-		const key = "GET_UNDELIVERED";
+		const key = "PENDING_REQUESTS";
 
 		// Anyone can mock their user view by providing this parameter (only affects non-users)
 		const query = req.query || {};
@@ -55,7 +55,7 @@ exports.getUndeliveredProjects = [
 			.then(async (projects) => {
 				if(isUser(req) || showUserView) {
 					const all = projects["requests"] || [];
-					const filteredRequests = await filterProjectsOnHierarchy(req, all);
+					const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
 					projects = { ...projects };		// clone - prevents altering the cached value
 					projects["requests"] = filteredRequests;
 				}
