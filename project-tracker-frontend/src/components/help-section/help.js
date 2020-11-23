@@ -261,8 +261,9 @@ function HelpSection() {
             {
                 showAccessSection ? <div className={"margin-left-20"}>
                         <p>
-                            Requests are visible to users if their @mskcc.org email or a zzPDL they belong to
-                            has been added to the Data Access or QC Access sections of the request's iLab form.
+                            Requests are visible to users if their @mskcc.org/@ski.mskcc.org email or a zzPDL they
+                            belong to has been added to the Data Access or QC Access sections of the request's iLab
+                            form.
                         </p>
                         <p>Visibility is not granted to other email addresses, such as:
                             <ul>
@@ -371,9 +372,9 @@ function HelpSection() {
                     <div className={"help-unit"}>
                         <h2>I cannot see a request</h2>
                         <p>
-                            The request tracker only makes requests visible to users if their @mskcc email or a zzPDL
-                            they belong to has been added to the Data Access or QC Access sections of the request's iLab
-                            form.
+                            The request tracker only makes requests visible to users if their @mskcc.org/@ski.mskcc.org
+                            email or a zzPDL they belong to has been added to the Data Access or QC Access sections of
+                            the request's iLab form.
                         </p>
                         <p>
                             Other email addresses (e.g. @sloankettering.edu, @cbio.mskcc.org, @med.cornell.edu,
