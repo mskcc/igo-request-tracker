@@ -43,6 +43,9 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 	// Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
 	let accessGroups, reqId;
 	const filteredRequests = [];
+
+	const requestsMissingAccessGroups = [];
+
 	for(const request of requests){
 		accessGroups = getAccessGroups(request);
 		reqId = request["requestId"];
@@ -50,7 +53,6 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 		if(accessGroups.length === 0){
 		    if(!MISSING_ACCESS_GROUPS.has(reqId)){
 		        MISSING_ACCESS_GROUPS.add(reqId);
-		        logger.error(`Request (Id: ${reqId}) is missing access groups and cannot be filtered`);
 		    }
 		} else {
 			logger.info(`Request (${reqId}) Access Groups: ${accessGroups.join(",")}`);
@@ -59,7 +61,10 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 			filteredRequests.push(request);
 		}
 	}
+
+	logger.error(`${MISSING_ACCESS_GROUPS.size} requests are missing access groups and cannot be filtered: ${[... MISSING_ACCESS_GROUPS].join(",")}`);
 	logger.info(`User: ${userName} should see ${filteredRequests.length} ${key}: ${filteredRequests.map(prj => prj["requestId"])}`);
+
 	return filteredRequests;
 };
 
@@ -96,7 +101,9 @@ const getAccessGroups = (request) => {
 
 	const accessEmails = dataAccessEmails.concat(qcAccessEmails);
 	const accessGroups = [];
-	for(const email of accessEmails){
+	const unrecognizedEmails = new Set();
+	for(const emailValue of accessEmails){
+		const email = emailValue.toLowerCase();
 		let accessGroup;
 		if( email.includes("@ski.mskcc.org") ){
 			// Legacy email format: {FIRST_INITIAL}-{LAST_NAME}@ski.mskcc.org
@@ -108,11 +115,15 @@ const getAccessGroups = (request) => {
 			accessGroup = email.split("@mskcc.org")[0];
 		} else {
 			if(email !== ""){
-				logger.error(`Could not parse accessGroup from email: ${email}`);
+				unrecognizedEmails.add(email);
 			}
 			continue;
 		}
 		accessGroups.push(accessGroup.toLowerCase());
+	}
+
+	if(unrecognizedEmails.size > 0){
+		logger.error(`Could not parse accessGroups from ${unrecognizedEmails.size} emails for request ${request["requestId"] || 'ERROR'}: ${[... unrecognizedEmails].join(",")}`);
 	}
 
 	return accessGroups;
