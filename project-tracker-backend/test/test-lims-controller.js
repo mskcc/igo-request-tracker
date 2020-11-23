@@ -5,6 +5,7 @@ const sinon = require("sinon");
 var chai = require("chai");
 let should = chai.should();
 
+const { userCollection } = require("../db/data-access");
 const { LIMS_API } = require("../services/config.js");
 const cache = require("../helpers/cache");
 const jwtInCookie = require("jwt-in-cookie");
@@ -15,17 +16,21 @@ var MockAdapter = require("axios-mock-adapter");
 
 
 describe("lims-controller", () => {
-	let validateJwtToken;
-	beforeEach(() => {
-		validateJwtToken = sinon.stub(jwtInCookie, "validateJwtToken");
+    let validateJwtToken_stub;
+    let userCollectionFindOne_stub;
+
+    beforeEach(() => {
+        validateJwtToken_stub = sinon.stub(jwtInCookie, "validateJwtToken");
+        userCollectionFindOne_stub = sinon.stub(userCollection, "findOne");
     });
 
     afterEach(() => {
-        validateJwtToken.restore();
+        validateJwtToken_stub.restore();
+        userCollectionFindOne_stub.restore();
     });
 
     describe("getDeliveredProjects", () => {
-        it("should return filtered projects if user", async () => {
+        it("should return filtered requests if user", async () => {
             // Clear cached response
             cache.del("GET_DELIVERED");
 
@@ -41,8 +46,10 @@ describe("lims-controller", () => {
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
-            validateJwtToken.returns({
-                "isUser": true,
+            validateJwtToken_stub.returns({
+                "isUser": true
+            });
+            userCollectionFindOne_stub.returns({
                 "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
@@ -54,7 +61,7 @@ describe("lims-controller", () => {
             res.body.should.have.property("message").eql("success");
             res.body.data.requests.length.should.equal(4);
         });
-        it("should return all projects if NOT user", async () => {
+        it("should return all requests if NOT user", async () => {
             // Clear cached response
             cache.del("GET_DELIVERED");
 
@@ -71,8 +78,10 @@ describe("lims-controller", () => {
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
-            validateJwtToken.returns({
-                "isUser": false,
+            validateJwtToken_stub.returns({
+                "isUser": false
+            });
+            userCollectionFindOne_stub.returns({
                 "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
@@ -87,7 +96,7 @@ describe("lims-controller", () => {
     });
 
     describe("getUndeliveredProjects", () => {
-        it("should return filtered projects if user", async () => {
+        it("should return filtered requests if user", async () => {
             // Clear cached response
             cache.del("GET_UNDELIVERED");
 
@@ -104,8 +113,10 @@ describe("lims-controller", () => {
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
-            validateJwtToken.returns({
-                "isUser": true,
+            validateJwtToken_stub.returns({
+                "isUser": true
+            });
+            userCollectionFindOne_stub.returns({
                 "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 
@@ -117,7 +128,7 @@ describe("lims-controller", () => {
             res.body.should.have.property("message").eql("success");
             res.body.data.requests.length.should.equal(4);
         })
-        it("should return all projects if NOT user", async () => {
+        it("should return all requests if NOT user", async () => {
             // Clear cached response
             cache.del("GET_UNDELIVERED");
 
@@ -133,8 +144,10 @@ describe("lims-controller", () => {
             mock.onGet(url).reply(200, requests);
 
             /* Performs filtering for requests w/ these representatives */
-            validateJwtToken.returns({
-                "isUser": false,
+            validateJwtToken_stub.returns({
+                "isUser": false
+            });
+            userCollectionFindOne_stub.returns({
                 "groups": `CN=${CURRENT_USER},CN=${LEGACY_USER}`
             });
 

@@ -1,5 +1,6 @@
 const jwtInCookie = require("jwt-in-cookie");
 const { logger } = require("../helpers/winston");
+const { userCollection } = require("../db/data-access");
 
 // TODO - Remove Spring 2021 (all requests from past year should have AccessEmail fields
 const MISSING_ACCESS_GROUPS = new Set();
@@ -29,12 +30,15 @@ exports.isUser = (req) => {
  * Filters projects for representatives that should be viewable to the user
  *
  * @param data, [] - Array of project objects
+ * @param key - logging information "request", "DELIVERED_REQUESTS", "PENDING_REQUESTS"
  */
-exports.filterProjectsOnHierarchy = async (apiReq, requests) => {
+exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") => {
 	const userData = jwtInCookie.validateJwtToken(apiReq);
     const userNameValue = userData["username"] || "";
     const userName = userNameValue.toLowerCase();
-    const visibilityGroups = createVisibilityGroupsFromUserData(userName, userData);
+    const visibilityGroups = await createVisibilityGroupsFromUserData(userName);
+
+    logger.info(`Filtering ${key} based on userName (${userName}) visibility Groups: '${[...visibilityGroups].join("', '")}'`);
 
     // Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
     let accessGroups, reqId;
@@ -55,17 +59,18 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests) => {
 			filteredRequests.push(request);
 		}
 	}
-	logger.info(`User: ${userName} should see ${filteredRequests.length} requests: ${filteredRequests.map(prj => prj["requestId"])}`);
+	logger.info(`User: ${userName} should see ${filteredRequests.length} ${key}: ${filteredRequests.map(prj => prj["requestId"])}`);
 	return filteredRequests;
 };
 
-/**
- * Parses out LDAP groups from cookie's userData
- *
- * @param userData - { ..., "groups": [ "CN=...,CN=..." ], ... }
- */
-const parseGroups = (userData) => {
-    const groupsValue = userData["groups"] || "";
+const getSavedUserGroups = async (username) => {
+    const userDoc = await userCollection.findOne({ username });
+
+    if(!userDoc){
+        logger.error(`No user w/ username: ${username}`);
+        return [];
+    }
+    const groupsValue = userDoc[ "groups" ];
     const cnGroups = groupsValue.split(",");
     const groups = [];
     for(const cnGroup of cnGroups){
@@ -118,11 +123,10 @@ const getAccessGroups = (request) => {
  *
  * @param userData - { ..., "groups": [ "CN=...,CN=..." ], "username": "user", ... }
  */
-const createVisibilityGroupsFromUserData = (userName, userData) => {
-	const groups = parseGroups(userData);
+const createVisibilityGroupsFromUserData = async (userName) => {
+	const groups = await getSavedUserGroups(userName);
     const visibilityGroups = new Set(groups);
     visibilityGroups.add(userName);
-    logger.info(`Filtering requests w/ following groups: ${[... visibilityGroups].join(",")}`);
 
     return visibilityGroups;
 }
