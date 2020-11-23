@@ -34,26 +34,26 @@ exports.isUser = (req) => {
  */
 exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") => {
 	const userData = jwtInCookie.validateJwtToken(apiReq);
-    const userNameValue = userData["username"] || "";
-    const userName = userNameValue.toLowerCase();
-    const visibilityGroups = await createVisibilityGroupsFromUserData(userName);
+	const userNameValue = userData["username"] || "";
+	const userName = userNameValue.toLowerCase();
+	const visibilityGroups = await createVisibilityGroupsFromUserData(userName);
 
-    logger.info(`Filtering ${key} based on userName (${userName}) visibility Groups: '${[...visibilityGroups].join("', '")}'`);
+	logger.info(`Filtering ${key} based on userName (${userName}) visibility Groups: '${[...visibilityGroups].join("', '")}'`);
 
-    // Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
-    let accessGroups, reqId;
-    const filteredRequests = [];
+	// Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
+	let accessGroups, reqId;
+	const filteredRequests = [];
 	for(const request of requests){
-        accessGroups = getAccessGroups(request);
-        reqId = request["requestId"];
-        // TODO - Remove Spring 2021 (all requests from past year should have AccessEmail fields
+		accessGroups = getAccessGroups(request);
+		reqId = request["requestId"];
+		// TODO - Remove Spring 2021 (all requests from past year should have AccessEmail fields
 		if(accessGroups.length === 0){
 		    if(!MISSING_ACCESS_GROUPS.has(reqId)){
 		        MISSING_ACCESS_GROUPS.add(reqId);
 		        logger.error(`Request (Id: ${reqId}) is missing access groups and cannot be filtered`);
 		    }
 		} else {
-            logger.info(`Request (${reqId}) Access Groups: ${accessGroups.join(",")}`);
+			logger.info(`Request (${reqId}) Access Groups: ${accessGroups.join(",")}`);
 		}
 		if(userHasAccessGroup(accessGroups, visibilityGroups)){
 			filteredRequests.push(request);
@@ -64,23 +64,23 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 };
 
 const getSavedUserGroups = async (username) => {
-    const userDoc = await userCollection.findOne({ username });
+	const userDoc = await userCollection.findOne({ username });
 
-    if(!userDoc){
-        logger.error(`No user w/ username: ${username}`);
-        return [];
-    }
-    const groupsValue = userDoc[ "groups" ];
-    const cnGroups = groupsValue.split(",");
-    const groups = [];
-    for(const cnGroup of cnGroups){
-        const groupSplit = cnGroup.split("CN=");
-        if(groupSplit.length === 2){
-            groups.push( groupSplit[1].toLowerCase() );
-        }
-    }
-    return groups;
-}
+	if(!userDoc){
+		logger.error(`No user w/ username: ${username}`);
+		return [];
+	}
+	const groupsValue = userDoc[ "groups" ];
+	const cnGroups = groupsValue.split(",");
+	const groups = [];
+	for(const cnGroup of cnGroups){
+		const groupSplit = cnGroup.split("CN=");
+		if(groupSplit.length === 2){
+			groups.push( groupSplit[1].toLowerCase() );
+		}
+	}
+	return groups;
+};
 
 /**
  * Parses and formats AccessEmail fields from request object
@@ -88,35 +88,35 @@ const getSavedUserGroups = async (username) => {
  * @param userData - { ..., dataAccessEmails: "user@ski.mskcc.org", ..., qcAccessEmail: "user@mskcc.org", ... }
  */
 const getAccessGroups = (request) => {
-    const dataAccessEmailsValue = request['dataAccessEmails'] || "";
-    const qcAccessEmailsValue = request['qcAccessEmail'] || "";
+	const dataAccessEmailsValue = request["dataAccessEmails"] || "";
+	const qcAccessEmailsValue = request["qcAccessEmail"] || "";
 
-    const dataAccessEmails = dataAccessEmailsValue.split(",");
-    const qcAccessEmails = qcAccessEmailsValue.split(",");
+	const dataAccessEmails = dataAccessEmailsValue.split(",");
+	const qcAccessEmails = qcAccessEmailsValue.split(",");
 
-    const accessEmails = dataAccessEmails.concat(qcAccessEmails);
-    const accessGroups = [];
-    for(const email of accessEmails){
-        let accessGroup;
-        if( email.includes("@ski.mskcc.org") ){
-            // Legacy email format: {FIRST_INITIAL}-{LAST_NAME}@ski.mskcc.org
-            const user = email.split("@ski.mskcc.org")[0];
-            const firstInitial = user.substring(0,1);
-            const lastName = user.substring(2,user.length);
-            accessGroup = `${lastName}${firstInitial}`;
-        } else if ( email.includes("@mskcc.org") ) {
-            accessGroup = email.split("@mskcc.org")[0];
-        } else {
-            if(email !== ""){
-                logger.error(`Could not parse accessGroup from email: ${email}`);
-            }
-            continue;
-        }
-        accessGroups.push(accessGroup.toLowerCase());
-    }
+	const accessEmails = dataAccessEmails.concat(qcAccessEmails);
+	const accessGroups = [];
+	for(const email of accessEmails){
+		let accessGroup;
+		if( email.includes("@ski.mskcc.org") ){
+			// Legacy email format: {FIRST_INITIAL}-{LAST_NAME}@ski.mskcc.org
+			const user = email.split("@ski.mskcc.org")[0];
+			const firstInitial = user.substring(0,1);
+			const lastName = user.substring(2,user.length);
+			accessGroup = `${lastName}${firstInitial}`;
+		} else if ( email.includes("@mskcc.org") ) {
+			accessGroup = email.split("@mskcc.org")[0];
+		} else {
+			if(email !== ""){
+				logger.error(`Could not parse accessGroup from email: ${email}`);
+			}
+			continue;
+		}
+		accessGroups.push(accessGroup.toLowerCase());
+	}
 
-    return accessGroups;
-}
+	return accessGroups;
+};
 
 /**
  * Returns a set of LDAP groups for a user
@@ -125,11 +125,11 @@ const getAccessGroups = (request) => {
  */
 const createVisibilityGroupsFromUserData = async (userName) => {
 	const groups = await getSavedUserGroups(userName);
-    const visibilityGroups = new Set(groups);
-    visibilityGroups.add(userName);
+	const visibilityGroups = new Set(groups);
+	visibilityGroups.add(userName);
 
-    return visibilityGroups;
-}
+	return visibilityGroups;
+};
 
 /**
  * Checks if the given accessGroups are present in the set of groups of the visibilityGroups
@@ -140,11 +140,11 @@ const createVisibilityGroupsFromUserData = async (userName) => {
  * @param visibilityGroups - set of LDAP groups being checked against
  */
 const userHasAccessGroup = (accessGroups, visibilityGroups) => {
-    for(const accessGroup of accessGroups){
-        if(visibilityGroups.has(accessGroup)){
-            return true;
-        }
-    }
-    return false;
-}
+	for(const accessGroup of accessGroups){
+		if(visibilityGroups.has(accessGroup)){
+			return true;
+		}
+	}
+	return false;
+};
 
