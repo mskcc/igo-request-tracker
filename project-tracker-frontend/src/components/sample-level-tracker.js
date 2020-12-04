@@ -145,7 +145,7 @@ function SampleLevelTracker({isProjectComplete, samples}) {
                 <p>Sample</p>
             </Col>
             <Col xs={6} sm={7} md={9} className={"padding-vert-10 text-align-center overflow-x-auto"}>
-                <p>Stage Progress</p>
+                <p>Workflow Progress</p>
             </Col>
             <Col xs={3} md={2}  className={"padding-vert-10 text-align-center"}>
                 <p>Status</p>

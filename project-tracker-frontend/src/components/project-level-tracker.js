@@ -72,8 +72,8 @@ function ProjectLevelTracker({project}) {
         </Col>
     };
 
-    return <Container className={"border"}>
-                    <Row className={"padding-vert-10 border"}>
+    return <Container>
+                    <Row className={"padding-vert-10"}>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Project Start</span>: {startTime}</p>
                         </Col>
@@ -125,32 +125,32 @@ function ProjectLevelTracker({project}) {
                                     <Row>
                                         {
                                             completedSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                <p>Completed</p>
                                                 <span className={`small-icon success-green fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
                                                       onClick={() => setShowCompleted(!showCompleted)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{completedSamples.length}</span>
                                                 </span>
+                                                <p className={'text-align-center'}>Completed</p>
                                             </Col> : <span></span>
                                         }
                                         {
                                             failedSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                <p>Failed</p>
                                                 <span className={`small-icon fail-red fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
                                                       onClick={() => setShowFailed(!showFailed)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{failedSamples.length}</span>
                                                 </span>
+                                                <p className={'text-align-center'}>Failed</p>
                                             </Col> : <span></span>
                                         }
                                         {
                                             pendingSamples.length > 0 ? <Col xs={6} sm={4}>
-                                                <p>Pending</p>
                                                 <span className={`small-icon update-blue fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
                                                       onClick={() => setShowPending(!showPending)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
                                                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{pendingSamples.length}</span>
                                                 </span>
+                                                <p className={'text-align-center'}>Pending</p>
                                             </Col> : <span></span>
                                         }
                                     </Row>

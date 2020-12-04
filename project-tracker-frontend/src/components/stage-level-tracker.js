@@ -120,7 +120,7 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
                         return (
                             <Step key={name} {...stageProps}>
                                 <StepLabel {...labelProps}>
-                                    <span className={"hover bold"}>{name}</span>
+                                    <p className={"text-align-center bold"}>{name}</p>
                                 </StepLabel>
                             </Step>
                         );

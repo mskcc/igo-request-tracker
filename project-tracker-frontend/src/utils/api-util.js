@@ -7,6 +7,7 @@ export const REQ_requstId = 'requestId';
 export const REQ_recipe = 'requestType';
 export const REQ_receivedDate = 'receivedDate';
 export const REQ_deliveryDate = 'igoCompleteDate';
+export const REQ_dueDate = 'dueDate';
 
 export const USER_VIEW = 'isUser';
 
@@ -68,4 +69,12 @@ export const getIsIgoComplete = (request) => {
         return false;
     }
     return ('true' === String(isIgoComplete).toLowerCase());
+};
+
+export const getDueDate = (request) => {
+    const dueDate = request['dueDate'];
+    if (undefined === dueDate || null === dueDate) {
+        // console.error(`Could not retrieve DueDate. Request: ${JSON.stringify(request)}`);
+    }
+    return dueDate;
 };

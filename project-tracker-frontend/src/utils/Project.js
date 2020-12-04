@@ -20,7 +20,6 @@ class Project {
      */
     #metaData;
     #requestId;         // IGO Id of Request
-    #bankedSampleId;    // ID of banked sample
     #stages;            // List of tracking stages (E.g. "Awaiting Processing", "SampleQC")
     #samples;           // List of "Tree" of LIMS sample DataRecords that descend from the root sample record
     #igoComplete;       // Has the project been marked isIgoComplete
@@ -37,12 +36,8 @@ class Project {
      * @param receivedDate
      * @param recipe
      */
-    constructor(requestId, igoCompleteDate, receivedDate, recipe, isIgoComplete){
-        this.#igoRequestInfo = {};
-        this.#igoRequestInfo.requestId = requestId;
-        this.#igoRequestInfo.igoCompleteDate = igoCompleteDate;
-        this.#igoRequestInfo.receivedDate = receivedDate;
-        this.#igoRequestInfo.recipe = recipe;
+    constructor(requestId, igoCompleteDate, receivedDate, dueDate, recipe, isIgoComplete){
+        this.#igoRequestInfo = { requestId, igoCompleteDate, receivedDate, dueDate, recipe };
         this.#igoComplete = isIgoComplete;
     }
 
@@ -85,6 +80,9 @@ class Project {
         return this.#igoRequestInfo.igoCompleteDate;
     }
 
+    getDueDate() {
+        return this.#igoRequestInfo.dueDate;
+    }
 
     /**
      * Returns project summary information
@@ -135,10 +133,6 @@ class Project {
         return this.#metaData['RecentDeliveryDate'] || 'Not Available';
     }
 
-    /**
-     * Turn-Around Time
-     * @returns {*|string}
-     */
     getServiceId() {
         return this.#metaData['serviceId'];
     }
