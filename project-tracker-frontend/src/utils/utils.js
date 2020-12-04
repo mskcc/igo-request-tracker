@@ -2,17 +2,27 @@ import { STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS } from "../redux/reduc
 import React from "react";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
-import { getIgoCompleteDate, getReceivedDate, getRequestId, getRecipe, getIsIgoComplete } from './api-util';
+import {getIgoCompleteDate, getReceivedDate, getRequestId, getRecipe, getIsIgoComplete, getDueDate} from "./api-util";
 import Project from './Project';
+
+function isValidDate(d) {
+    return d instanceof Date && !isNaN(d);
+}
 
 export function convertUnixTimeToDateStringFull(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
-    return date.toLocaleString();
+    if(isValidDate(date)){
+        return date.toLocaleString();
+    }
+    return '...';
 }
 
 export function convertUnixTimeToDateString_Day(UNIX_Timestamp) {
     const date = new Date(UNIX_Timestamp);
-    return date.toLocaleDateString();
+    if(isValidDate(date)){
+        return date.toLocaleDateString();
+    }
+    return '...';
 }
 
 /**
@@ -122,10 +132,11 @@ export const getRequestState = (requests) => {
         const recipe = getRecipe(req);
         const receivedDate = getReceivedDate(req);
         const igoCompleteDate = getIgoCompleteDate(req);
+        const dueDate = getDueDate(req);
         const isIgoComplete = getIsIgoComplete(req);
         if(requestId && requestId !== ""){
             // Initialize an entry for the project - will be enriched later by Project::enrichRequest
-            requestState[requestId] = new Project(requestId, igoCompleteDate, receivedDate, recipe, isIgoComplete);
+            requestState[requestId] = new Project(requestId, igoCompleteDate, receivedDate, dueDate, recipe, isIgoComplete);
         }
     }
     return requestState;

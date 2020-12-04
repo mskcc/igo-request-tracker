@@ -4,10 +4,6 @@ import {useDispatch, useSelector, useStore} from "react-redux";
 import {getProjectTrackingDataRequest} from "../services/services";
 import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import Tooltip from '@material-ui/core/Tooltip';
-import {faAngleRight, faAngleDown, faCheck} from "@fortawesome/free-solid-svg-icons";
-
 import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -83,41 +79,48 @@ function ProjectTracker({projectName, projectState}) {
     };
 
     /**
-     * Retrieves human-readable received date from project
+     * Retrieves the correct delivery date to report (pending requests won't have an igoComplete date yet, so we
+     * report the due date
+     *
      * @param project
      * @returns {string}
      */
-    const getFormattedDate = (project) => {
+    const getDeliveryDate = (project) => {
         const deliveredDate = project.getIgoCompleteDate();
-        const receivedDate = project.getReceivedDate();
+        const dueDate = project.getDueDate();
         if(STATE_DELIVERED_REQUESTS === projectState && deliveredDate){
             return convertUnixTimeToDateString_Day(deliveredDate);
-        } else if (receivedDate) {
-            return convertUnixTimeToDateString_Day(receivedDate);
+        } else if (dueDate) {
+            return convertUnixTimeToDateString_Day(dueDate);
         }
         return '...';
+    };
+
+    const getReceivedDate = (request) => {
+        const receivedDate = request.getReceivedDate();
+        return convertUnixTimeToDateString_Day(receivedDate);
     };
 
     if(! project){
         return <Container></Container>
     }
 
-    return <Container>
-            <Row className={"hover border padding-vert-5"}
+    return <Container className={showProject ? "border" : "white-border"}>
+            <Row className={`hover padding-vert-5 ${showProject ? "selected-request" : ""}`}
                  onClick={() => setShowProject(!showProject)}>
-                <Col xs={1} className={"overflow-x-hidden"}>
-                    <FontAwesomeIcon className="request-selector-icon" icon={showProject ? faAngleDown : faAngleRight}/>
-                </Col>
                 <Col xs={3} sm={2} className={"overflow-x-hidden"}>
                     <h5 className={"padding-12"}>{projectName}</h5>
                 </Col>
-                <Col xs={2} className={"overflow-x-hidden"}>
-                    <h5 className={"padding-12"}>{getFormattedDate(project)}</h5>
-                </Col>
-                <Col xs={3} md={5} className={"overflow-x-hidden"}>
+                <Col xs={3} sm={4} className={"overflow-x-hidden"}>
                     <h5 className={"padding-12"}>{project.getRecipe()}</h5>
                 </Col>
-                <Col xs={3} md={2} className={"overflow-x-hidden"}>
+                <Col xs={2} className={"overflow-x-hidden"}>
+                    <h5 className={"padding-12"}>{getReceivedDate(project)}</h5>
+                </Col>
+                <Col xs={2} className={"overflow-x-hidden"}>
+                    <h5 className={"padding-12"}>{getDeliveryDate(project)}</h5>
+                </Col>
+                <Col xs={2} className={"overflow-x-hidden text-align-center"}>
                     {getSummaryIcon(projectName)}
                 </Col>
             </Row>

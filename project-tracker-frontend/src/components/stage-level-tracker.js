@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDateStringFull} from "../utils/utils";
+import {
+    convertUnixTimeToDateString_Day,
+    convertUnixTimeToDateStringFull
+} from "../utils/utils";
 import {Step, StepLabel, Stepper} from "@material-ui/core";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
@@ -8,7 +11,7 @@ import {
     faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SettingsIcon from '@material-ui/icons/Settings';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const getPendingIndex = (stages) => {
     let stage;
@@ -31,7 +34,9 @@ const getPendingIndex = (stages) => {
  * @returns {*}
  * @constructor
  */
-function StageLevelTracker({isProjectComplete, stages, orientation, projectView}) {
+function StageLevelTracker({igoCompleteDate, stages, orientation, projectView}) {
+    const isProjectComplete = igoCompleteDate !== null && igoCompleteDate !== '';
+
     const [pendingIndex, setPendingIndex] = useState(getPendingIndex(stages));     // Index of least-progressed step
     const [activeIndex, setActiveIndex] = useState(pendingIndex);       // Active state to show user
     const [labelSize, setLabelSize] = useState(projectView ? 0 : 2);
@@ -47,8 +52,6 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
     };
 
     const generateStageSummary = (stage, isStageComplete) => {
-        const stageName = stage['stage'] || '';
-
         const completedCount = stage.completedSamples || 0;
         const failedCount = stage.failedSamples || 0;
         const progressCount = completedCount + failedCount;
@@ -63,44 +66,40 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
             return <span></span>
         };
 
-        /* TODO: Temporarily removed */
-        // Renders the updated field
-        /*
-        const updateSpan = (stage) => {
-            let updateField = 'Updated';
-            if(isStageComplete){
-                updateField = 'Completed';
-            }
-            if(stage.updateTime === null || stage.updateTime === undefined) {
+        // It's confusing for a stage's update time to be after the completion date. This can happen if someone edits a
+        // sample after it has been delivered (e.g. add more info), then its update time will be after the date is has
+        // been manually marked for completion.
+        let updateTime = stage.updateTime;
+        if(isProjectComplete && igoCompleteDate < updateTime){
+            updateTime = igoCompleteDate;
+        }
+
+        const updateField = isStageComplete ? 'Completed' : 'Updated';
+        const updateTimeMessage = updateTime ? `UPDATED: ${convertUnixTimeToDateStringFull(updateTime)}` : '';
+        const startTimeMessage = stage.startTime ? `STARTED: ${convertUnixTimeToDateStringFull(stage.startTime)}` : '';
+        const updateSpan = (updateTime, updateField) => {
+            if(updateTime === null || updateTime === undefined) {
                 return <p></p>
             }
             return <p>
-                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDateStringFull(stage.updateTime)}
+                <span className={"underline"}>{updateField}</span>: {convertUnixTimeToDateString_Day(updateTime)}
             </p>
         };
 
-        const startedSpan = (stage) => {
-            const startTime = stage.startTime;
+        // 1) STARTED: ..., UPDATED: ...       2) STARTED: ...       3) UPDATED: ...
+        const stageInfoMessage = `${startTimeMessage}${startTimeMessage !== '' && updateTimeMessage !== '' ? ', ' : ''}${updateTimeMessage}`;
+        return <Tooltip title={stageInfoMessage} aria-label={'Download'} placement="left" className={"hover"}>
+            <span>
+                { isStageComplete ? <FontAwesomeIcon className="stage-tracker-icon success-green" icon={ faCheck }/>
+                    : <FontAwesomeIcon className="stage-tracker-icon update-blue" icon={ faEllipsisH }/> }
+                        {updateSpan(updateTime, updateField)}
+                        <p><span className={"underline"}>
+                    Progress</span>: {progressCount}/{total}
+                </p>
+                {failedSpan()}
+            </span>
+        </Tooltip>
 
-            if(startTime === null || startTime === undefined) {
-                return <p></p>
-            }
-            return <p>
-                <span className={"underline"}>Started</span>: {convertUnixTimeToDateStringFull(startTime)}
-            </p>
-        };
-        {startedSpan(stage)}
-        {updateSpan(stage)}
-        */
-
-        return <span>
-            { isStageComplete ? <FontAwesomeIcon className="stage-tracker-icon success-green" icon={ faCheck }/>
-                : <FontAwesomeIcon className="stage-tracker-icon update-blue" icon={ faEllipsisH }/> }
-            <p><span className={"underline"}>
-                Progress</span>: {progressCount}/{total}
-            </p>
-            {failedSpan()}
-        </span>
     };
 
     return <Container>
@@ -120,7 +119,7 @@ function StageLevelTracker({isProjectComplete, stages, orientation, projectView}
                         return (
                             <Step key={name} {...stageProps}>
                                 <StepLabel {...labelProps}>
-                                    <span className={"hover bold"}>{name}</span>
+                                    <p className={"text-align-center bold"}>{name}</p>
                                 </StepLabel>
                             </Step>
                         );

@@ -15,8 +15,11 @@ test('Shows received date field if STATE_PENDING_REQUESTS', () => {
                         requestIdQuery={''}
                         filteredRecipes={new Set()}/>
     </Provider>);
-    const linkElement = getByText(/Received/i);
-    expect(linkElement).toBeInTheDocument();
+    const expectedDeliveryElement = getByText('Expected Delivery');
+    expect(expectedDeliveryElement).toBeInTheDocument();
+
+    const receivedElement = getByText('Received');
+    expect(receivedElement).toBeInTheDocument();
 });
 
 test('Shows delivered date field if STATE_DELIVERED_REQUESTS', () => {
@@ -27,6 +30,9 @@ test('Shows delivered date field if STATE_DELIVERED_REQUESTS', () => {
                         requestIdQuery={''}
                         filteredRecipes={new Set()}/>
     </Provider>);
-    const linkElement = getByText('Completed');
-    expect(linkElement).toBeInTheDocument();
+    const deliveredElement = getByText('Delivered');
+    expect(deliveredElement).toBeInTheDocument();
+
+    const receivedElement = getByText('Received');
+    expect(receivedElement).toBeInTheDocument();
 });
