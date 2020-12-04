@@ -13,7 +13,7 @@ import Col from "react-bootstrap/Col";
 import Tooltip from '@material-ui/core/Tooltip';
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {getRecipe, getRequestId, REQ_deliveryDate, REQ_receivedDate} from "../../utils/api-util";
+import {getRecipe, getRequestId, REQ_deliveryDate, REQ_dueDate, REQ_receivedDate} from "../../utils/api-util";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {DF_ALL} from "../common/project-filters";
@@ -33,8 +33,10 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
     const [descendingDateSort, setDescendingDateSort] = useState(true);
-    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_receivedDate;
-    const dateColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Completed' : 'Received';
+    const deliveryColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Expected Delivery';
+
+    // @dateFilterField is the field for monitoring delivery
+    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_dueDate;
 
     useEffect(() => {
         // FILTERING
@@ -147,47 +149,70 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
     /**
      * Reverses sorting order of the filtered Projects in view
      */
-    const toggleDateSorting = () => {
+    const toggleDateSorting = (dateFilter) => {
         const dateSort = !descendingDateSort;
         setDescendingDateSort(dateSort);
-        const sorted = getSortedRequests(filteredProjects, dateSort, dateFilterField);
+        const sorted = getSortedRequests(filteredProjects, dateSort, dateFilter);
         setFilteredProjects(sorted);
     };
 
     const projectsInView = filteredProjects.slice(0,numProjectsToShow);
     return <Container className={"border"}>
-                <Row  className={"black-border background-mskcc-light-gray padding-vert-10 padding-hor-20"}>
-                    <Col xs={4}>
-                        <h2>{projectSection}</h2>
+                <Row  className={"background-mskcc-light-gray padding-top-15"}>
+                    <Col xs={4}></Col>
+                    <Col xs={4} className={"text-align-center flexbox-center overflow-x-hidden"}>
+                        <div className={"padding-hor-20 dark-gray-bottom-border"}>
+                            <h4>{projectSection}</h4>
+                        </div>
                     </Col>
-                    <Col xs={6}></Col>
+                    <Col xs={1}></Col>
                     <Col xs={2}>
                         <Tooltip title={`Download ${projectSection}`} aria-label={'Download'} placement="right">
                             <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
-                                <FontAwesomeIcon className={"small-icon float-right hover"}
+                                <FontAwesomeIcon className={"tiny-icon float-right hover"}
                                                  icon={faFileExcel}/>
                             </div>
                         </Tooltip>
                     </Col>
-                    <Col xs={12}></Col>
+                    <Col xs={1}></Col>
+                </Row>
+                <Row className={"background-mskcc-light-gray padding-top-15 padding-bottom-10"}>
+                    <Col xs={3} sm={2} className={"flexbox-center overflow-x-hidden"}><h4>Request Id</h4></Col>
+                    <Col xs={3} sm={4} className={"flexbox-center text-align-center overflow-x-hidden"}><h4>Request Type</h4></Col>
+                    <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
+                         onClick={() => toggleDateSorting(REQ_receivedDate)}>
+                            <Tooltip title={`Sort`}
+                                     aria-label={'Received Sort'}
+                                     placement="right"><h4>Received</h4>
+                            </Tooltip>
+                    </Col>
+                    <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
+                         onClick={() => toggleDateSorting(dateFilterField)}>
+                        <Tooltip title={`Sort`}
+                                 aria-label={'Received Sort'}
+                                 placement="right">
+                            <h4>{deliveryColumnHeader}</h4>
+                        </Tooltip>
+                    </Col>
+                    <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden"}><h4>Status</h4></Col>
                 </Row>
                 <Row>
-                    <Container>
-                        <Row className={"border padding-vert-5"}>
-                            <Col xs={0} sm={1} className={"overflow-x-hidden"}></Col>
-                            <Col xs={3} sm={2} className={"text-align-center overflow-x-hidden"}><h4>Request Id</h4></Col>
-                            <Col xs={2} className={"hover text-align-center overflow-x-hidden"}
-                                 onClick={toggleDateSorting}><h4>{dateColumnHeader}</h4></Col>
-                            <Col xs={4} md={5} className={"text-align-center overflow-x-hidden"}><h4>Request Type</h4></Col>
-                            <Col xs={3} md={2} className={"overflow-x-hidden text-align-center"}><h4>Progress</h4></Col>
-                        </Row>
-                    </Container>
-                    { projectsInView.map((request) => {
+                    {
+                        projectsInView.length > 0 ? projectsInView.map((request) => {
                         const reqId = getRequestId(request);
                         return <ProjectTracker key={reqId}
                                                projectName={reqId}
                                                projectState={projectState}/>
-                    })}
+                        }) : <Container>
+                                <Row className={"hover border padding-top-15 flexbox-center"}>
+                                    <Tooltip title={`Please email zzPDL_SKI_IGO_DATA@mskcc.org if you should see ${getHumanReadable(projectState)}`}
+                                             aria-label={'No requests tooltip'}
+                                             placement="right">
+                                        <p className={"italic"}>No {getHumanReadable(projectState)}</p>
+                                    </Tooltip>
+                                </Row>
+                        </Container>
+                    }
                 </Row>
                 {
                     (filteredProjects.length > numProjectsToShow) ?

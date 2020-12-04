@@ -109,7 +109,7 @@ function ProjectLevelTracker({project}) {
                         }
                     </Row>
                     <Row className={"parent-sample-level-stages"}>
-                        <StageLevelTracker isProjectComplete={project.getIgoComplete()}
+                        <StageLevelTracker igoCompleteDate={project.getIgoCompleteDate()}
                                            stages={stages}
                                            orientation={"horizontal"}
                                            projectView={true}></StageLevelTracker>
@@ -160,7 +160,7 @@ function ProjectLevelTracker({project}) {
                     </Row>
                     {
                         viewSamples ? <Row>
-                            <SampleLevelTracker isProjectComplete={project.getIgoComplete()}
+                            <SampleLevelTracker igoCompleteDate={project.getIgoCompleteDate()}
                                                 samples={filteredSamples}></SampleLevelTracker>
                         </Row> : <span></span>
                     }
