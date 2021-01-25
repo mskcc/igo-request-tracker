@@ -15,6 +15,7 @@ Request Tracker Application for IGO
 cd project-tracker-frontend && npm install && npm run start
 ```
 ### Backend
+* NOTE: Make sure the `.env` file has been created, e.g. `$ cp .env.example .env`
 ```
 cd project-tracker-backend && npm install && npm run dev
 ```
