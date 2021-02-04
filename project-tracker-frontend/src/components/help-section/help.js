@@ -345,14 +345,6 @@ function HelpSection() {
                                 </Table>
                             </TableContainer>
                         </div>
-                        <div className={"help-unit"}>
-                            <h2>Special Cases</h2>
-                            <p><span className={"bold"}>Data QC</span></p>
-                            <p> The Data QC stage is determined by whether a LIMS Sample Data Record is "linked" to a
-                                "SeqAnalysisSampleQC" Data Record.
-                                This is unlike the other stages for which there is a direct mapping of status-to-stage,
-                                the Data QC stage.</p>
-                        </div>
                     </div>
                 </div> : <div></div>
             }
@@ -370,7 +362,7 @@ function HelpSection() {
                         <p>The request tracker updates each request every <span className={"bold"}>12 hours</span>.</p>
                     </div>
                     <div className={"help-unit"}>
-                        <h2>I cannot see a request</h2>
+                        <h2>Why can't I see a request I should have access to?</h2>
                         <p>
                             The request tracker only makes requests visible to users if their @mskcc.org/@ski.mskcc.org
                             email or a zzPDL they belong to has been added to the Data Access or QC Access sections of
