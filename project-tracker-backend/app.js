@@ -1,4 +1,7 @@
 const express = require("express");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
 const path = require("path");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
@@ -23,6 +26,42 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //To allow cross-origin requests
 app.use(cors());
+
+// Swagger
+// Configure swagger endpoint based on NODE-env
+const swagger_base = (process.env.NODE_ENV === "prod") ? '/request-tracker' : '';
+const options = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "IGO Request Tracker API (dev)",
+			version: "1.0.0",
+			description:
+				"Documentation of endpoints for IGO's request tracker",
+			license: {
+				name: "MIT",
+				url: "https://spdx.org/licenses/MIT.html",
+			},
+			contact: {
+				name: "IGO-Request-Tracker",
+				url: "https://igodev.mskcc.org/request-tracker",
+				email: "streidd@mskcc.org",
+			},
+		},
+		servers: [
+			{
+				url: `${swagger_base}/api/projects`,	// Note - /request-tracker/ is for deployment
+			},
+		],
+	},
+	apis: ["./routes/projects.js"],
+};
+const specs = swaggerJsdoc(options);
+app.use(
+	"/request-tracker-swagger",
+	swaggerUi.serve,
+	swaggerUi.setup(specs)
+);
 
 //Route Prefixes
 app.use("/", indexRouter);
