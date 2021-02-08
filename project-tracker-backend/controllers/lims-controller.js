@@ -5,81 +5,103 @@ const { getRecentDeliveries, getUndeliveredProjects, getProjectTrackingInfo } = 
 const { authenticateRequest } = require("../middlewares/jwt-cookie");
 
 /**
- * Returns a list of all projects the user is able to see
+ * Returns Tracking info for a particular request
  *
- * @returns {Object}
+ * @param req, express
+ * @param res, express
+ * @returns {Promise<T>}
  */
-exports.getDeliveredProjects = [
-	authenticateRequest,
-	async function (req, res) {
-		const key = "DELIVERED_REQUESTS";
-
-		// Anyone can mock their user view by providing this parameter (only affects non-users)
-		const query = req.query || {};
-		const userView = query.userView;
-		const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
-
-		return cache.get(key, getRecentDeliveries)
-			.then(async (projects) => {
-				if (isUser(req) || showUserView) {
-					// Users should have their requests filtered (IGO members will not have their projects filtered)
-					const all = projects["requests"] || [];
-					const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
-					projects = { ...projects };		// clone - prevents altering the cached value
-					projects["requests"] = filteredRequests;
-				}
-				return apiResponse.successResponseWithData(res, "success", projects);
-			})
-			.catch((err) => {
-				return apiResponse.ErrorResponse(res, err.message);
-			});
-	}
-];
+const getRequestTrackingInfo = function(req, res) {
+	const project = req.params.id;
+	if(!project) return apiResponse.ErrorResponse(res, "No project in request");
+	const key = `PROJECT_TRACKING_DATA_${project}`;
+	const retrievalFunc = () => getProjectTrackingInfo(project);
+	return cache.get(key, retrievalFunc)
+		.then((projects) => {
+			return apiResponse.successResponseWithData(res, "success", projects);
+		})
+		.catch((err) => {
+			return apiResponse.ErrorResponse(res, err.message);
+		});
+};
 
 /**
- * Returns Projects that have not been delivered yet
+ * Returns list of requests delivered by IGO
  *
- * @type {*[]}
+ * @param req, express
+ * @param res, express
+ * @returns {Promise<T>}
  */
+const getDeliveredRequests = async function (req, res) {
+	const query = req.query || {};
+	const days = query.days || 30;	// Default to returning requests from past 30 days
+	const key = `DELIVERED_REQUESTS___${days}`;
+
+	// Anyone can mock their user view by providing this parameter (only affects non-users)
+	const userView = query.userView;
+	const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
+
+	return cache.get(key, () => getRecentDeliveries(days))
+		.then(async (projects) => {
+			if (isUser(req) || showUserView) {
+				// Users should have their requests filtered (IGO members will not have their projects filtered)
+				const all = projects["requests"] || [];
+				const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
+				projects = { ...projects };		// clone - prevents altering the cached value
+				projects["requests"] = filteredRequests;
+			}
+			return apiResponse.successResponseWithData(res, "success", projects);
+		})
+		.catch((err) => {
+			return apiResponse.ErrorResponse(res, err.message);
+		});
+};
+
+/**
+ * Returns list of requests still pending with IGO
+ *
+ * @param req, express
+ * @param res, express
+ * @returns {Promise<T>}
+ */
+const getPendingRequests = async function (req, res) {
+	const query = req.query || {};
+	const days = query.days || 30;	// Default to returning requests from past 30 days
+
+	const key = `PENDING_REQUESTS___${days}`;
+
+	// Anyone can mock their user view by providing this parameter (only affects non-users)
+	const userView = query.userView;
+	const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
+
+	return cache.get(key, () => getUndeliveredProjects(days))
+		.then(async (projects) => {
+			if(isUser(req) || showUserView) {
+				const all = projects["requests"] || [];
+				const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
+				projects = { ...projects };		// clone - prevents altering the cached value
+				projects["requests"] = filteredRequests;
+			}
+			return apiResponse.successResponseWithData(res, "success", projects);
+		})
+		.catch((err) => {
+			return apiResponse.ErrorResponse(res, err.message);
+		});
+};
+
+/* Application Authentications */
+// TODO - there needs to be an option to force an update
+exports.getDeliveredProjects = [
+	authenticateRequest,
+	getDeliveredRequests
+];
+// TODO - there needs to be an option to force an update
 exports.getUndeliveredProjects = [
 	authenticateRequest,
-	async function (req, res) {
-		const key = "PENDING_REQUESTS";
-
-		// Anyone can mock their user view by providing this parameter (only affects non-users)
-		const query = req.query || {};
-		const userView = query.userView;
-		const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
-
-		return cache.get(key, getUndeliveredProjects)
-			.then(async (projects) => {
-				if(isUser(req) || showUserView) {
-					const all = projects["requests"] || [];
-					const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
-					projects = { ...projects };		// clone - prevents altering the cached value
-					projects["requests"] = filteredRequests;
-				}
-				return apiResponse.successResponseWithData(res, "success", projects);
-			})
-			.catch((err) => {
-				return apiResponse.ErrorResponse(res, err.message);
-			});
-	}
+	getPendingRequests
 ];
-
+// TODO - there needs to be an option to force an update
 exports.getProjectTrackingData = [
 	authenticateRequest,
-	function (req, res) {
-		const project = req.params.id;
-		if(!project) return apiResponse.ErrorResponse(res, "No project in request");
-		const key = `PROJECT_TRACKING_DATA_${project}`;
-		const retrievalFunc = () => getProjectTrackingInfo(project);
-		return cache.get(key, retrievalFunc)
-			.then((projects) => {
-				return apiResponse.successResponseWithData(res, "success", projects);
-			})
-			.catch((err) => {
-				return apiResponse.ErrorResponse(res, err.message);
-			});
-	}
+	getRequestTrackingInfo
 ];

@@ -27,6 +27,15 @@ router.get("/:id", LimsController.getProjectTrackingData);
  *     summary: Retrieve list of requests delivered by IGO
  *     tags:
  *       - RequestList
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: maximum number of days from now for which to return delivered requests
+ *         example:
+ *           30
  *     name: Delivered Requests
  *     produces:
  *       - application/json
@@ -42,6 +51,15 @@ router.get("/:id", LimsController.getProjectTrackingData);
  *     summary: Retrieve list of pending requests from IGO
  *     tags:
  *       - RequestList
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: maximum number of days from now for which to return pending requests
+ *         example:
+ *           30
  *     name: Pending Requests
  *     produces:
  *       - application/json
