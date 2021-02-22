@@ -27,6 +27,7 @@ function ProjectLevelTracker({project}) {
     const sourceRequests = project.getSourceRequests().filter( request => request !== "INVALID" );
     const childRequests = project.getChildRequests();
     const serviceId = project.getServiceId();
+    const requestName = project.getRecipe();
 
     // TODO - delete?
     const projectManager = project.getProjectManager();
@@ -161,7 +162,8 @@ function ProjectLevelTracker({project}) {
                     {
                         viewSamples ? <Row>
                             <SampleLevelTracker igoCompleteDate={project.getIgoCompleteDate()}
-                                                samples={filteredSamples}></SampleLevelTracker>
+                                                samples={filteredSamples}
+                                                requestName={requestName}></SampleLevelTracker>
                         </Row> : <span></span>
                     }
 
