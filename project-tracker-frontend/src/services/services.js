@@ -50,9 +50,9 @@ export function getUndeliveredProjectsRequest(userView) {
             ]
     }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered`;
+    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered?days=365`;
     if(userView){
-        baseUrl = `${baseUrl}?userView=true`;
+        baseUrl = `${baseUrl}&userView=true`;
     }
     return axios
         .get(baseUrl)
@@ -97,9 +97,9 @@ export function getDeliveredProjectsRequest(userView) {
              }
          }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/delivered`;
+    let baseUrl = `${PROJECTS_ENDPOINT}/delivered?days=365`;
     if(userView){
-        baseUrl = `${baseUrl}?userView=true`;
+        baseUrl = `${baseUrl}&userView=true`;
     }
     return axios
         .get(baseUrl)
@@ -110,14 +110,18 @@ export function getDeliveredProjectsRequest(userView) {
         });
 }
 
-export function getProjectTrackingDataRequest(project){
+export function getProjectTrackingDataRequest(requestId){
     /*
     return new Promise((resolve) => { resolve(API_PROJECT_ID) })
         .then(resp => { return getData(resp) })
         .catch(error => {throw new Error('Unable to fetch Seq Analysis Projects: ' + error) });
      */
     return axios
-        .get(`${PROJECTS_ENDPOINT}/${project}`)
+        /**
+         * requestId: IGO RequestID
+         * tree: Flag to include the tree view
+         */
+        .get(`${PROJECTS_ENDPOINT}/trackingInfo?request=${requestId}&tree=true`)
         .then(resp => {return getResponseData(resp) })
         .catch(error => {
             checkForAuthorizationError(error);

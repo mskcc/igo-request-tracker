@@ -1,8 +1,10 @@
 const cache = require("../helpers/cache");
 const apiResponse = require("../helpers/apiResponse");
+const { logger } = require("../helpers/winston");
 const { filterProjectsOnHierarchy, isUser } = require("../helpers/utility");
 const { getRecentDeliveries, getUndeliveredProjects, getProjectTrackingInfo } = require("../services/services");
 const { authenticateRequest } = require("../middlewares/jwt-cookie");
+const { isInputTrue } = require("../helpers/utility");
 
 /**
  * Returns Tracking info for a particular request
@@ -12,13 +14,28 @@ const { authenticateRequest } = require("../middlewares/jwt-cookie");
  * @returns {Promise<T>}
  */
 const getRequestTrackingInfo = function(req, res) {
-	const project = req.params.id;
+	const query = req.query || {};
+	const project = query.request;
+	let includeTree = isInputTrue(query.tree);
+
 	if(!project) return apiResponse.ErrorResponse(res, "No project in request");
 	const key = `PROJECT_TRACKING_DATA_${project}`;
 	const retrievalFunc = () => getProjectTrackingInfo(project);
 	return cache.get(key, retrievalFunc)
-		.then((projects) => {
-			return apiResponse.successResponseWithData(res, "success", projects);
+		.then((requestInfo) => {
+			if(!includeTree){
+				const noTreeRequest =  Object.assign({}, requestInfo);
+				const samples = noTreeRequest.samples || [];
+				const treelessSamples = [];
+				for(const sample of samples){
+					const newSample = Object.assign({}, sample);
+					delete newSample.root;
+					treelessSamples.push(newSample);
+				}
+				noTreeRequest.samples = treelessSamples;
+				return apiResponse.successResponseWithData(res, "success", noTreeRequest);
+			}
+			return apiResponse.successResponseWithData(res, "success", requestInfo);
 		})
 		.catch((err) => {
 			return apiResponse.ErrorResponse(res, err.message);
@@ -35,13 +52,12 @@ const getRequestTrackingInfo = function(req, res) {
 const getDeliveredRequests = async function (req, res) {
 	const query = req.query || {};
 	const days = query.days || 30;	// Default to returning requests from past 30 days
-	const key = `DELIVERED_REQUESTS___${days}`;
 
 	// Anyone can mock their user view by providing this parameter (only affects non-users)
 	const userView = query.userView;
 	const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
 
-	return cache.get(key, () => getRecentDeliveries(days))
+	return getDeliveredRequestsFromCache(days)
 		.then(async (projects) => {
 			if (isUser(req) || showUserView) {
 				// Users should have their requests filtered (IGO members will not have their projects filtered)
@@ -68,13 +84,11 @@ const getPendingRequests = async function (req, res) {
 	const query = req.query || {};
 	const days = query.days || 30;	// Default to returning requests from past 30 days
 
-	const key = `PENDING_REQUESTS___${days}`;
-
 	// Anyone can mock their user view by providing this parameter (only affects non-users)
 	const userView = query.userView;
 	const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
 
-	return cache.get(key, () => getUndeliveredProjects(days))
+	return getPendingRequestsFromCache(days)
 		.then(async (projects) => {
 			if(isUser(req) || showUserView) {
 				const all = projects["requests"] || [];
@@ -88,6 +102,48 @@ const getPendingRequests = async function (req, res) {
 			return apiResponse.ErrorResponse(res, err.message);
 		});
 };
+
+/**
+ * Combines the delivered & undelivered response into one response
+ *
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+const getIgoRequests = async function (req, res) {
+	const query = req.query || {};
+	const dayFilter = query.days || 30;	// Default to returning requests from past 30 days
+	logger.info(`Retrieving all IGO requests from past ${dayFilter} days`);
+
+	let deliveredResponse, pendingResponse;
+	try {
+		deliveredResponse = await getDeliveredRequestsFromCache(dayFilter);
+		pendingResponse = await getPendingRequestsFromCache(dayFilter);
+	} catch(err) {
+		return apiResponse.ErrorResponse(res, err.message);
+	}
+
+	const deliveredRequests = deliveredResponse.requests || [];
+	const pendingRequests = pendingResponse.requests || [];
+	const allRequests = deliveredRequests.concat(pendingRequests);
+
+	return apiResponse.successResponseWithData(res, "success", allRequests);
+};
+
+const getDeliveredRequestsFromCache = function(dayFilter) {
+	const key = `DELIVERED_REQUESTS___${dayFilter}`;
+	return cache.get(key, () => getRecentDeliveries(dayFilter));
+};
+
+const getPendingRequestsFromCache = function(dayFilter) {
+	const key = `PENDING_REQUESTS___${dayFilter}`;
+	return cache.get(key, () => getUndeliveredProjects(dayFilter));
+};
+
+exports.getIgoRequests = [
+	authenticateRequest,
+	getIgoRequests
+];
 
 /* Application Authentications */
 // TODO - there needs to be an option to force an update

@@ -28,24 +28,22 @@ const is_api_user = function(auth_user) {
  * @param next
  */
 exports.authenticateRequest = function(req, res, next) {
-	/*
 	if(process.env.NODE_ENV === "dev") {
 		next();
 		return;
 	}
-	*/
 
 	try {
 		// Check cookie for token
 		logger.info(jwtInCookie.validateJwtToken(req));
 		logger.info("Successful cookie authentication");
 	} catch(err){
-		// If no cookie, then check for api authentication
+		// If no cookie, extract username from api authentication and check for valid API user
 		const user = auth(req) || {};
 		const username = user.name
 		if (is_api_user(user)) {
+			// Successful login - prepare valid JWT token for future authentication (if done from a browser)
 			logger.info(`Successful API authentication (${username})`);
-			// Successful login - prepare valid JWT token for future authentication
 			jwtInCookie.setJwtToken(res, { "api_token": "request-tracker", "date": new Date() });
 		} else {
 			logger.info(`Failed API authentication (${username})`);
