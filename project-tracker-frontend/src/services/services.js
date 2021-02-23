@@ -121,7 +121,7 @@ export function getProjectTrackingDataRequest(requestId){
          * requestId: IGO RequestID
          * tree: Flag to include the tree view
          */
-        .get(`${PROJECTS_ENDPOINT}/trackingInfo?request=${requestId}&tree=true`)
+        .get(`${PROJECTS_ENDPOINT}/${requestId}?tree=true`)
         .then(resp => {return getResponseData(resp) })
         .catch(error => {
             checkForAuthorizationError(error);

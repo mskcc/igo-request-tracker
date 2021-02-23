@@ -50,7 +50,7 @@ const options = {
 		},
 		servers: [
 			{
-				url: `${swagger_base}/api/projects`,	// Note - /request-tracker/ is for deployment
+				url: `${swagger_base}/api/requests`,	// Note - /request-tracker/ is for deployment
 			},
 		],
 	},

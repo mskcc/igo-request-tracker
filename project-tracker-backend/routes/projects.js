@@ -6,7 +6,7 @@ var router = express.Router();
 router.get("/delivered", LimsController.getDeliveredProjects);
 router.get("/undelivered", LimsController.getUndeliveredProjects);
 router.get("/all", LimsController.getIgoRequests);
-router.get("/trackingInfo", LimsController.getProjectTrackingData);
+router.get("/:requestId", LimsController.getProjectTrackingData);
 
 /* API Endpoints */
 /**
@@ -47,7 +47,7 @@ router.get("/trackingInfo", LimsController.getProjectTrackingData);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/RequestListResponse'
- * /trackingInfo:
+ * /{requestId}:
  *   get:
  *     summary: Retrieve tracking information about input request Id
  *     tags:
@@ -60,15 +60,7 @@ router.get("/trackingInfo", LimsController.getProjectTrackingData);
  *         required: true
  *         description: ID of the IGO request
  *         example:
- *           02021_AD
- *       - in: path
- *         name: tree
- *         schema:
- *           type: boolean
- *         required: false
- *         description: Flag to include LIMS workflow tree (Will be present in "samples" > "root")
- *         example:
- *           false (default)
+ *           08822_AH
  *     name: Request Info
  *     produces:
  *       - application/json
