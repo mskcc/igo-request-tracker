@@ -194,13 +194,16 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                    description: Timestamp of when IGO-approved request was sent for delivery
  *                  pendingStage:
  *                    type: string
- *                    description: Current stage request is at ("Completed" if finished)
+ *                    description: Current stage request is being processed at ("Completed" if finished)
  *                  stagesComplete:
  *                    type: boolean
- *                    description: Flag of whether the sample has completed its LIMS workflow
+ *                    description: Flag of whether the sample has completed its LIMS workflow (BEFORE isIgoComplete = true)
  *                  isIgoComplete:
  *                    type: boolean
- *                    description: Flag of whether IGO has approved a request that has completed its LIMS workflow (required prior to delivery)
+ *                    description: Flag indicating IGO's approval of a request that has completed its LIMS workflow (BEFORE isDelivered = true, AFTER stagesComplete = true)
+ *                  isDelivered:
+ *                    type: boolean
+ *                    description: Flag that indicates request has been delivered (AFTER isIgoComplete = true)
  *              metaData:
  *                type: object
  *                properties:
@@ -288,7 +291,7 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                      description: Record number of Sample in IGO's LIMS
  *                    status:
  *                      type: string
- *                      description: Overall status of the sample. Either "Pending", "Complete", or "Failed"
+ *                      description: Stage sample is currently at ("Completed" if workflow is complete, "Failed" if failed)
  *                    stages:
  *                      type: array
  *                      description: Stage tracking information of the sample
@@ -297,7 +300,7 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                        properties:
  *                          stage:
  *                            type: string
- *                            description: Name of stage sample is at
+ *                            description: Name of stage
  *                          complete:
  *                            type: boolean
  *                            description: flag of whether sample has completed stage
@@ -307,24 +310,15 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                          updateTime:
  *                            type: integer
  *                            description: latest timestamp sample was updated by a LIMS workflow of stage
- *                          totalSamples:
- *                            type: integer
- *                            description: Number of samples at stage (Always 1)
- *                          completedSamples:
- *                            type: integer
- *                            description: Number of samples that have completed stage (Max - 1)
- *                          failedSamples:
- *                            type: integer
- *                            description: number of failed samples (Max - 1)
  *                    sampleInfo:
  *                      description: physical properties of sample
  *                      type: object
  *                      properties:
  *                        volume:
- *                          type: double
+ *                          type: integer
  *                          description: Remaining volume of sample
  *                        concentration:
- *                          type: double
+ *                          type: integer
  *                          description: concentration of sample
  *                        concentrationUnits:
  *                          type: string

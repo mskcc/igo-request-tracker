@@ -28,13 +28,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
 // Swagger
-// Configure swagger endpoint based on NODE-env
-const swagger_base = (process.env.NODE_ENV === "prod") ? '/request-tracker' : '';
+// Configure swagger endpoint based on NODE-env (this should be defined in the /srv/www/pm2/ecosystem.config.js
+const swagger_base = (process.env.NODE_ENV === "prod" || process.env.NODE_ENV === "qa") ? '/request-tracker' : '';
 const options = {
 	definition: {
 		openapi: "3.0.0",
 		info: {
-			title: "IGO Request Tracker API (dev)",
+			title: `IGO Request Tracker API (${process.env.NODE_ENV})`,
 			version: "1.0.0",
 			description:
 				"Documentation of endpoints for IGO's request tracker",

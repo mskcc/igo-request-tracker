@@ -8,6 +8,7 @@ import conservativeStage from "./assets/conservative-stage.png";
 import loadedProjects from "./assets/loadedProjects.png";
 import pendingProjects from "./assets/pendingProjects.png";
 import treeView from "./assets/tree_view.png";
+import {SWAGGER} from "../../config";
 
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -372,6 +373,14 @@ function HelpSection() {
                             Other email addresses (e.g. @sloankettering.edu, @cbio.mskcc.org, @med.cornell.edu,
                             @rockefeller.edu, @gmail.com) do not grant visibility. If visibility is needed, please
                             contact <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
+                        </p>
+                    </div>
+                    <div className={"help-unit"}>
+                        <h2>Is the request-tracker API available?</h2>
+                        <p>
+                            Yes. If you would like access to the request-tracker API, please contact the IGO data team,
+                            <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span> for an API user. To preview
+                            the responses available, please visit the <a href={SWAGGER} target={"_blank"}>API's swagger</a>
                         </p>
                     </div>
                 </div> : <div></div>

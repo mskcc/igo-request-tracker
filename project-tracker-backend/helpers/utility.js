@@ -54,8 +54,6 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 	let accessGroups, reqId;
 	const filteredRequests = [];
 
-	const requestsMissingAccessGroups = [];
-
 	for(const request of requests){
 		accessGroups = getAccessGroups(request);
 		reqId = request["requestId"];

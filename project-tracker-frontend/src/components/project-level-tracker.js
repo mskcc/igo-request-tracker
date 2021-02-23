@@ -37,8 +37,9 @@ function ProjectLevelTracker({project}) {
         return status === 'Complete';
     });
     const pendingSamples = samples.filter((sample) => {
+        // Pending samples will have the status of the stage they are currently at in processing
         const status = sample['status'];
-        return status === 'Pending';
+        return (status !== 'Complete' && status !== 'Failed');
     });
     const failedSamples = samples.filter((sample) => {
         const status = sample['status'];

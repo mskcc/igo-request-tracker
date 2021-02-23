@@ -62,7 +62,7 @@ const getDeliveredRequests = async function (req, res) {
 			if (isUser(req) || showUserView) {
 				// Users should have their requests filtered (IGO members will not have their projects filtered)
 				const all = resp["requests"] || [];
-				const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
+				const filteredRequests = await filterProjectsOnHierarchy(req, all, getDeliveredRequestsFromCacheKey(days));
 				resp = { ...resp };		// clone - prevents altering the cached value
 				resp["requests"] = filteredRequests;
 			}
@@ -92,7 +92,7 @@ const getPendingRequests = async function (req, res) {
 		.then(async (projects) => {
 			if(isUser(req) || showUserView) {
 				const all = projects["requests"] || [];
-				const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
+				const filteredRequests = await filterProjectsOnHierarchy(req, all, getPendingRequestsFromCacheKey(days));
 				projects = { ...projects };		// clone - prevents altering the cached value
 				projects["requests"] = filteredRequests;
 			}
@@ -130,13 +130,21 @@ const getIgoRequests = async function (req, res) {
 	return apiResponse.successResponseWithData(res, "success", allRequests);
 };
 
+const getDeliveredRequestsFromCacheKey = function(dayFilter) {
+	return `DELIVERED_REQUESTS___${dayFilter}`;
+};
+
+const getPendingRequestsFromCacheKey = function(dayFilter) {
+	return `PENDING_REQUESTS___${dayFilter}`;
+};
+
 const getDeliveredRequestsFromCache = function(dayFilter) {
-	const key = `DELIVERED_REQUESTS___${dayFilter}`;
+	const key = getDeliveredRequestsFromCacheKey(dayFilter);
 	return cache.get(key, () => getRecentDeliveries(dayFilter));
 };
 
 const getPendingRequestsFromCache = function(dayFilter) {
-	const key = `PENDING_REQUESTS___${dayFilter}`;
+	const key = getPendingRequestsFromCacheKey(dayFilter);
 	return cache.get(key, () => getUndeliveredProjects(dayFilter));
 };
 
