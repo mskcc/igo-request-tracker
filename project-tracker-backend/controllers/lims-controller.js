@@ -15,12 +15,12 @@ const { isInputTrue } = require("../helpers/utility");
  */
 const getRequestTrackingInfo = function(req, res) {
 	const query = req.query || {};
-	const project = query.request;
+	const requestId = req.params.requestId;
 	let includeTree = isInputTrue(query.tree);
 
-	if(!project) return apiResponse.ErrorResponse(res, "No project in request");
-	const key = `PROJECT_TRACKING_DATA_${project}`;
-	const retrievalFunc = () => getProjectTrackingInfo(project);
+	if(!requestId) return apiResponse.ErrorResponse(res, "No requestId provided");
+	const key = `PROJECT_TRACKING_DATA_${requestId}`;
+	const retrievalFunc = () => getProjectTrackingInfo(requestId);
 	return cache.get(key, retrievalFunc)
 		.then((requestInfo) => {
 			if(!includeTree){
@@ -58,15 +58,15 @@ const getDeliveredRequests = async function (req, res) {
 	const showUserView = userView ? (userView.toLowerCase() === "true" ? true : false) : false;
 
 	return getDeliveredRequestsFromCache(days)
-		.then(async (projects) => {
+		.then(async (resp) => {
 			if (isUser(req) || showUserView) {
 				// Users should have their requests filtered (IGO members will not have their projects filtered)
-				const all = projects["requests"] || [];
+				const all = resp["requests"] || [];
 				const filteredRequests = await filterProjectsOnHierarchy(req, all, key);
-				projects = { ...projects };		// clone - prevents altering the cached value
-				projects["requests"] = filteredRequests;
+				resp = { ...resp };		// clone - prevents altering the cached value
+				resp["requests"] = filteredRequests;
 			}
-			return apiResponse.successResponseWithData(res, "success", projects);
+			return apiResponse.successResponseWithData(res, "success", resp);
 		})
 		.catch((err) => {
 			return apiResponse.ErrorResponse(res, err.message);
