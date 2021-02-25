@@ -36,13 +36,23 @@ function SampleTree({igoCompleteDate, sample, requestName}){
     const root = sample['root'] || {};
     const attributes = root['attributes'] || {};
     const sourceSampleId = attributes['sourceSampleId'] || '';
-    const sampleInfo = sample['sampleInfo'] || {};
-
     // Investigator pools should not report the volume b/c they have been pooled outside of our LIMS
     const isInvestigatorPreparedPool = requestName === 'Investigator Prepared Pools';
-    const concentration = sampleInfo['concentration'];
-    const concentrationUnits = sampleInfo['concentrationUnits'] || '';
-    const volume = isInvestigatorPreparedPool ? '' : sampleInfo['volume'];
+
+    // These are all fields from the LimsRest API
+    const sampleInfo = sample['sampleInfo'] || {};
+    const dnaInfo = sampleInfo['dna_material'] || {}
+    const libraryInfo = sampleInfo['library_material'] || {}
+
+    const dnaConcentrationUnits = dnaInfo['concentrationUnits'] || '';
+    let dnaConcentration = dnaInfo['concentration'];
+    let dnaVolume = isInvestigatorPreparedPool ? '' : dnaInfo['volume'];
+    let dnaMass = isInvestigatorPreparedPool ? '' : dnaInfo['mass'];
+
+    const libraryConcentrationUnits = libraryInfo['concentrationUnits'] || '';
+    let libraryConcentration = libraryInfo['concentration'];
+    let libraryVolume = isInvestigatorPreparedPool ? '' : libraryInfo['volume'];
+    let libraryMass = isInvestigatorPreparedPool ? '' : libraryInfo['mass'];
 
     const sampleId = root['recordName'] || sample['sampleId'];
     const status = sample['status'];
@@ -66,9 +76,23 @@ function SampleTree({igoCompleteDate, sample, requestName}){
     }
 
     let formattedVolume = '';
-    if (volume){
-        formattedVolume = volume ? `Vol: ${volume.toFixed(2)} μL` : '';
-        tooltip += ` (Remaining Volume: ${formattedVolume})`
+
+    if (libraryVolume || dnaVolume){
+        const volumeList = [];
+        if(libraryVolume){
+            libraryConcentration = libraryConcentration ? libraryConcentration.toFixed(2) : '';
+            libraryMass = libraryMass ? libraryMass.toFixed(2) : '';
+            libraryVolume = libraryVolume.toFixed(2);
+            volumeList.push(`Library Vol: ${libraryVolume} μL`)
+        }
+        if(dnaVolume){
+            dnaConcentration = dnaConcentration ? dnaConcentration.toFixed(2) : '';
+            dnaMass = dnaMass ? dnaMass.toFixed(2) : '';
+            dnaVolume = dnaVolume.toFixed(2)
+            volumeList.push(`DNA Vol: ${dnaVolume} μL`)
+        }
+        formattedVolume = volumeList.join(', ');
+        tooltip += ` (${formattedVolume})`
     }
 
     /**
@@ -111,7 +135,7 @@ function SampleTree({igoCompleteDate, sample, requestName}){
                       onClick={toggleTree}>
                     <FontAwesomeIcon icon={faFlask}/>
                     <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{
-                        volume ? `${Math.round(volume)} μL` : ''
+                        formattedVolume ? 'μL' : ''
                     }</span>
                 </span>
             </Tooltip>
@@ -131,17 +155,41 @@ function SampleTree({igoCompleteDate, sample, requestName}){
                     <Col xs={8}>
                         <p>{root['recordName']}</p>
                     </Col>
-                    <Col xs={3}>
-                        <p className={"bold"}>Remaining Volume:</p>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>DNA Volume:</p>
                     </Col>
-                    <Col xs={3}>
-                        <p className={"float-left"}>{ volume ? `${volume} μL` : 'Not Available' }</p>
+                    <Col md={2}>
+                        <p className={"float-left"}>{ dnaVolume ? `${dnaVolume} μL` : 'Not Available' }</p>
                     </Col>
-                    <Col xs={3}>
-                        <p className={"bold"}>Concentration:</p>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>DNA Concentration:</p>
                     </Col>
-                    <Col xs={3}>
-                        <p className={"float-left"}>{concentration} {concentrationUnits}</p>
+                    <Col xs={8} md={2}>
+                        <p className={"float-left"}>{dnaConcentration} {dnaConcentrationUnits}</p>
+                    </Col>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>DNA Mass:</p>
+                    </Col>
+                    <Col xs={8} md={2}>
+                        <p className={"float-left"}>{dnaMass}</p>
+                    </Col>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>Library Volume:</p>
+                    </Col>
+                    <Col xs={8} md={2}>
+                        <p className={"float-left"}>{ libraryVolume ? `${libraryVolume} μL` : 'Not Available' }</p>
+                    </Col>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>Library Concentration:</p>
+                    </Col>
+                    <Col xs={8} md={2}>
+                        <p className={"float-left"}>{libraryConcentration} {libraryConcentrationUnits}</p>
+                    </Col>
+                    <Col xs={4} md={2}>
+                        <p className={"bold"}>Library Mass:</p>
+                    </Col>
+                    <Col xs={8} md={2}>
+                        <p className={"float-left"}>{libraryMass}</p>
                     </Col>
                 </Row>
                 <Tree data={sample.root}
