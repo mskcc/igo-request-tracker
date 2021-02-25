@@ -27,7 +27,7 @@ const translate = {
  * @returns {*}
  * @constructor
  */
-function SampleTree({igoCompleteDate, sample}){
+function SampleTree({igoCompleteDate, sample, requestName}){
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     // TODO - constant
     const isUser = userSession['isUser'] || false;
@@ -36,6 +36,13 @@ function SampleTree({igoCompleteDate, sample}){
     const root = sample['root'] || {};
     const attributes = root['attributes'] || {};
     const sourceSampleId = attributes['sourceSampleId'] || '';
+    const sampleInfo = sample['sampleInfo'] || {};
+
+    // Investigator pools should not report the volume b/c they have been pooled outside of our LIMS
+    const isInvestigatorPreparedPool = requestName === 'Investigator Prepared Pools';
+    const concentration = sampleInfo['concentration'];
+    const concentrationUnits = sampleInfo['concentrationUnits'] || '';
+    const volume = isInvestigatorPreparedPool ? '' : sampleInfo['volume'];
 
     const sampleId = root['recordName'] || sample['sampleId'];
     const status = sample['status'];
@@ -56,6 +63,12 @@ function SampleTree({igoCompleteDate, sample}){
     } else {
         toggleClasses += ' update-blue';
         tooltip = `Pending (${status})`;
+    }
+
+    let formattedVolume = '';
+    if (volume){
+        formattedVolume = volume ? `Vol: ${volume.toFixed(2)} μL` : '';
+        tooltip += ` (Remaining Volume: ${formattedVolume})`
     }
 
     /**
@@ -97,6 +110,9 @@ function SampleTree({igoCompleteDate, sample}){
                 <span className={toggleClasses}
                       onClick={toggleTree}>
                     <FontAwesomeIcon icon={faFlask}/>
+                    <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{
+                        volume ? `${Math.round(volume)} μL` : ''
+                    }</span>
                 </span>
             </Tooltip>
         </Col>
@@ -114,6 +130,18 @@ function SampleTree({igoCompleteDate, sample}){
                     </Col>
                     <Col xs={8}>
                         <p>{root['recordName']}</p>
+                    </Col>
+                    <Col xs={3}>
+                        <p className={"bold"}>Remaining Volume:</p>
+                    </Col>
+                    <Col xs={3}>
+                        <p className={"float-left"}>{ volume ? `${volume} μL` : 'Not Available' }</p>
+                    </Col>
+                    <Col xs={3}>
+                        <p className={"bold"}>Concentration:</p>
+                    </Col>
+                    <Col xs={3}>
+                        <p className={"float-left"}>{concentration} {concentrationUnits}</p>
                     </Col>
                 </Row>
                 <Tree data={sample.root}
@@ -137,7 +165,7 @@ function SampleTree({igoCompleteDate, sample}){
  * @returns {*}
  * @constructor
  */
-function SampleLevelTracker({igoCompleteDate, samples}) {
+function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
     return <Container>
         <Row>
             <Col xs={3} sm={2} md={1} className={"padding-vert-10 text-align-center"}>
@@ -154,7 +182,8 @@ function SampleLevelTracker({igoCompleteDate, samples}) {
             (samples.length > 0) ? samples.map((sample, idx) => {
                 return <SampleTree  igoCompleteDate={igoCompleteDate}
                                     sample={sample}
-                                    key={`${sample}-${idx}`}></SampleTree>;
+                                    key={`${sample}-${idx}`}
+                                    requestName={requestName}></SampleTree>;
             }) :
                 <Row>
                     <Col xs={12}>
