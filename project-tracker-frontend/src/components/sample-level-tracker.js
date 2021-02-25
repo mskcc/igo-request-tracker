@@ -62,7 +62,7 @@ function SampleTree({igoCompleteDate, sample, requestName}){
         tooltip = 'Failed';
     } else {
         toggleClasses += ' update-blue';
-        tooltip = 'Pending';
+        tooltip = `Pending (${status})`;
     }
 
     let formattedVolume = '';
