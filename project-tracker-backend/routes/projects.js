@@ -311,18 +311,33 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                            type: integer
  *                            description: latest timestamp sample was updated by a LIMS workflow of stage
  *                    sampleInfo:
- *                      description: physical properties of sample
+ *                      description: quantity of remaining sample
  *                      type: object
  *                      properties:
- *                        volume:
- *                          type: integer
- *                          description: Remaining volume of sample
- *                        concentration:
- *                          type: integer
- *                          description: concentration of sample
- *                        concentrationUnits:
- *                          type: string
- *                          description: concentration units
+ *                        dna_material:
+ *                          type: object
+ *                          properties:
+ *                            volume:
+ *                              type: integer
+ *                              description: Remaining (dna) volume of sample
+ *                            concentration:
+ *                              type: integer
+ *                              description: (dna) concentration of sample
+ *                            concentrationUnits:
+ *                              type: string
+ *                              description: (dna) concentration units
+ *                        library_material:
+ *                          type: object
+ *                          properties:
+ *                            volume:
+ *                              type: integer
+ *                              description: Remaining (library) volume of sample
+ *                            concentration:
+ *                              type: integer
+ *                              description: (library) concentration of sample
+ *                            concentrationUnits:
+ *                              type: string
+ *                              description: (library) concentration units
  *          status:
  *            type: boolean
  *            description: whether the request succeeded
