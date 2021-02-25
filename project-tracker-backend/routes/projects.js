@@ -36,7 +36,7 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *         required: false
  *         description: maximum number of days from now for which to return requests
  *         example:
- *           30
+ *           7
  *     name: IGO Requests
  *     produces:
  *       - application/json

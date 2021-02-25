@@ -14,7 +14,7 @@ const properties = {
         home_page_path: 'request-tracker',
         projects_endpoint: 'https://igodev.mskcc.org/request-tracker/api/requests',
         login_page_url: '/login',
-        swagger: 'https://igodev.mskcc.org/request-tracker-swagger',
+        swagger: 'https://igodev.mskcc.org/request-tracker/request-tracker-swagger/',
         host: 'https://igodev.mskcc.org'
     },
     'prod': {
@@ -22,7 +22,7 @@ const properties = {
         home_page_path: 'request-tracker',
         projects_endpoint: 'https://igo.mskcc.org/request-tracker/api/requests',
         login_page_url: '/login',
-        swagger: 'https://igo.mskcc.org/request-tracker-swagger',
+        swagger: 'https://igo.mskcc.org/request-tracker/request-tracker-swagger/',
         host: 'https://igo.mskcc.org'
     }
 }
