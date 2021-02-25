@@ -50,7 +50,7 @@ export function getUndeliveredProjectsRequest(userView) {
             ]
     }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered?days=365`;
+    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered?days=500`;
     if(userView){
         baseUrl = `${baseUrl}&userView=true`;
     }
@@ -97,7 +97,7 @@ export function getDeliveredProjectsRequest(userView) {
              }
          }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/delivered?days=365`;
+    let baseUrl = `${PROJECTS_ENDPOINT}/delivered?days=500`;
     if(userView){
         baseUrl = `${baseUrl}&userView=true`;
     }
