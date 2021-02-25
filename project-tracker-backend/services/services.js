@@ -28,8 +28,8 @@ const formatData = function(resp) {
 	return data;
 };
 
-exports.getUndeliveredProjects = () => {
-	const url = `${LIMS_API}/getIgoRequests?days=365&complete=false`;
+exports.getUndeliveredProjects = (days) => {
+	const url = `${LIMS_API}/getIgoRequests?days=${days}&complete=false`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {
@@ -40,8 +40,8 @@ exports.getUndeliveredProjects = () => {
 };
 
 // TODO - Actually get all projects
-exports.getRecentDeliveries = () => {
-	const url = `${LIMS_API}/getIgoRequests?days=365&complete=true`;
+exports.getRecentDeliveries = (days) => {
+	const url = `${LIMS_API}/getIgoRequests?days=${days}&complete=true`;
 	return axios.get(url,
 		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
 		.then((resp) => {

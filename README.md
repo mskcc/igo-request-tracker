@@ -33,7 +33,22 @@ cd project-tracker-backend && npm install && npm run dev
             proxy_cache_bypass $http_upgrade;
     }
     ```
-3) The node process requires the `NODE_ENV` be set to `qa` or `prod`, e.g.
+3) Add an entry for the swagger documentation 
+    * Note make sure the path matches that of the servers property in the swagger options located in the `app.js` 
+    ```
+    location /request-tracker-swagger {
+            proxy_pass    http://127.0.0.1:4000/request-tracker-swagger;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_buffer_size          128k;
+            proxy_buffers              4 256k;
+            proxy_busy_buffers_size    256k;
+    }
+    ```
+4) The node process requires the `NODE_ENV` be set to `qa` or `prod`, e.g.
     **pm2**
     ```
     module.exports = {

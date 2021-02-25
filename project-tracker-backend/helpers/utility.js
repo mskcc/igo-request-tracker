@@ -6,6 +6,16 @@ const { userCollection } = require("../db/data-access");
 const MISSING_ACCESS_GROUPS = new Set();
 
 /**
+ * Returns whether input should evaluate to true
+ */
+exports.isInputTrue = (input) => {
+	if(typeof input === 'string'){
+		return input.toLowerCase() === 'true';
+	}
+	return false;
+}
+
+/**
  * Retrieves isUser from the request cookie and returns value of isUser
  * @param req
  */
@@ -43,8 +53,6 @@ exports.filterProjectsOnHierarchy = async (apiReq, requests, key = "requests") =
 	// Add all requests w/ at least one @accessGroups present in the visibilityGroups for user
 	let accessGroups, reqId;
 	const filteredRequests = [];
-
-	const requestsMissingAccessGroups = [];
 
 	for(const request of requests){
 		accessGroups = getAccessGroups(request);

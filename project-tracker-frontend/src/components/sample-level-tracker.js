@@ -55,7 +55,7 @@ function SampleTree({igoCompleteDate, sample}){
         tooltip = 'Failed';
     } else {
         toggleClasses += ' update-blue';
-        tooltip = 'Pending';
+        tooltip = `Pending (${status})`;
     }
 
     /**

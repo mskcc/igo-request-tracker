@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "basic-auth": "^2.0.1",
     "bcrypt": "^3.0.6",
     "codacy-coverage": "^3.4.0",
     "cookie-parser": "~1.4.3",
@@ -29,6 +30,8 @@
     "morgan": "~1.9.0",
     "node-cache": "^5.1.0",
     "nodemailer": "^6.3.1",
+    "swagger-jsdoc": "^6.0.2",
+    "swagger-ui-express": "^4.1.6",
     "winston": "^3.2.1"
   },
   "devDependencies": {

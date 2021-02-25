@@ -3,6 +3,6 @@ var limsRouter = require("./projects");
 
 var app = express();
 
-app.use("/projects/", limsRouter);
+app.use("/requests/", limsRouter);
 
 module.exports = app;
