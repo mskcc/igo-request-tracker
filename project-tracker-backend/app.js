@@ -58,7 +58,7 @@ const options = {
 };
 const specs = swaggerJsdoc(options);
 app.use(
-	"/request-tracker-swagger",
+	"/swagger",
 	swaggerUi.serve,
 	swaggerUi.setup(specs)
 );
