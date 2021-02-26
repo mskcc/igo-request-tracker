@@ -59,6 +59,23 @@ function ProjectLevelTracker({project}) {
         filteredSamples = filteredSamples.concat(completedSamples);
     }
 
+    // Sort on recordName, e.g. [08470_E_42, 08470_E_11, 08470_E_4, 08470_E_1] -> [08470_E_1, 08470_E_4, 08470_E_11, 08470_E_42]
+    filteredSamples.sort((s1, s2) => {
+        let s1Root = s1.root || {};
+        let s1Name = s1Root['recordName'] || '';
+        s1Name = s1Name.toUpperCase();
+
+        let s2Root = s2.root || {};
+        let s2Name = s2Root['recordName'] || '';
+        s2Name = s2Name.toUpperCase();
+
+        if (s1Name.length - s2Name.length !== 0) {
+            return s1Name.length - s2Name.length;
+        }
+
+        return (s1Name < s2Name) ? -1 : (s1Name > s2Name) ? 1 : 0;
+    });
+
     const getOtherTimeField = () => {
         if(igoCompleteDate && "Not Available" !== igoCompleteDate) {
             return <Col xs={12} sm={6}>
