@@ -262,7 +262,7 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                  properties:
  *                    stage:
  *                      type: string
- *                      description: name of stage
+ *                      description: name of stage (for a full list of stages see the "Stages" of the help page on https://igo.mskcc.org/request-tracker)
  *                    complete:
  *                      type: boolean
  *                      description: Flag of whether all samples in request have completed stage
@@ -300,7 +300,7 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *                        properties:
  *                          stage:
  *                            type: string
- *                            description: Name of stage
+ *                            description: Name of stage (for a full list of stages see the "Stages" of the help page on https://igo.mskcc.org/request-tracker)
  *                          complete:
  *                            type: boolean
  *                            description: flag of whether sample has completed stage

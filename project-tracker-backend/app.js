@@ -37,15 +37,11 @@ const options = {
 			title: `IGO Request Tracker API (${process.env.NODE_ENV})`,
 			version: "1.0.0",
 			description:
-				"Documentation of endpoints for IGO's request tracker",
-			license: {
-				name: "MIT",
-				url: "https://spdx.org/licenses/MIT.html",
-			},
+				"Documentation of endpoints for IGO's request tracker. This API uses http authentication, e.g. curl --user {user}:{password} -X GET \"https://igo.mskcc.org/request-tracker/api/requests/all\"",
 			contact: {
-				name: "IGO-Request-Tracker",
-				url: "https://igodev.mskcc.org/request-tracker",
-				email: "streidd@mskcc.org",
+				name: "IGO Data Team",
+				url: "https://genomics.mskcc.org/about/6",
+				email: "zzPDL_SKI_IGO_DATA@mskcc.org"
 			},
 		},
 		servers: [
