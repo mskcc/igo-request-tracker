@@ -171,7 +171,7 @@ function SampleTree({igoCompleteDate, sample, requestName}){
                         <p className={"bold"}>DNA Mass:</p>
                     </Col>
                     <Col xs={8} md={2}>
-                        <p className={"float-left"}>{dnaMass}</p>
+                        <p className={"float-left"}>{dnaMass} ng</p>
                     </Col>
                     <Col xs={4} md={2}>
                         <p className={"bold"}>Library Volume:</p>
@@ -189,7 +189,7 @@ function SampleTree({igoCompleteDate, sample, requestName}){
                         <p className={"bold"}>Library Mass:</p>
                     </Col>
                     <Col xs={8} md={2}>
-                        <p className={"float-left"}>{libraryMass}</p>
+                        <p className={"float-left"}>{libraryMass} ng</p>
                     </Col>
                 </Row>
                 <Tree data={sample.root}
