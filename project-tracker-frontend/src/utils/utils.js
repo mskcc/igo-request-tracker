@@ -23,7 +23,60 @@ export function convertUnixTimeToDateString_Day(UNIX_Timestamp) {
         return date.toLocaleDateString();
     }
     return '...';
+};
+
+/**
+ * Returns file name suffix to add to the end of a downloaded file
+ *      e.g. 08822_IJ-05-Aug-2020
+ * @returns {string}
+ */
+export function getDateFileSuffix(){
+    const d = new Date();
+    const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+    const mo = new Intl.DateTimeFormat('en', { month: 'short' }).format(d);
+    const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+    return `${da}-${mo}-${ye}`;
 }
+
+/**
+ * Extracts value of a field from an object. Returns null if not present
+ * @param obj
+ * @param field
+ * @returns {int|null}
+ */
+const extractNumber = function(obj, field){
+    if (field in obj) {
+        const val = obj[field];
+        if(!isNaN(val)){
+            return val.toFixed(2);
+        }
+    }
+    return null;
+};
+
+/**
+ * Returns quantity information about the material
+ *
+ * @param materialInfo
+ */
+export function getMaterialInfo(materialInfo) {
+    const concentrationUnits = materialInfo['concentrationUnits'] || '';
+    let concentration = extractNumber(materialInfo, 'concentration'); // materialInfo['concentration'];
+    let volume = extractNumber(materialInfo, 'volume'); // materialInfo['volume'];
+    let mass = extractNumber(materialInfo, 'mass');  //  materialInfo['mass'];
+
+    if(mass){
+        mass = `${mass} ng`;
+    }
+    if(volume){
+        volume = `${volume} μL`;
+    }
+    if(concentration){
+        concentration = `${concentration} ${concentrationUnits}`;
+    }
+
+    return concentration, volume, mass;
+};
 
 /**
  * Returns the Date element w/ a year, month, day offset

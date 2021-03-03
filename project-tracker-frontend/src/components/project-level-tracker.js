@@ -1,11 +1,47 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDateStringFull} from '../utils/utils';
+import {
+    convertUnixTimeToDateStringFull,
+    downloadExcel, getDateFileSuffix,
+    getMaterialInfo
+} from "../utils/utils";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 import StageLevelTracker from "./stage-level-tracker";
 import SampleLevelTracker from "./sample-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
+import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
+import Tooltip from "@material-ui/core/Tooltip/Tooltip";
+
+const extractQuantifyInfoXlsx = function(samples) {
+    const sampleInfoList = [];
+    for(const sample of samples){
+        const dataRecordId = sample['sampleId'];
+        const root = sample['root'] || {};
+        const igoId = root['recordName'];
+        const status = sample['status'];
+        const sampleInfo = sample['sampleInfo'] || {};
+        const dnaInfo = sampleInfo['dna_material'] || {};
+        const libraryInfo = sampleInfo['library_material'] || {};
+        let dnaConcentration, dnaVolume, dnaMass = getMaterialInfo(dnaInfo);
+        let libraryConcentration, libraryVolume, libraryMass = getMaterialInfo(libraryInfo);
+
+        const xlsxObj = {
+            igoId,
+            dataRecordId,
+            status,
+            dnaConcentration,
+            dnaVolume,
+            dnaMass,
+            libraryConcentration,
+            libraryVolume,
+            libraryMass
+        };
+        sampleInfoList.push(xlsxObj);
+    }
+
+    return sampleInfoList;
+};
 
 // project: Project.js instance
 function ProjectLevelTracker({project}) {
@@ -28,6 +64,7 @@ function ProjectLevelTracker({project}) {
     const childRequests = project.getChildRequests();
     const serviceId = project.getServiceId();
     const requestName = project.getRecipe();
+    const requestId = project.getRequestId();
 
     // TODO - delete?
     const projectManager = project.getProjectManager();
@@ -134,9 +171,18 @@ function ProjectLevelTracker({project}) {
                                            projectView={true}></StageLevelTracker>
                     </Row>
                     <Row className={"padding-vert-10"}>
-                        <Col xs={6} className={"hover"} onClick={() => setViewSamples(!viewSamples)}>
+                        <Col xs={4} className={"hover"} onClick={() => setViewSamples(!viewSamples)}>
                             <FontAwesomeIcon className="request-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
                             <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
+                        </Col>
+                        <Col xs={2}>
+                            <Tooltip title={`Download ${requestId} sample Info`} aria-label={'Sample list tooltip'} placement="right">
+                            <div className={"sample-viewer-toggle"}
+                                 onClick={() => downloadExcel(extractQuantifyInfoXlsx(samples), `${requestId}_${getDateFileSuffix()}`)}>
+                                <FontAwesomeIcon className={"tiny-icon float-right hover"}
+                                                 icon={faFileExcel}/>
+                            </div>
+                            </Tooltip>
                         </Col>
                         {
                             viewSamples? <Col xs={6}>
