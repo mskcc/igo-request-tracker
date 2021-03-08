@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {
     convertUnixTimeToDateStringFull,
     downloadExcel, getDateFileSuffix,
-    getMaterialInfo
+    getMaterialInfo, sortSamples
 } from "../utils/utils";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
@@ -12,8 +12,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import Tooltip from "@material-ui/core/Tooltip/Tooltip";
+import {useSelector} from "react-redux";
+import {STATE_USER_SESSION} from "../redux/reducers";
 
 const extractQuantifyInfoXlsx = function(samples) {
+    samples.sort(sortSamples);
     const sampleInfoList = [];
     for(const sample of samples){
         const dataRecordId = sample['sampleId'];
@@ -23,19 +26,19 @@ const extractQuantifyInfoXlsx = function(samples) {
         const sampleInfo = sample['sampleInfo'] || {};
         const dnaInfo = sampleInfo['dna_material'] || {};
         const libraryInfo = sampleInfo['library_material'] || {};
-        let dnaConcentration, dnaVolume, dnaMass = getMaterialInfo(dnaInfo);
-        let libraryConcentration, libraryVolume, libraryMass = getMaterialInfo(libraryInfo);
+        const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo, false);
+        const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo, false);
 
         const xlsxObj = {
             igoId,
             dataRecordId,
             status,
-            dnaConcentration,
-            dnaVolume,
-            dnaMass,
-            libraryConcentration,
-            libraryVolume,
-            libraryMass
+            "NA Concentration (ng/µL)": dnaConcentration || 0,
+            "NA Volume (µL)": dnaVolume || 0,
+            "NA Mass (ng)": dnaMass || 0,
+            "libraryConcentration (ng/µL)": libraryConcentration || 0,
+            "libraryVolume (µL)": libraryVolume || 0,
+            "libraryMass (ng)": libraryMass || 0
         };
         sampleInfoList.push(xlsxObj);
     }
@@ -65,6 +68,10 @@ function ProjectLevelTracker({project}) {
     const serviceId = project.getServiceId();
     const requestName = project.getRecipe();
     const requestId = project.getRequestId();
+
+    // TODO - Remove once sample info download is complete
+    const userSession = useSelector(state => state[STATE_USER_SESSION] );
+    const isUser = (userSession['isUser'] || false) && (userSession['username'] !== 'selcukls');;
 
     // TODO - delete?
     const projectManager = project.getProjectManager();
@@ -97,7 +104,9 @@ function ProjectLevelTracker({project}) {
     }
 
     // Sort on recordName, e.g. [08470_E_42, 08470_E_11, 08470_E_4, 08470_E_1] -> [08470_E_1, 08470_E_4, 08470_E_11, 08470_E_42]
-    filteredSamples.sort((s1, s2) => {
+    filteredSamples.sort(sortSamples);
+        /*
+        (s1, s2) => {
         let s1Root = s1.root || {};
         let s1Name = s1Root['recordName'] || '';
         s1Name = s1Name.toUpperCase();
@@ -112,6 +121,7 @@ function ProjectLevelTracker({project}) {
 
         return (s1Name < s2Name) ? -1 : (s1Name > s2Name) ? 1 : 0;
     });
+         */
 
     const getOtherTimeField = () => {
         if(igoCompleteDate && "Not Available" !== igoCompleteDate) {
@@ -177,11 +187,13 @@ function ProjectLevelTracker({project}) {
                         </Col>
                         <Col xs={2}>
                             <Tooltip title={`Download ${requestId} sample Info`} aria-label={'Sample list tooltip'} placement="right">
-                            <div className={"sample-viewer-toggle"}
-                                 onClick={() => downloadExcel(extractQuantifyInfoXlsx(samples), `${requestId}_${getDateFileSuffix()}`)}>
-                                <FontAwesomeIcon className={"tiny-icon float-right hover"}
-                                                 icon={faFileExcel}/>
-                            </div>
+                                {
+                                    isUser ? <span></span> : <div className={"sample-viewer-toggle"}
+                                                                 onClick={() => downloadExcel(extractQuantifyInfoXlsx(samples), `${requestId}_${getDateFileSuffix()}`)}>
+                                        <FontAwesomeIcon className={"tiny-icon float-right hover"}
+                                                         icon={faFileExcel}/>
+                                    </div>
+                                }
                             </Tooltip>
                         </Col>
                         {

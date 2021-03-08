@@ -96,12 +96,13 @@ function SampleTree({igoCompleteDate, sample, requestName}){
     const sampleInfo = sample['sampleInfo'] || {};
     const dnaInfo = sampleInfo['dna_material'] || {}
     const libraryInfo = sampleInfo['library_material'] || {};
-    let dnaConcentration, dnaVolume, dnaMass = getMaterialInfo(dnaInfo);
-    let libraryConcentration, libraryVolume, libraryMass = getMaterialInfo(libraryInfo);
+    const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo);
+    const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo);
+    debugger;
     if(libraryMass) {
         tooltip += ` (Library Mass: ${libraryMass})`;
     } else if(dnaMass){
-        tooltip += ` (DNA Mass: ${libraryMass})`;
+        tooltip += ` (NA Mass: ${libraryMass})`;
     }
 
     /**
@@ -165,7 +166,7 @@ function SampleTree({igoCompleteDate, sample, requestName}){
                             <p>{root['recordName']}</p>
                         </Col>
                     </Row>
-                    { generateSampleQuantityRow(dnaConcentration, dnaVolume, dnaMass, 'DNA') }
+                    { generateSampleQuantityRow(dnaConcentration, dnaVolume, dnaMass, 'NA') }
                     { generateSampleQuantityRow(libraryConcentration, libraryVolume, libraryMass, 'Library') }
                 </Container>
                 <Tree data={sample.root}

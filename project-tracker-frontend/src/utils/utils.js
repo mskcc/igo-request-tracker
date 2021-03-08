@@ -47,7 +47,7 @@ export function getDateFileSuffix(){
 const extractNumber = function(obj, field){
     if (field in obj) {
         const val = obj[field];
-        if(!isNaN(val)){
+        if(!isNaN(val) && val !== 0){
             return val.toFixed(2);
         }
     }
@@ -57,26 +57,50 @@ const extractNumber = function(obj, field){
 /**
  * Returns quantity information about the material
  *
- * @param materialInfo
+ * @param materialInfo - object containing concentration fields (e.g. concentration, volume, mass)
+ * @param addUnits - Output values w/ default units - ng/μL
+ * @returns {[int, int, int]}
  */
-export function getMaterialInfo(materialInfo) {
+export function getMaterialInfo(materialInfo, addUnits = true) {
     const concentrationUnits = materialInfo['concentrationUnits'] || '';
     let concentration = extractNumber(materialInfo, 'concentration'); // materialInfo['concentration'];
     let volume = extractNumber(materialInfo, 'volume'); // materialInfo['volume'];
     let mass = extractNumber(materialInfo, 'mass');  //  materialInfo['mass'];
 
-    if(mass){
+    if(mass && addUnits){
         mass = `${mass} ng`;
     }
-    if(volume){
+    if(volume && addUnits){
         volume = `${volume} μL`;
     }
-    if(concentration){
+    if(concentration && addUnits){
         concentration = `${concentration} ${concentrationUnits}`;
     }
 
-    return concentration, volume, mass;
+    return [concentration, volume, mass];
 };
+
+/**
+ * Sorts sample objects by the value of their "recordName"
+ * @param s1
+ * @param s2
+ * @returns {number}
+ */
+export function sortSamples(s1, s2) {
+    let s1Root = s1.root || {};
+    let s1Name = s1Root['recordName'] || '';
+    s1Name = s1Name.toUpperCase();
+
+    let s2Root = s2.root || {};
+    let s2Name = s2Root['recordName'] || '';
+    s2Name = s2Name.toUpperCase();
+
+    if (s1Name.length - s2Name.length !== 0) {
+        return s1Name.length - s2Name.length;
+    }
+
+    return (s1Name < s2Name) ? -1 : (s1Name > s2Name) ? 1 : 0;
+}
 
 /**
  * Returns the Date element w/ a year, month, day offset
