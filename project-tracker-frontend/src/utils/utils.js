@@ -81,10 +81,14 @@ export function getMaterialInfo(materialInfo, addUnits = true) {
 };
 
 /**
- * Sorts sample objects by the value of their "recordName"
- * @param s1
- * @param s2
- * @returns {number}
+ * Comparator of sample objects based on value of their "recordName"
+ *  e.g.
+ *      INPUT: [ 08470_E_42, 08470_E_11, 08470_E_4, 08470_E_1 ]
+ *      OUTPUT: [ 08470_E_1, 08470_E_4, 08470_E_11, 08470_E_42 ]
+ *
+ * @param s1, eg. { ..., "recordName": "08470_E_42", ... }
+ * @param s2, eg. { ..., "recordName": "08470_E_1", ... }
+ * @returns -1, 0, 1
  */
 export function sortSamples(s1, s2) {
     let s1Root = s1.root || {};
