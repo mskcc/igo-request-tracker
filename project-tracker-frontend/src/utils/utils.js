@@ -4,6 +4,7 @@ import XLSX from "xlsx";
 import FileSaver from "file-saver";
 import {getIgoCompleteDate, getReceivedDate, getRequestId, getRecipe, getIsIgoComplete, getDueDate} from "./api-util";
 import Project from './Project';
+import {DF_ALL} from "../components/common/project-filters";
 
 function isValidDate(d) {
     return d instanceof Date && !isNaN(d);
@@ -222,3 +223,119 @@ export const getRequestState = (requests) => {
     }
     return requestState;
 }
+
+/**
+ * Returns a list of requests that have been filtered on the date field specified in props
+ *
+ * @param requestList
+ * @returns {[]}
+ */
+const getDateFilteredList = (requestList, dateFilter, dateFilterField) => {
+    const numDays = parseInt(dateFilter);
+    const oldestDate = getDateFromNow(0, 0, -numDays);
+    const dateFilteredList = [];
+    for(const req of requestList){
+        const receivedDate = req[dateFilterField];
+        if(receivedDate && receivedDate > oldestDate){
+            // receivedDate needs to be present and that usually means it is new
+            dateFilteredList.push(req);
+        } else if (!receivedDate && DF_ALL === dateFilter){
+            // Only add request w/ missing received date if filtering for all projects
+            dateFilteredList.push(req);
+        }
+    }
+    return dateFilteredList;
+};
+
+/**
+ * Returning the first 5 results that get returned from the filter
+ *
+ * @param mapping
+ * @returns {string[]}
+ */
+const getFilteredProjectsFromQuery = (requests, requestIdQuery) => {
+    const filtered = requests.filter((req) => {
+        const requestId = getRequestId(req);
+        return requestId.startsWith(requestIdQuery);
+    });
+    return filtered;
+};
+
+/**
+ * Filters requests by the state value for filteredRequests
+ * @param requests
+ * @returns {*}
+ */
+const getFilteredProjectsFromRecipe = (requests, filteredRecipes) => {
+    // If no filter is applied, return all the requests
+    if(filteredRecipes.size === 0){
+        return requests;
+    }
+    const filtered = requests.filter((req) => {
+        const recipe = getRecipe(req);
+        return filteredRecipes.has(recipe);
+    });
+    return filtered;
+};
+
+/**
+ * Performs the filtering on an input list of requests
+ *
+ * @param requestList
+ * @param filteredRecipes
+ * @param requestIdQuery
+ * @param dateFilter
+ * @param dateFilterField
+ * @param descendingDateSort
+ * @returns {*}
+ */
+export const filterRequestList = function(requestList, filteredRecipes, requestIdQuery, dateFilter, dateFilterField, descendingDateSort) {
+    const dateFilteredList = getDateFilteredList(requestList, dateFilter, dateFilterField);
+    const requestIdFilteredList = getFilteredProjectsFromQuery(dateFilteredList, requestIdQuery);
+    const recipeFilteredList = getFilteredProjectsFromRecipe(requestIdFilteredList, filteredRecipes);
+    const sortedRequests = getSortedRequests(recipeFilteredList, descendingDateSort, dateFilterField);
+
+    return sortedRequests;
+};
+
+/**
+ * Extracts all sample info for an input list of samples
+ * @param samples
+ * @returns {[]}
+ */
+export const extractQuantifyInfoXlsx = function(samples) {
+    samples.sort(sortSamples);
+    const sampleInfoList = [];
+    for(const sample of samples){
+        const dataRecordId = sample['sampleId'];
+        const root = sample['root'] || {};
+        const igoId = root['recordName'];
+        const status = sample['status'];
+        const sampleInfo = sample['sampleInfo'] || {};
+        const sampleName = sampleInfo['sampleName'] || '';
+        const investigatorId = sampleInfo['sampleName'] || '';
+        const correctedInvestigatorId = sampleInfo['sampleName'] || '';
+        const dnaInfo = sampleInfo['dna_material'] || {};
+        const libraryInfo = sampleInfo['library_material'] || {};
+        const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo, false);
+        const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo, false);
+
+        const xlsxObj = {
+            sampleName,
+            igoId,
+            investigatorId,
+            correctedInvestigatorId,
+            dataRecordId,
+            status,
+            "NA Concentration (ng/µL)": dnaConcentration || 0,
+            "NA Volume (µL)": dnaVolume || 0,
+            "NA Mass (ng)": dnaMass || 0,
+            "libraryConcentration (ng/µL)": libraryConcentration || 0,
+            "libraryVolume (µL)": libraryVolume || 0,
+            "libraryMass (ng)": libraryMass || 0
+        };
+        sampleInfoList.push(xlsxObj);
+    }
+
+    return sampleInfoList;
+};

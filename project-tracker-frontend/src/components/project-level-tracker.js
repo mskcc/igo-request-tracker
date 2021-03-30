@@ -15,37 +15,6 @@ import Tooltip from "@material-ui/core/Tooltip/Tooltip";
 import {useSelector} from "react-redux";
 import {STATE_USER_SESSION} from "../redux/reducers";
 
-const extractQuantifyInfoXlsx = function(samples) {
-    samples.sort(sortSamples);
-    const sampleInfoList = [];
-    for(const sample of samples){
-        const dataRecordId = sample['sampleId'];
-        const root = sample['root'] || {};
-        const igoId = root['recordName'];
-        const status = sample['status'];
-        const sampleInfo = sample['sampleInfo'] || {};
-        const dnaInfo = sampleInfo['dna_material'] || {};
-        const libraryInfo = sampleInfo['library_material'] || {};
-        const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo, false);
-        const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo, false);
-
-        const xlsxObj = {
-            igoId,
-            dataRecordId,
-            status,
-            "NA Concentration (ng/µL)": dnaConcentration || 0,
-            "NA Volume (µL)": dnaVolume || 0,
-            "NA Mass (ng)": dnaMass || 0,
-            "libraryConcentration (ng/µL)": libraryConcentration || 0,
-            "libraryVolume (µL)": libraryVolume || 0,
-            "libraryMass (ng)": libraryMass || 0
-        };
-        sampleInfoList.push(xlsxObj);
-    }
-
-    return sampleInfoList;
-};
-
 // project: Project.js instance
 function ProjectLevelTracker({project}) {
     const [viewSamples, setViewSamples] = useState(false);
@@ -71,7 +40,7 @@ function ProjectLevelTracker({project}) {
 
     // TODO - Remove once sample info download is complete
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
-    const isUser = (userSession['isUser'] || false) && (!userSession['isPM']);;
+    const isUser = (userSession['isUser'] || false) && (!userSession['isPM']);
 
     // TODO - delete?
     const projectManager = project.getProjectManager();
@@ -167,17 +136,7 @@ function ProjectLevelTracker({project}) {
                             <FontAwesomeIcon className="request-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
                             <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
                         </Col>
-                        <Col xs={2}>
-                            <Tooltip title={`Download ${requestId} sample Info`} aria-label={'Sample list tooltip'} placement="right">
-                                {
-                                    isUser ? <span></span> : <div className={"sample-viewer-toggle"}
-                                                                 onClick={() => downloadExcel(extractQuantifyInfoXlsx(samples), `${requestId}_${getDateFileSuffix()}`)}>
-                                        <FontAwesomeIcon className={"tiny-icon float-right hover"}
-                                                         icon={faFileExcel}/>
-                                    </div>
-                                }
-                            </Tooltip>
-                        </Col>
+                        <Col xs={2}></Col>
                         {
                             viewSamples? <Col xs={6}>
                                 <Container>

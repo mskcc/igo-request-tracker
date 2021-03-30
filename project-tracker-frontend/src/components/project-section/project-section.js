@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import {
     convertUnixTimeToDateStringFull,
     downloadExcel,
-    getDateFromNow,
-    getHumanReadable, getSortedRequests
+    getHumanReadable,
+    getSortedRequests,
+    filterRequestList
 } from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
@@ -16,8 +17,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {getRecipe, getRequestId, REQ_deliveryDate, REQ_dueDate, REQ_receivedDate} from "../../utils/api-util";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {makeStyles} from "@material-ui/core/styles";
-import {DF_ALL} from "../common/project-filters";
-import {STATE_DELIVERED_REQUESTS} from "../../redux/reducers";
+import {STATE_DELIVERED_REQUESTS, STATE_USER_SESSION} from "../../redux/reducers";
 
 const useStyles = makeStyles({
     angleDown: {
@@ -39,69 +39,9 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
     const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_dueDate;
 
     useEffect(() => {
-        // FILTERING
-        const dateFilteredList = getDateFilteredList(requestList);
-        const requestIdFilteredList = getFilteredProjectsFromQuery(dateFilteredList);
-        const recipeFilteredList = getFilteredProjectsFromRecipe(requestIdFilteredList);
-        const sortedRequests = getSortedRequests(recipeFilteredList, descendingDateSort, dateFilterField);
-        setFilteredProjects(sortedRequests);
+        const filteredRequests = filterRequestList(requestList, filteredRecipes, requestIdQuery, dateFilter, dateFilterField, descendingDateSort);
+        setFilteredProjects(filteredRequests);
     }, [requestIdQuery, filteredRecipes, dateFilter, requestList]);
-
-
-
-    /**
-     * Returning the first 5 results that get returned from the filter
-     *
-     * @param mapping
-     * @returns {string[]}
-     */
-    const getFilteredProjectsFromQuery = (requests) => {
-        const filtered = requests.filter((req) => {
-            const requestId = getRequestId(req);
-            return requestId.startsWith(requestIdQuery);
-        });
-        return filtered;
-    };
-
-    /**
-     * Filters requests by the state value for filteredRequests
-     * @param requests
-     * @returns {*}
-     */
-    const getFilteredProjectsFromRecipe = (requests) => {
-        // If no filter is applied, return all the requests
-        if(filteredRecipes.size === 0){
-            return requests;
-        }
-        const filtered = requests.filter((req) => {
-            const recipe = getRecipe(req);
-            return filteredRecipes.has(recipe);
-        });
-        return filtered;
-    };
-
-    /**
-     * Returns a list of requests that have been filtered on the date field specified in props
-     *
-     * @param requestList
-     * @returns {[]}
-     */
-    const getDateFilteredList = (requestList) => {
-        const numDays = parseInt(dateFilter);
-        const oldestDate = getDateFromNow(0, 0, -numDays);
-        const dateFilteredList = [];
-        for(const req of requestList){
-            const receivedDate = req[dateFilterField];
-            if(receivedDate && receivedDate > oldestDate){
-                // receivedDate needs to be present and that usually means it is new
-                dateFilteredList.push(req);
-            } else if (!receivedDate && DF_ALL === dateFilter){
-                // Only add request w/ missing received date if filtering for all projects
-                dateFilteredList.push(req);
-            }
-        }
-        return dateFilteredList;
-    };
 
     const projectSection = getHumanReadable(projectState);
 
@@ -177,7 +117,9 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                     <Col xs={1}></Col>
                 </Row>
                 <Row className={"background-mskcc-light-gray padding-top-15 padding-bottom-10"}>
-                    <Col xs={3} sm={2} className={"flexbox-center overflow-x-hidden"}><h4>Request Id</h4></Col>
+                    <Col xs={3} sm={2} className={"flexbox-center overflow-x-hidden"}>
+                        <h4>Request Id</h4>
+                    </Col>
                     <Col xs={3} sm={4} className={"flexbox-center text-align-center overflow-x-hidden"}><h4>Request Type</h4></Col>
                     <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
                          onClick={() => toggleDateSorting(REQ_receivedDate)}>

@@ -90,15 +90,14 @@ function SampleTree({igoCompleteDate, sample, requestName}){
         toggleClasses += ' update-blue';
         tooltip = `Pending (${status})`;
     }
-    // Investigator pools should not report the volume b/c they have been pooled outside of our LIMS
-    const isInvestigatorPreparedPool = requestName === 'Investigator Prepared Pools';
+
     // These are all fields from the LimsRest API
     const sampleInfo = sample['sampleInfo'] || {};
     const dnaInfo = sampleInfo['dna_material'] || {}
     const libraryInfo = sampleInfo['library_material'] || {};
     const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo);
     const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo);
-    debugger;
+
     if(libraryMass) {
         tooltip += ` (Library Mass: ${libraryMass})`;
     } else if(dnaMass){

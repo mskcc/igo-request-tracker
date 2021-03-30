@@ -6,7 +6,7 @@ import Modal, { sendUpdate, MODAL_ERROR } from 'object-modal';
 import LoadingOverlay from 'react-loading-overlay';
 import Paper from "@material-ui/core/Paper";
 import {Col, Container, Row} from 'react-bootstrap';
-import {faSearch, faToggleOff, faToggleOn} from '@fortawesome/free-solid-svg-icons';
+import {faDownload, faSearch, faToggleOff, faToggleOn} from "@fortawesome/free-solid-svg-icons";
 import {Subject} from 'rxjs';
 import TextField from '@material-ui/core/TextField/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,15 +24,19 @@ import {
     STATE_USER_SESSION
 } from "./redux/reducers";
 import {HOME} from './config';
-import {getRequestState, getTargetValue} from './utils/utils';
+import {
+    getRequestState,
+    getTargetValue
+} from "./utils/utils";
 import {
     renderDateFilter,
     mapDateFilter,
-    DF_WEEK,
-    RecipeFilter, DF_ALL
+    RecipeFilter,
+    DF_ALL
 } from "./components/common/project-filters";
 import './App.css';
 import {USER_VIEW} from "./utils/api-util";
+import DownloadIndicator from "./components/common/download-indicator";
 
 const useStyles = makeStyles({
     root: {
@@ -55,6 +59,9 @@ const useStyles = makeStyles({
         'left': '50%',
         'transform': 'translate(-50%,0%)'
     },
+    rootContainer: {
+        'max-width': '1600px !important'
+    },
     container: {
         gridArea: 'form',
         display: 'grid',
@@ -71,6 +78,7 @@ function App() {
     const classes = useStyles();
 
     const [showFilters, setShowFilters] = useState(false);
+    const [showDownload, setShowDownload] = useState(false);
     const [recipeSet, setRecipeSet] = useState(new Set());
     const [filteredRecipes, setFilteredRecipes] = useState(new Set());
     const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
@@ -86,6 +94,17 @@ function App() {
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
 
+
+    const generateExportDescription = () => {
+        const filteredRecipesList = Array.from(filteredRecipes);
+        const time = mapDateFilter(dateFilter);
+        const queryString = (requestIdQuery !== '') ? ` Request ID: ${requestIdQuery}*` : '';
+        const recipeString = (filteredRecipesList.length > 0) ? ` Recipes: ${filteredRecipesList.join(', ')}` : '';
+        const dateString = (dateFilter !== DF_ALL) ? ` Time: ${time}` : '';
+
+        const toAdd = [queryString, recipeString, dateString].filter((p) => p !== '');
+        return toAdd.join(', ');
+    };
 
     // TODO - Temp helpers for locating projects
     const [requestIdQuery, setRequestIdQuery] = useState('');
@@ -220,12 +239,30 @@ function App() {
                                     <p className={'advanced-search'}>Filters</p>
                                     <FontAwesomeIcon className={'filters-icon hover'}
                                                      icon={showFilters ? faToggleOn : faToggleOff}
-                                                     onClick={() => setShowFilters(!showFilters)}/>
+                                                     onClick={() => {
+                                                         const newShowFilters = !showFilters;
+                                                         if(newShowFilters){
+                                                             setShowDownload(false);
+                                                         }
+                                                         setShowFilters(!showFilters)
+                                                     }}/>
+                                </div>
+                                <div className={'filters-toggle-container inline-block'}>
+                                    <p className={'advanced-search'}>Export</p>
+                                    <FontAwesomeIcon className={`filters-icon hover ${showDownload ? 'mskcc-white' : 'mskcc-light-gray'}`}
+                                                     icon={faDownload}
+                                                     onClick={() => {
+                                                         const newShowDownload = !showDownload;
+                                                         if(newShowDownload){
+                                                             setShowFilters(false);
+                                                         }
+                                                         setShowDownload(!showDownload)
+                                                     }}/>
                                 </div>
                             </Col>
                             {
                                 showFilters ?  <Col xs={12} lg={6} xl={7}>
-                                    <div className={'filters-container'}>
+                                    <div className={'display-inline'}>
                                         <div>
                                             {renderDateFilter('Submitted/Delivered in past: ', dateFilter, handleDateFilterToggle, dateFilter)}
                                         </div>
@@ -233,7 +270,23 @@ function App() {
                                             <RecipeFilter recipeSet={recipeSet} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>
                                         </div>
                                     </div>
-                                </Col> : <Col xs={12} lg={6} xl={7}>
+                                </Col> :
+                                showDownload ? <Col xs={12} lg={6} xl={7}>
+                                        <div className={'display-inline'}>
+                                            <div>
+                                                <DownloadIndicator label={'All'}
+                                                                    tooltip={'Export all requests'}
+                                                                    params={null}></DownloadIndicator>
+                                                {
+                                                    (filteredRecipes.size > 0 || requestIdQuery !== '' || dateFilter !== DF_ALL) ?
+                                                        <DownloadIndicator label={'Filtered'}
+                                                                           tooltip={`Export filtered requests in current view - ${generateExportDescription()}`}></DownloadIndicator>
+                                                        : <span></span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </Col> :
+                                <Col xs={12} lg={6} xl={7}>
                                     <div>
                                         <FilterIndicator label={'Past'}
                                                          value={mapDateFilter(dateFilter)}
@@ -260,7 +313,7 @@ function App() {
             }
             <Router basename={'/'}>
                 <Header></Header>
-                <Container>
+                <Container className={classes.rootContainer}>
                     <Switch>
                         <Route exact path={`${HOME}/`}>
                             {

@@ -18,6 +18,7 @@
   display: table-cell;
   vertical-align: middle;
 }
+
 /* Horizontally/Vertically align content */
 .flexbox-center {
   display: flex;
@@ -242,9 +243,8 @@
   color: white;
   margin-bottom: 0px;
 }
-.filters-container{
+.display-inline{
   display: inline;
-  float: left;
 }
 .filters-toggle-container {
   margin-left: 10px;
