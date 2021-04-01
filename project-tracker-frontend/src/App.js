@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch, useStore} from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Modal, { sendUpdate, MODAL_ERROR } from 'object-modal';
+import Modal, { sendUpdate, MODAL_ERROR, MODAL_UPDATE, MODAL_SUCCESS } from 'object-modal';
 import LoadingOverlay from 'react-loading-overlay';
 import Paper from "@material-ui/core/Paper";
 import {Col, Container, Row} from 'react-bootstrap';
@@ -25,7 +25,11 @@ import {
 } from "./redux/reducers";
 import {HOME} from './config';
 import {
-    getRequestState,
+    convertUnixTimeToDateStringFull,
+    downloadExcel,
+    extractQuantifyInfoXlsx,
+    filterRequestList,
+    getRequestState, getRequestTrackingInfoForRequest,
     getTargetValue
 } from "./utils/utils";
 import {
@@ -35,7 +39,7 @@ import {
     DF_ALL
 } from "./components/common/project-filters";
 import './App.css';
-import {USER_VIEW} from "./utils/api-util";
+import {REQ_deliveryDate, REQ_dueDate, REQ_receivedDate, USER_VIEW} from "./utils/api-util";
 import DownloadIndicator from "./components/common/download-indicator";
 
 const useStyles = makeStyles({
@@ -77,6 +81,8 @@ const useStyles = makeStyles({
 function App() {
     const classes = useStyles();
 
+    // const MAX_DOWNLOAD_LENGTH = 200;
+
     const [showFilters, setShowFilters] = useState(false);
     const [showDownload, setShowDownload] = useState(false);
     const [recipeSet, setRecipeSet] = useState(new Set());
@@ -90,17 +96,20 @@ function App() {
     const [loadedDelivered, setLoadedDelivered] = useState(false);
     const [loadedPending, setLoadedPending] = useState(false);
 
+    const store = useStore();
     const dispatch = useDispatch();
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
     const modalUpdater = useSelector(state => state[STATE_MODAL_UPDATER] );
 
+    const pendingRequestsState = useSelector(state => state[STATE_PENDING_REQUESTS] );
+    const deliveredRequestsState = useSelector(state => state[STATE_DELIVERED_REQUESTS] );
 
     const generateExportDescription = () => {
         const filteredRecipesList = Array.from(filteredRecipes);
         const time = mapDateFilter(dateFilter);
-        const queryString = (requestIdQuery !== '') ? ` Request ID: ${requestIdQuery}*` : '';
-        const recipeString = (filteredRecipesList.length > 0) ? ` Recipes: ${filteredRecipesList.join(', ')}` : '';
-        const dateString = (dateFilter !== DF_ALL) ? ` Time: ${time}` : '';
+        const queryString = (requestIdQuery !== '') ? ` Request ID: "${requestIdQuery}"` : '';
+        const recipeString = (filteredRecipesList.length > 0) ? ` Recipes: "${filteredRecipesList.join(', ')}"` : '';
+        const dateString = (dateFilter !== DF_ALL) ? ` Time: "${time}"` : '';
 
         const toAdd = [queryString, recipeString, dateString].filter((p) => p !== '');
         return toAdd.join(', ');
@@ -108,6 +117,11 @@ function App() {
 
     // TODO - Temp helpers for locating projects
     const [requestIdQuery, setRequestIdQuery] = useState('');
+
+    const pendingFilterField = REQ_dueDate;
+    const deliveredFilterField = REQ_deliveryDate;
+    const filteredPendingRequests = filterRequestList(pendingRequestsList, filteredRecipes, requestIdQuery, dateFilter, pendingFilterField);
+    const filteredDeliveredRequests = filterRequestList(deliveredRequestsList, filteredRecipes, requestIdQuery, dateFilter, deliveredFilterField);
 
     useEffect(() => {
         // NOT_INITIALIZED is in the initial state for the userSession in redux
@@ -210,6 +224,248 @@ function App() {
     };
 
     /**
+     * TODO - maybe add back ability to just get request-level info
+     */
+    const getRequestLevelExcel = (requestList) => {
+        const xlsxObjList = [];
+        // TODO - constants
+        const boolFields = [ "analysisRequested" ];
+        const stringFields = [
+            "requestId",
+            "requestType",
+            "pi",
+            "investigator",
+            "analysisType",
+            "dataAccessEmails",
+            "labHeadEmail",
+            "qcAccessEmail"
+        ];
+        const dateFields = [REQ_receivedDate, REQ_deliveryDate];
+        const numFields = [
+            "recordId",
+            "sampleNumber"
+        ];
+        const noFormattingFields = [...stringFields, ...numFields];
+
+        for(const request of requestList){
+            const xlsxObj = {};
+            for(const field of noFormattingFields){
+                const val = request[field];
+                xlsxObj[field] = val ? val : "Not Available";
+            }
+            for(const dField of dateFields){
+                const val = request[dField];
+                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateStringFull(val) : "Not Available";
+            }
+            for(const field of boolFields){
+                const val = request[field];
+                xlsxObj[field] = val ? "yes" : "no";
+            }
+            xlsxObjList.push(xlsxObj);
+        }
+
+        return xlsxObjList;
+    };
+
+    /**
+     * Retrieves the state of the requestId as stored in the REDUX store
+     *
+     * @param requestId
+     * @returns {{}|*}
+     */
+    const retrieveRequestData = (requestId) => {
+        if(requestId in pendingRequestsState){
+            return pendingRequestsState[requestId];
+        } else if(requestId in deliveredRequestsList){
+            return deliveredRequestsList[requestId];
+        }
+        return {};
+    };
+
+    /**
+     * Retrieves the sample tracking info for the list of requests
+     *
+     * @param requestList
+     * @param requestState
+     * @returns {[]}
+     */
+    const getSampleTrackingInfoForRequests = (requestList, requestState) => {
+        let samplesInRequestList = [];
+        for(const request of requestList){
+            const requestSummary = request['summary'] || {};
+            const requestId = request['requestId'];
+            if(requestId === null || requestId === undefined || requestId === ''){
+                console.error('invalid requestId');
+                continue;
+            }
+            const requestTrackingData = requestState[requestId];
+            const samples = requestTrackingData.getSamples();
+            const sampleXlsxInfo = extractQuantifyInfoXlsx(samples);
+
+
+            const enrichedSampleXlsxInfo = sampleXlsxInfo.map((obj) => {
+                return Object.assign(obj, {
+                    requestId,
+                    delivered: requestTrackingData.isDelivered()
+                });
+            })
+
+            samplesInRequestList = samplesInRequestList.concat(enrichedSampleXlsxInfo);
+        }
+        return samplesInRequestList
+    };
+
+    /**
+     * Submits requests for tracking information about a list of requests
+     *
+     * @param requestList
+     * @param stateId
+     * @param requestState
+     * @param store
+     * @param dispatch
+     * @returns {[]}
+     */
+    const submitRequestsForRequestTrackingInfo = (requestList, stateId, requestState, store, dispatch) => {
+        const promises = [];
+        for(const request of requestList){
+            const requestId = request['requestId'];
+            if(requestId === null || requestId === undefined || requestId === ''){
+                console.error('invalid requestId');
+                continue
+            }
+
+            const requestTrackingData = requestState[requestId];
+            retrieveRequestData(requestId);
+
+            // If request isn't present, or null, this should show a pending icon
+            if(!requestTrackingData.isEnriched()){
+                promises.push(getRequestTrackingInfoForRequest(requestId, stateId, store, dispatch));
+            }
+        }
+        return promises;
+    };
+
+    /**
+     * Generates a list of tracking information from a list of requests
+     *
+     * @param pReqs
+     * @param dReqs
+     * @returns {Promise<*[]>}
+     */
+    const createSampleListXlsx = async (pReqs, dReqs) => {
+        // Submit requests to retrieve tracking data
+        const pendingRequestPromises = submitRequestsForRequestTrackingInfo(pReqs, STATE_PENDING_REQUESTS, pendingRequestsState, store, dispatch);
+        const deliveredRequestPromises = submitRequestsForRequestTrackingInfo(dReqs, STATE_DELIVERED_REQUESTS, deliveredRequestsState, store, dispatch);
+        const allPromises = pendingRequestPromises.concat(deliveredRequestPromises);
+        await Promise.all(allPromises);
+
+        const pendingSampleInfo = getSampleTrackingInfoForRequests(pReqs, pendingRequestsState);
+        const deliveredSampleInfo = getSampleTrackingInfoForRequests(dReqs, deliveredRequestsState);
+
+        return pendingSampleInfo.concat(deliveredSampleInfo);
+    };
+
+    /**
+     * Outputs download for user of input pending & delivered reqeusts
+     *
+     * @param pReqs
+     * @param dReqs
+     * @param name
+     * @returns {Promise<void>}
+     */
+    const createSampleXlsxListReq = async (pReqs, dReqs, name) => {
+        /*
+        if(pReqs.length + dReqs.length > MAX_DOWNLOAD_LENGTH){
+            sendUpdate(modalUpdater, `Limiting download to ${MAX_DOWNLOAD_LENGTH} requests. Please add filters and retry with "Filtered"`, MODAL_ERROR, 5000);
+            return;
+        }
+         */
+
+        const headers = [
+            'requestId',
+            'igoId',
+            'investigatorId',
+            'correctedInvestigatorId',
+            'sampleName',
+            'status',
+            'delivered',
+            'NA Concentration (ng/µL)',
+            'NA Volume (µL)',
+            'NA Mass (ng)',
+            'libraryConcentration (ng/µL)',
+            'libraryVolume (µL)',
+            'libraryMass (ng)'
+        ];
+
+        sendUpdate(modalUpdater, 'Retrieving sample data for excel', MODAL_UPDATE, 5000);
+        const xlsx = await createSampleListXlsx(pReqs, dReqs);
+        downloadExcel(xlsx, name, headers);
+        sendUpdate(modalUpdater, 'Excel available', MODAL_SUCCESS, 3000);
+    };
+
+    /*
+    const filterDownToLimit = (l1, l2) => {
+        const l1Lower = l1 < MAX_DOWNLOAD_LENGTH;
+        const l2Lower = l2 < MAX_DOWNLOAD_LENGTH;
+
+        if(l1Lower && l2Lower) {
+            return [l1, l2];
+        } else if(l1Lower) {
+            const l2Limit= MAX_DOWNLOAD_LENGTH - l1.length;
+            return [l1, l2.slice(0,l2Limit)];
+        } else if(l2Lower) {
+            const l1Limit= MAX_DOWNLOAD_LENGTH - l2.length;
+            return [l1.slice(0,l1Limit), l2];
+        }
+        return [l1.slice(0,MAX_DOWNLOAD_LENGTH/2), l2.slice(0,MAX_DOWNLOAD_LENGTH/2)];
+    }
+     */
+
+    /**
+     * Generates the JSX for the download buttons
+     *
+     * @param allPending
+     * @param filteredPending
+     * @param allDelivered
+     * @param filteredDelivered
+     * @returns {*}
+     */
+    const generateDownloadOptions = (allPending, filteredPending, allDelivered, filteredDelivered) => {
+        // const [limitedAllPending, limitedAllDelivered] = filterDownToLimit(allPending, allDelivered);
+        // const [limitedFilteredPending, limitedFilterdDelivered] = filterDownToLimit(filteredPending, filteredDelivered);
+
+        const allDownloadFn = () => createSampleXlsxListReq(allPending, allDelivered, 'sample_tracking_all');
+        const filteredDownloadFn = () => createSampleXlsxListReq(filteredPending, filteredDelivered, 'sample_tracking_filtered');
+
+        return <div className={'display-inline'}>
+            <DownloadIndicator label={'All'}
+                               tooltip={'Export all requests'}
+                               downloadFn={allDownloadFn}></DownloadIndicator>
+            {
+                (filteredRecipes.size > 0 || requestIdQuery !== '' || dateFilter !== DF_ALL) ?
+                    <DownloadIndicator label={'Filtered'}
+                                       tooltip={`Export filtered requests in current view - ${generateExportDescription()}`}
+                                       downloadFn={filteredDownloadFn}></DownloadIndicator>
+                    : <span></span>
+            }
+        </div>
+    };
+
+    const toggleDownload = () => {
+        /*
+        if(((inputPendingList.length + inputDeliveredList.length) > MAX_DOWNLOAD_LENGTH) && !showDownload) {
+            sendUpdate(modalUpdater, `Limiting download to ${MAX_DOWNLOAD_LENGTH} requests. Please add filters and retry with "Export" > "Filtered"`, MODAL_ERROR, 5000);
+            return;
+        }
+         */
+        const newShowDownload = !showDownload;
+        if(newShowDownload){
+            setShowFilters(false);
+        }
+        setShowDownload(!showDownload)
+    };
+
+    /**
      * Generates the search input box to query projects
      *
      * @param label, e.g. 'Request ID'
@@ -251,13 +507,7 @@ function App() {
                                     <p className={'advanced-search'}>Export</p>
                                     <FontAwesomeIcon className={`filters-icon hover ${showDownload ? 'mskcc-white' : 'mskcc-light-gray'}`}
                                                      icon={faDownload}
-                                                     onClick={() => {
-                                                         const newShowDownload = !showDownload;
-                                                         if(newShowDownload){
-                                                             setShowFilters(false);
-                                                         }
-                                                         setShowDownload(!showDownload)
-                                                     }}/>
+                                                     onClick={toggleDownload}/>
                                 </div>
                             </Col>
                             {
@@ -272,19 +522,7 @@ function App() {
                                     </div>
                                 </Col> :
                                 showDownload ? <Col xs={12} lg={6} xl={7}>
-                                        <div className={'display-inline'}>
-                                            <div>
-                                                <DownloadIndicator label={'All'}
-                                                                    tooltip={'Export all requests'}
-                                                                    params={null}></DownloadIndicator>
-                                                {
-                                                    (filteredRecipes.size > 0 || requestIdQuery !== '' || dateFilter !== DF_ALL) ?
-                                                        <DownloadIndicator label={'Filtered'}
-                                                                           tooltip={`Export filtered requests in current view - ${generateExportDescription()}`}></DownloadIndicator>
-                                                        : <span></span>
-                                                }
-                                            </div>
-                                        </div>
+                                        { generateDownloadOptions(pendingRequestsList, filteredPendingRequests, deliveredRequestsList, filteredDeliveredRequests) }
                                     </Col> :
                                 <Col xs={12} lg={6} xl={7}>
                                     <div>
@@ -302,7 +540,6 @@ function App() {
     };
 
     const isLoading = !(loadedDelivered && loadedPending);
-
     return (
         <div>
             {
@@ -339,16 +576,12 @@ function App() {
                                         }}></LoadingOverlay>
                                     : <Paper className={classes.container} elevation={1}>
                                         {generateSearchContainer('Request ID', requestIdQuery, (query) => {setRequestIdQuery(query.toUpperCase())})}
-                                        <ProjectSection requestList={pendingRequestsList}
+                                        <ProjectSection requestList={filteredPendingRequests}
                                                         projectState={STATE_PENDING_REQUESTS}
-                                                        dateFilter={dateFilter}
-                                                        requestIdQuery={requestIdQuery}
-                                                        filteredRecipes={filteredRecipes}></ProjectSection>
-                                        <ProjectSection requestList={deliveredRequestsList}
+                                                        dateFilterField={pendingFilterField}></ProjectSection>
+                                        <ProjectSection requestList={filteredDeliveredRequests}
                                                         projectState={STATE_DELIVERED_REQUESTS}
-                                                        dateFilter={dateFilter}
-                                                        requestIdQuery={requestIdQuery}
-                                                        filteredRecipes={filteredRecipes}></ProjectSection>
+                                                        dateFilterField={deliveredFilterField}></ProjectSection>
                                     </Paper>
                             }
                         </Route>

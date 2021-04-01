@@ -1,20 +1,13 @@
 import ProjectTracker from "../project-tracker";
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import {
-    convertUnixTimeToDateStringFull,
-    downloadExcel,
-    getHumanReadable,
-    getSortedRequests,
-    filterRequestList
-} from "../../utils/utils";
+import { getHumanReadable, getSortedRequests } from "../../utils/utils";
 import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Tooltip from '@material-ui/core/Tooltip';
-import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {getRecipe, getRequestId, REQ_deliveryDate, REQ_dueDate, REQ_receivedDate} from "../../utils/api-util";
+import {getRequestId, REQ_receivedDate} from "../../utils/api-util";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {STATE_DELIVERED_REQUESTS, STATE_USER_SESSION} from "../../redux/reducers";
@@ -28,63 +21,19 @@ const useStyles = makeStyles({
     }
 });
 
-function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, filteredRecipes}) {
+function ProjectSection({requestList, projectState, dateFilterField}) {
     const classes = useStyles();
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
     const [descendingDateSort, setDescendingDateSort] = useState(true);
     const deliveryColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Expected Delivery';
 
-    // @dateFilterField is the field for monitoring delivery
-    const dateFilterField = projectState === STATE_DELIVERED_REQUESTS ? REQ_deliveryDate : REQ_dueDate;
-
     useEffect(() => {
-        const filteredRequests = filterRequestList(requestList, filteredRecipes, requestIdQuery, dateFilter, dateFilterField, descendingDateSort);
-        setFilteredProjects(filteredRequests);
-    }, [requestIdQuery, filteredRecipes, dateFilter, requestList]);
+        const sortedRequests = getSortedRequests(requestList, descendingDateSort, dateFilterField);
+        setFilteredProjects(sortedRequests);
+    }, [requestList, descendingDateSort]);
 
     const projectSection = getHumanReadable(projectState);
-
-    const convertToXlsx = (requestList) => {
-        const xlsxObjList = [];
-        // TODO - constants
-        const boolFields = [ "analysisRequested" ];
-        const stringFields = [
-            "requestId",
-            "requestType",
-            "pi",
-            "investigator",
-            "analysisType",
-            "dataAccessEmails",
-            "labHeadEmail",
-            "qcAccessEmail"
-        ];
-        const dateFields = [REQ_receivedDate, REQ_deliveryDate];
-        const numFields = [
-            "recordId",
-            "sampleNumber"
-        ];
-        const noFormattingFields = [...stringFields, ...numFields];
-
-        for(const request of requestList){
-            const xlsxObj = {};
-            for(const field of noFormattingFields){
-                const val = request[field];
-                xlsxObj[field] = val ? val : "Not Available";
-            }
-            for(const dField of dateFields){
-                const val = request[dField];
-                xlsxObj[dField] = (val && val !== "") ? convertUnixTimeToDateStringFull(val) : "Not Available";
-            }
-            for(const field of boolFields){
-                const val = request[field];
-                xlsxObj[field] = val ? "yes" : "no";
-            }
-            xlsxObjList.push(xlsxObj);
-        }
-
-        return xlsxObjList;
-    };
 
     /**
      * Reverses sorting order of the filtered Projects in view
@@ -105,16 +54,7 @@ function ProjectSection({dateFilter, requestList, projectState, requestIdQuery, 
                             <h4>{projectSection}</h4>
                         </div>
                     </Col>
-                    <Col xs={1}></Col>
-                    <Col xs={2}>
-                        <Tooltip title={`Download ${projectSection}`} aria-label={'Download'} placement="right">
-                            <div onClick={() => downloadExcel(convertToXlsx(requestList), getHumanReadable(projectState))}>
-                                <FontAwesomeIcon className={"tiny-icon float-right hover"}
-                                                 icon={faFileExcel}/>
-                            </div>
-                        </Tooltip>
-                    </Col>
-                    <Col xs={1}></Col>
+                    <Col xs={4}></Col>
                 </Row>
                 <Row className={"background-mskcc-light-gray padding-top-15 padding-bottom-10"}>
                     <Col xs={3} sm={2} className={"flexbox-center overflow-x-hidden"}>

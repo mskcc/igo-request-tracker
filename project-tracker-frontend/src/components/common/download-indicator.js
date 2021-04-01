@@ -56,18 +56,23 @@ const useStyles = makeStyles({
         'margin': '2px 0px',
         'text-align': 'center',
         'padding': '4px 0px',
-    },
+    }
+});
+
+const useTooltipStyles = makeStyles({
     tooltip: {
         fontSize: 16,
         maxWidth: 1000
     }
 });
 
-export default function DownloadIndicator({label, tooltip, params}) {
+export default function DownloadIndicator({label, tooltip, downloadFn}) {
     const classes = useStyles();
+    const tooltipClasses = useTooltipStyles();
     return <div className={classes.button}>
-        <Tooltip classes={classes} title={tooltip} aria-label={'Complete tooltip'} placement="bottom">
-            <Row className={classes.container}>
+        <Tooltip classes={tooltipClasses} title={tooltip} aria-label={'Complete tooltip'} placement="bottom">
+            <Row className={classes.container}
+                 onClick={downloadFn}>
                 <Col xs={9} className={classes.downloadCol}>
                         <p className="inline-block no-margin-bottom">
                             <span className={"bold"}>{label}</span>

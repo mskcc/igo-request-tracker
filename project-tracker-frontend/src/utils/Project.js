@@ -72,6 +72,16 @@ class Project {
     }
 
     /**
+     * Returns whether the projects has been delivered by IGO
+     *
+     * @returns {*|boolean}
+     */
+    isDelivered() {
+        const summary = this.#summary || {};
+        return summary['isDelivered'] || false;
+    }
+
+    /**
      * Returns date IGO project was marked complete
      *
      * @returns {*}

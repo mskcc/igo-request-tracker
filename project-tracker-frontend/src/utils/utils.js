@@ -5,6 +5,8 @@ import FileSaver from "file-saver";
 import {getIgoCompleteDate, getReceivedDate, getRequestId, getRecipe, getIsIgoComplete, getDueDate} from "./api-util";
 import Project from './Project';
 import {DF_ALL} from "../components/common/project-filters";
+import {getProjectTrackingDataRequest} from "../services/services";
+import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 
 function isValidDate(d) {
     return d instanceof Date && !isNaN(d);
@@ -48,7 +50,7 @@ export function getDateFileSuffix(){
 const extractNumber = function(obj, field){
     if (field in obj) {
         const val = obj[field];
-        if(!isNaN(val) && val !== 0){
+        if(val !== null && !isNaN(val) && val !== 0){
             return val.toFixed(2);
         }
     }
@@ -169,11 +171,12 @@ export const getTargetValue = (evt) => {
  * @param data
  * @param fileName
  */
-export const downloadExcel = (data, fileName) => {
+export const downloadExcel = (data, fileName, header) => {
     const xlsxData = Object.assign([], data);
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const ws = XLSX.utils.json_to_sheet(xlsxData);
+    let ws = XLSX.utils.json_to_sheet(xlsxData, {header});
+
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
     const excelBuffer = XLSX.write(wb, {
         bookType: "xlsx",
@@ -289,13 +292,38 @@ const getFilteredProjectsFromRecipe = (requests, filteredRecipes) => {
  * @param descendingDateSort
  * @returns {*}
  */
-export const filterRequestList = function(requestList, filteredRecipes, requestIdQuery, dateFilter, dateFilterField, descendingDateSort) {
+export const filterRequestList = function(requestList, filteredRecipes, requestIdQuery, dateFilter, dateFilterField) {
     const dateFilteredList = getDateFilteredList(requestList, dateFilter, dateFilterField);
     const requestIdFilteredList = getFilteredProjectsFromQuery(dateFilteredList, requestIdQuery);
     const recipeFilteredList = getFilteredProjectsFromRecipe(requestIdFilteredList, filteredRecipes);
-    const sortedRequests = getSortedRequests(recipeFilteredList, descendingDateSort, dateFilterField);
 
-    return sortedRequests;
+    return recipeFilteredList;
+};
+
+/**
+ * Updates the redux store with tracking information about a request
+ * @param projectName
+ * @param projectState
+ * @param redux_store
+ * @param redux_dispatch
+ * @returns {*}
+ */
+export const getRequestTrackingInfoForRequest = (requestId, projectState, redux_store, redux_dispatch) => {
+    // Need to request the tracking information of the project
+    return getProjectTrackingDataRequest(requestId)
+        .then(data => {
+            const storeProjects = redux_store.getState()[projectState] || {};  // Retrieve latest version of the store
+            const clone = Object.assign({}, storeProjects);
+
+            const request = clone[requestId];
+            request.addRequestTrackingInfo(data);
+
+            if(STATE_DELIVERED_REQUESTS === projectState){
+                updateDelivered(redux_dispatch, clone);
+            } else if(STATE_PENDING_REQUESTS === projectState) {
+                updateUndelivered(redux_dispatch, clone);
+            }
+        })
 };
 
 /**
@@ -307,7 +335,6 @@ export const extractQuantifyInfoXlsx = function(samples) {
     samples.sort(sortSamples);
     const sampleInfoList = [];
     for(const sample of samples){
-        const dataRecordId = sample['sampleId'];
         const root = sample['root'] || {};
         const igoId = root['recordName'];
         const status = sample['status'];
@@ -320,12 +347,12 @@ export const extractQuantifyInfoXlsx = function(samples) {
         const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo, false);
         const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo, false);
 
+        // MAKE SURE YOU UPDATE THE HEADERS
         const xlsxObj = {
             sampleName,
             igoId,
             investigatorId,
             correctedInvestigatorId,
-            dataRecordId,
             status,
             "NA Concentration (ng/µL)": dnaConcentration || 0,
             "NA Volume (µL)": dnaVolume || 0,

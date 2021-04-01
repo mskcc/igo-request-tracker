@@ -1,17 +1,11 @@
 import React, {useState} from 'react';
-import {
-    convertUnixTimeToDateStringFull,
-    downloadExcel, getDateFileSuffix,
-    getMaterialInfo, sortSamples
-} from "../utils/utils";
+import { convertUnixTimeToDateStringFull, sortSamples } from "../utils/utils";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 import StageLevelTracker from "./stage-level-tracker";
 import SampleLevelTracker from "./sample-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
-import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
-import Tooltip from "@material-ui/core/Tooltip/Tooltip";
 import {useSelector} from "react-redux";
 import {STATE_USER_SESSION} from "../redux/reducers";
 
