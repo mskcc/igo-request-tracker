@@ -1,5 +1,6 @@
 build:
 	make ENV=$(ENV) build-fe && make move-fe && \
+	cp setup/config.$(ENV).py setup/config.py && \
 	make build-be
 
 build-fe:
