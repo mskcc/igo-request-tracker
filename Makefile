@@ -1,7 +1,8 @@
 build:
 	make ENV=$(ENV) build-fe && make move-fe && \
-	cp setup/config.$(ENV).py setup/config.py && \
-	make build-be
+	make build-be && \
+	cp setup/config.$(ENV).py project-tracker-backend/config.py && \
+	cp setup_cache.py project-tracker-backend
 
 build-fe:
 	cd project-tracker-frontend && npm install && REACT_APP_ENV=$(ENV) npm run build && cd -
