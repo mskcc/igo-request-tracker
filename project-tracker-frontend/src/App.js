@@ -390,13 +390,6 @@ function App() {
             'libraryMass (ng)'
         ];
 
-        if(isDownloading){
-            sendUpdate(modalUpdater, `please wait for previous download to complete`, MODAL_ERROR, 10000);
-            return;
-        }
-
-        setIsDownloading(true);
-
         if(showWarning){
             sendUpdate(modalUpdater, `[ERROR] Number of requests exceeds limit (${MAX_DOWNLOAD_LENGTH}). Please apply filters and try again.`, MODAL_ERROR, 10000);
             return;
@@ -404,6 +397,11 @@ function App() {
             sendUpdate(modalUpdater, 'Retrieving download...', MODAL_UPDATE, 5000);
         }
 
+        if(isDownloading){
+            sendUpdate(modalUpdater, `please wait for previous download to complete`, MODAL_ERROR, 10000);
+            return;
+        }
+        setIsDownloading(true);
         const xlsx = await createSampleListXlsx(pReqs, dReqs);
         downloadExcel(xlsx, name, headers);
         sendUpdate(modalUpdater, 'Download available', MODAL_SUCCESS, 3000);
