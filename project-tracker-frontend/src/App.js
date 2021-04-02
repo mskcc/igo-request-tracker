@@ -81,7 +81,7 @@ const useStyles = makeStyles({
 function App() {
     const classes = useStyles();
 
-    // const MAX_DOWNLOAD_LENGTH = 200;
+    const MAX_DOWNLOAD_LENGTH = 300;
 
     const [showFilters, setShowFilters] = useState(false);
     const [showDownload, setShowDownload] = useState(false);
@@ -292,7 +292,6 @@ function App() {
     const getSampleTrackingInfoForRequests = (requestList, requestState) => {
         let samplesInRequestList = [];
         for(const request of requestList){
-            const requestSummary = request['summary'] || {};
             const requestId = request['requestId'];
             if(requestId === null || requestId === undefined || requestId === ''){
                 console.error('invalid requestId');
@@ -308,7 +307,7 @@ function App() {
                     requestId,
                     delivered: requestTrackingData.isDelivered()
                 });
-            })
+            });
 
             samplesInRequestList = samplesInRequestList.concat(enrichedSampleXlsxInfo);
         }
@@ -373,14 +372,7 @@ function App() {
      * @param name
      * @returns {Promise<void>}
      */
-    const createSampleXlsxListReq = async (pReqs, dReqs, name) => {
-        /*
-        if(pReqs.length + dReqs.length > MAX_DOWNLOAD_LENGTH){
-            sendUpdate(modalUpdater, `Limiting download to ${MAX_DOWNLOAD_LENGTH} requests. Please add filters and retry with "Filtered"`, MODAL_ERROR, 5000);
-            return;
-        }
-         */
-
+    const createSampleXlsxListReq = async (pReqs, dReqs, name, showWarning) => {
         const headers = [
             'requestId',
             'igoId',
@@ -397,29 +389,41 @@ function App() {
             'libraryMass (ng)'
         ];
 
-        sendUpdate(modalUpdater, 'Retrieving sample data for excel', MODAL_UPDATE, 5000);
+        if(showWarning){
+            sendUpdate(modalUpdater, `[ERROR] Number of requests exceeds limit (${MAX_DOWNLOAD_LENGTH}). Please apply filters and try again.`, MODAL_ERROR, 10000);
+            return;
+        } else {
+            sendUpdate(modalUpdater, 'Retrieving download...', MODAL_UPDATE, 5000);
+        }
+
         const xlsx = await createSampleListXlsx(pReqs, dReqs);
         downloadExcel(xlsx, name, headers);
-        sendUpdate(modalUpdater, 'Excel available', MODAL_SUCCESS, 3000);
+        sendUpdate(modalUpdater, 'Download available', MODAL_SUCCESS, 3000);
     };
 
-    /*
+    /**
+     * Slices input arrays so that they will always add up to the MAX_DOWNLOAD_LENGTH (if they equal or exceed it in length)
+     * @param l1
+     * @param l2
+     * @returns {*[]}
+     */
     const filterDownToLimit = (l1, l2) => {
-        const l1Lower = l1 < MAX_DOWNLOAD_LENGTH;
-        const l2Lower = l2 < MAX_DOWNLOAD_LENGTH;
+        const halfMax = MAX_DOWNLOAD_LENGTH/2;
+
+        const l1Lower = l1.length < halfMax;
+        const l2Lower = l2.length < halfMax;
 
         if(l1Lower && l2Lower) {
             return [l1, l2];
         } else if(l1Lower) {
-            const l2Limit= MAX_DOWNLOAD_LENGTH - l1.length;
+            const l2Limit= Math.max(MAX_DOWNLOAD_LENGTH - l1.length, halfMax);
             return [l1, l2.slice(0,l2Limit)];
         } else if(l2Lower) {
-            const l1Limit= MAX_DOWNLOAD_LENGTH - l2.length;
+            const l1Limit= Math.max(MAX_DOWNLOAD_LENGTH - l2.length, halfMax);
             return [l1.slice(0,l1Limit), l2];
         }
-        return [l1.slice(0,MAX_DOWNLOAD_LENGTH/2), l2.slice(0,MAX_DOWNLOAD_LENGTH/2)];
-    }
-     */
+        return [l1.slice(0,halfMax), l2.slice(0,halfMax)];
+    };
 
     /**
      * Generates the JSX for the download buttons
@@ -431,14 +435,17 @@ function App() {
      * @returns {*}
      */
     const generateDownloadOptions = (allPending, filteredPending, allDelivered, filteredDelivered) => {
-        // const [limitedAllPending, limitedAllDelivered] = filterDownToLimit(allPending, allDelivered);
-        // const [limitedFilteredPending, limitedFilterdDelivered] = filterDownToLimit(filteredPending, filteredDelivered);
+        const [limitedAllPending, limitedAllDelivered] = filterDownToLimit(allPending, allDelivered);
+        const [limitedFilteredPending, limitedFilterdDelivered] = filterDownToLimit(filteredPending, filteredDelivered);
 
-        const allDownloadFn = () => createSampleXlsxListReq(allPending, allDelivered, 'sample_tracking_all');
-        const filteredDownloadFn = () => createSampleXlsxListReq(filteredPending, filteredDelivered, 'sample_tracking_filtered');
+        const showAllWarning = allPending.length + allDelivered.length > MAX_DOWNLOAD_LENGTH;
+        const showFilteredWarning = filteredPending.length + filteredDelivered.length > MAX_DOWNLOAD_LENGTH;
+
+        const allDownloadFn = () => createSampleXlsxListReq(limitedAllPending, limitedAllDelivered, 'sample_tracking_all', showAllWarning);
+        const filteredDownloadFn = () => createSampleXlsxListReq(limitedFilteredPending, limitedFilterdDelivered, 'sample_tracking_filtered', showFilteredWarning);
 
         return <div className={'display-inline'}>
-            <DownloadIndicator label={'All'}
+                <DownloadIndicator label={'All'}
                                tooltip={'Export all requests'}
                                downloadFn={allDownloadFn}></DownloadIndicator>
             {
@@ -451,13 +458,10 @@ function App() {
         </div>
     };
 
+    /**
+     * Toggles Download state (untoggles showFilters toggle if
+     */
     const toggleDownload = () => {
-        /*
-        if(((inputPendingList.length + inputDeliveredList.length) > MAX_DOWNLOAD_LENGTH) && !showDownload) {
-            sendUpdate(modalUpdater, `Limiting download to ${MAX_DOWNLOAD_LENGTH} requests. Please add filters and retry with "Export" > "Filtered"`, MODAL_ERROR, 5000);
-            return;
-        }
-         */
         const newShowDownload = !showDownload;
         if(newShowDownload){
             setShowFilters(false);
