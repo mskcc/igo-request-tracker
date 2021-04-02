@@ -90,6 +90,7 @@ function App() {
     const [deliveredRequestsList, setDeliveredRequestsList] = useState([]);
     const [pendingRequestsList, setPendingRequestsList] = useState([]);
     const [dateFilter, setDateFilter] = useState(DF_ALL);
+    const [isDownloading, setIsDownloading] = useState(false);
 
     // Loading Indicators - Loading message reflects state of loaded* state
     const [loadingMessage, setLoadingMessage] = useState('Loading projects...');
@@ -389,6 +390,13 @@ function App() {
             'libraryMass (ng)'
         ];
 
+        if(isDownloading){
+            sendUpdate(modalUpdater, `please wait for previous download to complete`, MODAL_ERROR, 10000);
+            return;
+        }
+
+        setIsDownloading(true);
+
         if(showWarning){
             sendUpdate(modalUpdater, `[ERROR] Number of requests exceeds limit (${MAX_DOWNLOAD_LENGTH}). Please apply filters and try again.`, MODAL_ERROR, 10000);
             return;
@@ -399,6 +407,7 @@ function App() {
         const xlsx = await createSampleListXlsx(pReqs, dReqs);
         downloadExcel(xlsx, name, headers);
         sendUpdate(modalUpdater, 'Download available', MODAL_SUCCESS, 3000);
+        setIsDownloading(false);
     };
 
     /**
