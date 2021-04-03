@@ -404,7 +404,7 @@ function HelpSection() {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><p>
-                                            DNA Mass
+                                            NA Mass
                                         </p></TableCell>
                                         <TableCell><p>
                                             Remaining mass of DNA
