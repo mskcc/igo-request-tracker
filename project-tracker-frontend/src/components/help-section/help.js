@@ -5,8 +5,7 @@ import {getHumanReadable, goToTeamWorks} from "../../utils/utils";
 import aliquot from "./assets/aliquot_node.png";
 import aliquotStatus from "./assets/aliquot_status.png";
 import conservativeStage from "./assets/conservative-stage.png";
-import loadedProjects from "./assets/loadedProjects.png";
-import pendingProjects from "./assets/pendingProjects.png";
+import requestsView from "./assets/requests_view.png";
 import treeView from "./assets/tree_view.png";
 import {SWAGGER} from "../../config";
 
@@ -214,11 +213,8 @@ function HelpSection() {
                             please get in touch with the IGO data team.
                         </p>
                         <Row>
-                            <Col xs={12} sm={6}>
-                                <img className={"help-img"} src={pendingProjects} alt={"pendingProjects"}></img>
-                            </Col>
-                            <Col xs={12} sm={6}>
-                                <img className={"help-img"} src={loadedProjects} alt={"loadedProjects"}></img>
+                            <Col xs={12}>
+                                <img className={"help-img"} src={requestsView} alt={"pendingProjects"}></img>
                             </Col>
                         </Row>
                         <p> Each request can be toggled to view a more detailed description of the request.
@@ -374,6 +370,65 @@ function HelpSection() {
                             @rockefeller.edu, @gmail.com) do not grant visibility. If visibility is needed, please
                             contact <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span>.
                         </p>
+                    </div>
+                    <div className={"help-unit"}>
+                        <h2>What information is available at the sample level?</h2>
+                        <TableContainer component={Paper} className={"help-table"}>
+                            <Table aria-label="status-indicator">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>
+                                            <p className={"text-align-center"}>Field</p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p className={"text-align-center"}>Description</p>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>
+                                            <p>Igo ID</p>
+                                        </TableCell>
+                                        <TableCell>
+                                            <p>ID of the sample in IGO's LIMS</p>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><p>
+                                            User ID
+                                        </p></TableCell>
+                                        <TableCell><p>
+                                            ID submitted by the investigator, or the corrected investigator ID if available
+                                        </p></TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><p>
+                                            DNA Mass
+                                        </p></TableCell>
+                                        <TableCell><p>
+                                            Remaining mass of DNA
+                                        </p></TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><p>
+                                            Lib Mass
+                                        </p></TableCell>
+                                        <TableCell><p>
+                                            Remaining mass of library
+                                        </p></TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><p>
+                                            Status
+                                        </p></TableCell>
+                                        <TableCell><p>
+                                            Stage the sample is currently at in the LIMS workflow
+                                        </p></TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </div>
                     <div className={"help-unit"}>
                         <h2>Is the request-tracker API available?</h2>
