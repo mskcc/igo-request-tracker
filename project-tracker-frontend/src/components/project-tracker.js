@@ -88,7 +88,7 @@ function ProjectTracker({projectName, projectState}) {
         return <Container></Container>
     }
 
-    return <Container className={showProject ? "border" : "white-border"}>
+    return <Container className={`interactiveContainer ${showProject ? 'border' : 'white-border'}`}>
             <Row className={`hover padding-vert-5 ${showProject ? "selected-request" : ""}`}
                  onClick={() => setShowProject(!showProject)}>
                 <Col xs={3} sm={2} className={"overflow-x-hidden"}>

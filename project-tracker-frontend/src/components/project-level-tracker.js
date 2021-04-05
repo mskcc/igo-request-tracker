@@ -11,10 +11,10 @@ import {STATE_USER_SESSION} from "../redux/reducers";
 
 // project: Project.js instance
 function ProjectLevelTracker({project}) {
-    const [viewSamples, setViewSamples] = useState(false);
+    const [viewSamples, setViewSamples] = useState(true);
     const [showFailed, setShowFailed] = useState(true);
     const [showPending, setShowPending] = useState(true);
-    const [showCompleted, setShowCompleted] = useState(false);
+    const [showCompleted, setShowCompleted] = useState(true);
 
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
@@ -83,7 +83,7 @@ function ProjectLevelTracker({project}) {
         </Col>
     };
 
-    return <Container>
+    return <Container className={"interactiveContainer"}>
                     <Row className={"padding-vert-10"}>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Project Start</span>: {startTime}</p>

@@ -46,7 +46,7 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
     };
 
     const projectsInView = filteredProjects.slice(0,numProjectsToShow);
-    return <Container className={"border"}>
+    return <Container className={"interactiveContainer  border"}>
                 <Row  className={"background-mskcc-light-gray padding-top-15"}>
                     <Col xs={4}></Col>
                     <Col xs={4} className={"text-align-center flexbox-center overflow-x-hidden"}>
@@ -85,7 +85,7 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                         return <ProjectTracker key={reqId}
                                                projectName={reqId}
                                                projectState={projectState}/>
-                        }) : <Container>
+                        }) : <Container className={"interactiveContainer "}>
                                 <Row className={"hover border padding-top-15 flexbox-center"}>
                                     <Tooltip title={`Please email zzPDL_SKI_IGO_DATA@mskcc.org if you should see ${getHumanReadable(projectState)}`}
                                              aria-label={'No requests tooltip'}

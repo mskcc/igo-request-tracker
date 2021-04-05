@@ -66,7 +66,11 @@ const useStyles = makeStyles({
     rootContainer: {
         'max-width': '1600px !important'
     },
+    interactiveContainer: {
+        'max-width': '1600px !important'
+    },
     container: {
+        'max-width': '1600px !important',
         gridArea: 'form',
         display: 'grid',
         justifyItems: 'center',
@@ -486,7 +490,7 @@ function App() {
      * @returns {*}
      */
     const generateSearchContainer = (label, val, fn, required = false) => {
-        return  <Container className={"black-border background-mskcc-dark-gray padding-vert-20"}>
+        return  <Container className={"interactiveContainer  black-border background-mskcc-dark-gray padding-vert-20"}>
                         <Row>
                             <Col xs={12} lg={6} xl={5}
                                 className={'search-container'}>

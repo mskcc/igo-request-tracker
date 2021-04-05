@@ -102,7 +102,7 @@ function StageLevelTracker({igoCompleteDate, stages, orientation, projectView}) 
 
     };
 
-    return <Container>
+    return <Container className={"interactiveContainer"}>
         <Row>
             <Col xs={12-labelSize}>
                 <Stepper activeStep={activeIndex} orientation={orientation}>

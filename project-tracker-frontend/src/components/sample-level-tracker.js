@@ -2,7 +2,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import StageLevelTracker from "./stage-level-tracker";
 import Tree from "react-d3-tree";
 import React, {useState} from "react";
-import {faFlask, faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
+import {faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Tooltip from '@material-ui/core/Tooltip';
 import {useSelector} from "react-redux";
@@ -59,7 +59,7 @@ const generateSampleQuantityRow = function(concentration, volume, mass, sampleTy
  * @returns {*}
  * @constructor
  */
-function SampleTree({igoCompleteDate, sample, requestName}){
+function SampleTree({igoCompleteDate, sample}){
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
 
     // TODO - constant
@@ -73,12 +73,8 @@ function SampleTree({igoCompleteDate, sample, requestName}){
     const sampleId = root['recordName'] || sample['sampleId'];
     const status = sample['status'];
 
-    let toggleClasses = "large-icon fa-layers fa-fw hover inline-block";
-    if(showTree) {
-        toggleClasses += ' fade-color'
-    }
-
     let tooltip = '';
+    let toggleClasses = 'hv-align text-align-center';
     // TODO - api constants
     if(status === 'Complete'){
         toggleClasses += ' success-green';
@@ -93,10 +89,10 @@ function SampleTree({igoCompleteDate, sample, requestName}){
 
     // These are all fields from the LimsRest API
     const sampleInfo = sample['sampleInfo'] || {};
-    const dnaInfo = sampleInfo['dna_material'] || {}
+    const dnaInfo = sampleInfo['dna_material'] || {};
     const libraryInfo = sampleInfo['library_material'] || {};
-    const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo);
-    const [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo);
+    let [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo);
+    let [libraryConcentration, libraryVolume, libraryMass] = getMaterialInfo(libraryInfo);
 
     if(libraryMass) {
         tooltip += ` (Library Mass: ${libraryMass})`;
@@ -114,38 +110,52 @@ function SampleTree({igoCompleteDate, sample, requestName}){
         }
     };
 
-    return <Row key={sampleId} className={"border"}>
-        <Col xs={3} sm={2} md={1}>
-            <div className={"table"}>
-                <div className={"table-cell"}>
-                    <p>{sampleId}</p>
-                    {
-                        sourceSampleId && sourceSampleId !== '' ? <p className={"font-p8em"}>({sourceSampleId})</p>
-                            : <span></span>
-                    }
-                    {
-                        isUser ? <span></span> : <FontAwesomeIcon className={"tiny-icon hover"}
-                                         icon={faProjectDiagram}
-                                         onClick={toggleTree}/>
-                    }
-                </div>
+    const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'];
+    const investigatorId = sampleInfo['investigatorId'];
+
+    let userId = investigatorId;
+    if(correctedInvestigatorId  && correctedInvestigatorId !== null && correctedInvestigatorId !== ''){
+        userId = correctedInvestigatorId;
+    }
+    return <Row key={sampleId} className={"sample-row border"}>
+        <Col xs={3} lg={1}>
+            <div className={"hv-align fill-width"}>
+                <p className={"text-align-center"}>{sampleId}</p>
+                {
+                    isUser ? <span></span> : <FontAwesomeIcon className={"tiny-icon hover"}
+                                                              icon={faProjectDiagram}
+                                                              onClick={toggleTree}/>
+                }
             </div>
         </Col>
-        <Col xs={6} sm={7} md={9} className={"padding-vert-10 overflow-x-auto"}>
+        <Col xs={3} lg={2}>
+            <div className={"hv-align fill-width"}>
+                <p className={"text-align-center"}>
+                    {userId}
+                </p>
+            </div>
+        </Col>
+        <Col xs={2} lg={1} className={"overflow-x-auto"}>
+            <div className={"hv-align fill-width"}>
+                <p className={"text-align-center"}>{dnaMass ? dnaMass : '0g'}</p>
+            </div>
+        </Col>
+        <Col xs={2} lg={1} className={"overflow-x-auto"}>
+            <div className={"hv-align fill-width"}>
+                <p className={"text-align-center"}>{libraryMass ? libraryMass : '0g'}</p>
+            </div>
+        </Col>
+        <Col lg={5} className={"overflow-x-auto d-none d-lg-block"}>
             <StageLevelTracker igoCompleteDate={igoCompleteDate}
                                stages={sample.stages}
                                orientation={"horizontal"}
                                projectView={false}></StageLevelTracker>
         </Col>
-        <Col xs={3} md={2}  className={"padding-vert-10"}>
+        <Col xs={2} lg={2} className={"padding-vert-10"}>
             <Tooltip title={tooltip} aria-label={tooltip} placement="right">
-                <span className={toggleClasses}
-                      onClick={toggleTree}>
-                    <FontAwesomeIcon icon={faFlask}/>
-                    <span className="fa-layers-bottom fa-layers-text fa-inverse sample-count-layers-text-override">{
-                        (dnaMass || libraryMass) ? 'ng' : ''
-                    }</span>
-                </span>
+                <p className={toggleClasses}>
+                    {status}
+                </p>
             </Tooltip>
         </Col>
             {
@@ -188,15 +198,24 @@ function SampleTree({igoCompleteDate, sample, requestName}){
  * @constructor
  */
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
-    return <Container>
+    return <Container className={"interactiveContainer"}>
         <Row>
-            <Col xs={3} sm={2} md={1} className={"padding-vert-10 text-align-center"}>
-                <p>Sample</p>
+            <Col xs={3} lg={1} className={"padding-vert-10 text-align-center"}>
+                <p>IGO ID</p>
             </Col>
-            <Col xs={6} sm={7} md={9} className={"padding-vert-10 text-align-center overflow-x-auto"}>
+            <Col xs={3} lg={2} className={"padding-vert-10 text-align-center"}>
+                <p>User ID</p>
+            </Col>
+            <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
+                <p>NA Mass</p>
+            </Col>
+            <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
+                <p>Lib Mass</p>
+            </Col>
+            <Col lg={5} className={"padding-vert-10 text-align-center overflow-x-auto d-none d-lg-block"}>
                 <p>Workflow Progress</p>
             </Col>
-            <Col xs={3} md={2}  className={"padding-vert-10 text-align-center"}>
+            <Col xs={2} md={2}  className={"padding-vert-10 text-align-center"}>
                 <p>Status</p>
             </Col>
         </Row>
@@ -207,7 +226,7 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                                     key={`${sample}-${idx}`}
                                     requestName={requestName}></SampleTree>;
             }) :
-                <Row>
+                <Row className={"sample-row"}>
                     <Col xs={12}>
                         <p className={"text-align-center"}>No Samples selected</p>
                     </Col>
