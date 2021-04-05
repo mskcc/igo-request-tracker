@@ -7,7 +7,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Tooltip from '@material-ui/core/Tooltip';
 import {useSelector} from "react-redux";
 import {STATE_USER_SESSION} from "../redux/reducers";
-import {getMaterialInfo} from "../utils/utils";
+import {getHumanReadable, getMaterialInfo} from "../utils/utils";
+import {makeStyles} from "@material-ui/core/styles";
+import {useTooltipStyles} from "../utils/materialClasses";
 
 const treeContainerHeight = 600;
 
@@ -109,6 +111,7 @@ function SampleTree({igoCompleteDate, sample}){
             setShowTree(!showTree);
         }
     };
+    const tooltipClasses = useTooltipStyles();
 
     const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'];
     const investigatorId = sampleInfo['investigatorId'];
@@ -152,7 +155,10 @@ function SampleTree({igoCompleteDate, sample}){
                                projectView={false}></StageLevelTracker>
         </Col>
         <Col xs={2} lg={2} className={"padding-vert-10"}>
-            <Tooltip title={tooltip} aria-label={tooltip} placement="right">
+            <Tooltip classes={tooltipClasses}
+                     title={tooltip}
+                     aria-label={tooltip}
+                     placement="right">
                 <p className={toggleClasses}>
                     {status}
                 </p>
@@ -198,25 +204,58 @@ function SampleTree({igoCompleteDate, sample}){
  * @constructor
  */
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
+    const tooltipClasses = useTooltipStyles();
+
     return <Container className={"interactiveContainer"}>
         <Row>
             <Col xs={3} lg={1} className={"padding-vert-10 text-align-center"}>
-                <p>IGO ID</p>
+                <Tooltip title={`ID of the sample in IGO's workflow`}
+                         aria-label={'IGO ID label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>IGO ID</p>
+                </Tooltip>
             </Col>
             <Col xs={3} lg={2} className={"padding-vert-10 text-align-center"}>
-                <p>User ID</p>
+                <Tooltip title={`Investigator ID (w/ corrections if available)`}
+                         aria-label={'User ID label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>User ID</p>
+                </Tooltip>
             </Col>
             <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
-                <p>NA Mass</p>
+                <Tooltip title={`Remaining DNA/RNA mass of the sample`}
+                         aria-label={'NA Mass label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>NA Mass</p>
+                </Tooltip>
             </Col>
             <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
-                <p>Lib Mass</p>
+                <Tooltip title={`Remaining mass of the library with the sample`}
+                         aria-label={'Library Mass label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>Lib Mass</p>
+                </Tooltip>
             </Col>
             <Col lg={5} className={"padding-vert-10 text-align-center overflow-x-auto d-none d-lg-block"}>
-                <p>Workflow Progress</p>
+                <Tooltip title={`Progression of the sample through the LIMS workflow`}
+                         aria-label={'workflow progress label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>Workflow Progress</p>
+                </Tooltip>
             </Col>
             <Col xs={2} md={2}  className={"padding-vert-10 text-align-center"}>
-                <p>Status</p>
+                <Tooltip title={`Current status of the sample in the LIMS workflow`}
+                         aria-label={'status label'}
+                         placement='top'
+                         classes={tooltipClasses}>
+                    <p className={'hover'}>Status</p>
+                </Tooltip>
+
             </Col>
         </Row>
         {

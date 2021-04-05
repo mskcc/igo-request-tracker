@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {useTooltipStyles} from "../../utils/materialClasses";
 
 const useStyles = makeStyles({
     downloadCol: {
@@ -56,13 +57,6 @@ const useStyles = makeStyles({
         'margin': '2px 0px',
         'text-align': 'center',
         'padding': '4px 0px',
-    }
-});
-
-const useTooltipStyles = makeStyles({
-    tooltip: {
-        fontSize: 16,
-        maxWidth: 1000
     }
 });
 

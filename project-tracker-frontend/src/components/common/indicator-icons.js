@@ -2,6 +2,7 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faExclamationTriangle, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from '@material-ui/core/Tooltip';
+import {useTooltipStyles} from "../../utils/materialClasses";
 
 /**
  * Returns an icon & tooltip to indicate the current progress of a request
@@ -16,6 +17,8 @@ import Tooltip from '@material-ui/core/Tooltip';
  * @constructor
  */
 export function RequestStatusIndicator({ isDelivered, isComplete, pendingStage, completedCt, totalCt, failedCt }) {
+        const tooltipClasses = useTooltipStyles();
+
         const hasFailed = (failedCt && failedCt > 0);
         const summaryColorClass = hasFailed ? 'fail-red' : isDelivered ? 'success-green' : 'update-blue';
         let icon = null;
@@ -35,19 +38,28 @@ export function RequestStatusIndicator({ isDelivered, isComplete, pendingStage, 
         }
 
         return showCompletionIcon ?
-                    <Tooltip title={tooltip} aria-label={'Complete tooltip'} placement="right">
+                    <Tooltip classes={tooltipClasses}
+                             title={tooltip}
+                             aria-label={'Complete tooltip'}
+                             placement="right">
                         <span className={`small-icon fa-layers fa-fw hover inline-block ${summaryColorClass}`}>
                             <FontAwesomeIcon icon={faCheck}/>
                         </span>
                     </Tooltip>
                     :
                     <div className="request-pending-stage-container">
-                        <Tooltip title={tooltip} aria-label={tooltip} placement="right">
+                        <Tooltip classes={tooltipClasses}
+                                 title={tooltip}
+                                 aria-label={tooltip}
+                                 placement="right">
                             <h5 className={'hover no-margin-bottom text-align-center'}>
                                 {pendingStage}
                             </h5>
                         </Tooltip>
-                        {   hasFailed ? <Tooltip title={"Has Failed Samples"} aria-label={tooltip} placement="right">
+                        {   hasFailed ? <Tooltip classes={tooltipClasses}
+                                                 title={"Has Failed Samples"}
+                                                 aria-label={tooltip}
+                                                 placement="right">
                                 <span className={`tiny-icon fa-layers fa-fw hover inline-block ${summaryColorClass}`}>
                                     <FontAwesomeIcon icon={faExclamationTriangle}/>
                                 </span>

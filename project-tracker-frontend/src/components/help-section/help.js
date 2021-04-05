@@ -407,7 +407,7 @@ function HelpSection() {
                                             NA Mass
                                         </p></TableCell>
                                         <TableCell><p>
-                                            Remaining mass of DNA
+                                            Remaining mass of DNA or RNA of the sample
                                         </p></TableCell>
                                     </TableRow>
                                     <TableRow>
@@ -415,7 +415,7 @@ function HelpSection() {
                                             Lib Mass
                                         </p></TableCell>
                                         <TableCell><p>
-                                            Remaining mass of library
+                                            Remaining mass of the library w/ the sample
                                         </p></TableCell>
                                     </TableRow>
                                     <TableRow>

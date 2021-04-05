@@ -11,6 +11,7 @@ import {getRequestId, REQ_receivedDate} from "../../utils/api-util";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {makeStyles} from "@material-ui/core/styles";
 import {STATE_DELIVERED_REQUESTS, STATE_USER_SESSION} from "../../redux/reducers";
+import {useTooltipStyles} from "../../utils/materialClasses";
 
 const useStyles = makeStyles({
     angleDown: {
@@ -27,6 +28,8 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
     const [descendingDateSort, setDescendingDateSort] = useState(true);
     const deliveryColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Expected Delivery';
+
+    const tooltipClasses = useTooltipStyles();
 
     useEffect(() => {
         const sortedRequests = getSortedRequests(requestList, descendingDateSort, dateFilterField);
@@ -63,14 +66,16 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                     <Col xs={3} sm={4} className={"flexbox-center text-align-center overflow-x-hidden"}><h4>Request Type</h4></Col>
                     <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
                          onClick={() => toggleDateSorting(REQ_receivedDate)}>
-                            <Tooltip title={`Sort`}
+                            <Tooltip classes={tooltipClasses}
+                                     title={`Sort`}
                                      aria-label={'Received Sort'}
                                      placement="right"><h4>Received</h4>
                             </Tooltip>
                     </Col>
                     <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
                          onClick={() => toggleDateSorting(dateFilterField)}>
-                        <Tooltip title={`Sort`}
+                        <Tooltip classes={tooltipClasses}
+                                 title={`Sort`}
                                  aria-label={'Received Sort'}
                                  placement="right">
                             <h4>{deliveryColumnHeader}</h4>
@@ -87,9 +92,10 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                                                projectState={projectState}/>
                         }) : <Container className={"interactiveContainer "}>
                                 <Row className={"hover border padding-top-15 flexbox-center"}>
-                                    <Tooltip title={`Please email zzPDL_SKI_IGO_DATA@mskcc.org if you should see ${getHumanReadable(projectState)}`}
+                                    <Tooltip classes={tooltipClasses}
+                                             title={`Please email zzPDL_SKI_IGO_DATA@mskcc.org if you should see ${getHumanReadable(projectState)}`}
                                              aria-label={'No requests tooltip'}
-                                             placement="right">
+                                             placement="bottom">
                                         <p className={"italic"}>No {getHumanReadable(projectState)}</p>
                                     </Tooltip>
                                 </Row>
