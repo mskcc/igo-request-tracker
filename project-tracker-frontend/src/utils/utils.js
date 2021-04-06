@@ -326,6 +326,32 @@ export const getRequestTrackingInfoForRequest = (requestId, projectState, redux_
         })
 };
 
+export const XLSX_SAMPLE_NAME = 'Sample Name';
+export const XLSX_IGO_ID = 'IGO ID';
+export const XLSX_INVESTIGATOR_ID = 'Investigator ID';
+export const XLSX_CORRECTED_INVESTIGATOR_ID = 'Corrected Investigator ID';
+export const XLSX_STATUS = 'Status';
+export const XLSX_NA_CONCENTRATION = 'DNA/RNA Concentration (ng/µL)';
+export const XLSX_NA_VOLUME = 'DNA/RNA Volume (µL)';
+export const XLSX_NA_MASS = 'DNA/RNA Mass (ng)';
+export const XLSX_LIB_CONCENTRATION = 'Library Concentration (ng/µL)';
+export const XLSX_LIB_VOLUME = 'Library Volume (µL)';
+export const XLSX_LIB_MASS = 'Library Mass (ng)';
+
+export const XLSX_HEADERS = [
+    XLSX_SAMPLE_NAME,
+    XLSX_IGO_ID,
+    XLSX_INVESTIGATOR_ID,
+    XLSX_CORRECTED_INVESTIGATOR_ID,
+    XLSX_STATUS,
+    XLSX_NA_CONCENTRATION,
+    XLSX_NA_VOLUME,
+    XLSX_NA_MASS,
+    XLSX_LIB_CONCENTRATION,
+    XLSX_LIB_VOLUME,
+    XLSX_LIB_MASS
+];
+
 /**
  * Extracts all sample info for an input list of samples
  * @param samples
@@ -349,17 +375,17 @@ export const extractQuantifyInfoXlsx = function(samples) {
 
         // MAKE SURE YOU UPDATE THE HEADERS
         const xlsxObj = {
-            sampleName,
-            igoId,
-            investigatorId,
-            correctedInvestigatorId,
-            status,
-            "NA Concentration (ng/µL)": dnaConcentration || 0,
-            "NA Volume (µL)": dnaVolume || 0,
-            "NA Mass (ng)": dnaMass || 0,
-            "libraryConcentration (ng/µL)": libraryConcentration || 0,
-            "libraryVolume (µL)": libraryVolume || 0,
-            "libraryMass (ng)": libraryMass || 0
+            [XLSX_SAMPLE_NAME]: sampleName,
+            [XLSX_IGO_ID]: igoId,
+            [XLSX_INVESTIGATOR_ID]: investigatorId,
+            [XLSX_CORRECTED_INVESTIGATOR_ID]: correctedInvestigatorId,
+            [XLSX_STATUS]: status,
+            [XLSX_NA_CONCENTRATION]: dnaConcentration || 0,
+            [XLSX_NA_VOLUME]: dnaVolume || 0,
+            [XLSX_NA_MASS]: dnaMass || 0,
+            [XLSX_LIB_CONCENTRATION]: libraryConcentration || 0,
+            [XLSX_LIB_VOLUME]: libraryVolume || 0,
+            [XLSX_LIB_MASS]: libraryMass || 0
         };
         sampleInfoList.push(xlsxObj);
     }

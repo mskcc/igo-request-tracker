@@ -30,7 +30,7 @@ import {
     extractQuantifyInfoXlsx,
     filterRequestList,
     getRequestState, getRequestTrackingInfoForRequest,
-    getTargetValue
+    getTargetValue, XLSX_HEADERS
 } from "./utils/utils";
 import {
     renderDateFilter,
@@ -378,22 +378,6 @@ function App() {
      * @returns {Promise<void>}
      */
     const createSampleXlsxListReq = async (pReqs, dReqs, name, showWarning) => {
-        const headers = [
-            'requestId',
-            'igoId',
-            'investigatorId',
-            'correctedInvestigatorId',
-            'sampleName',
-            'status',
-            'delivered',
-            'NA Concentration (ng/µL)',
-            'NA Volume (µL)',
-            'NA Mass (ng)',
-            'libraryConcentration (ng/µL)',
-            'libraryVolume (µL)',
-            'libraryMass (ng)'
-        ];
-
         if(showWarning){
             sendUpdate(modalUpdater, `[ERROR] Number of requests exceeds limit (${MAX_DOWNLOAD_LENGTH}). Please apply filters and try again.`, MODAL_ERROR, 10000);
             return;
@@ -407,7 +391,7 @@ function App() {
         }
         setIsDownloading(true);
         const xlsx = await createSampleListXlsx(pReqs, dReqs);
-        downloadExcel(xlsx, name, headers);
+        downloadExcel(xlsx, name, XLSX_HEADERS);
         sendUpdate(modalUpdater, 'Download available', MODAL_SUCCESS, 3000);
         setIsDownloading(false);
     };

@@ -396,15 +396,18 @@ function HelpSection() {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><p>
-                                            User ID
+                                            Sample ID <span className={'font-2em fail-red'}>*</span>
                                         </p></TableCell>
                                         <TableCell><p>
-                                            ID submitted by the investigator, or the corrected investigator ID if available
+                                            "Investigator ID" assigned when the sample was submitted.
+                                            This field can receive corrections after submission and if it
+                                            has been edited, this value ("Corrected Investigator ID") will be
+                                            marked with a red asterisk.
                                         </p></TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><p>
-                                            NA Mass
+                                            Remaining DNA/RNA
                                         </p></TableCell>
                                         <TableCell><p>
                                             Remaining mass of DNA or RNA of the sample
@@ -412,7 +415,7 @@ function HelpSection() {
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><p>
-                                            Lib Mass
+                                            Remaining Library
                                         </p></TableCell>
                                         <TableCell><p>
                                             Remaining mass of the library w/ the sample
