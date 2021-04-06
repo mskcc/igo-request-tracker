@@ -140,12 +140,12 @@ function SampleTree({igoCompleteDate, sample}){
         </Col>
         <Col xs={2} lg={1} className={"overflow-x-auto"}>
             <div className={"hv-align fill-width"}>
-                <p className={"text-align-center"}>{dnaMass ? dnaMass : '0g'}</p>
+                <p className={"text-align-center"}>{dnaMass ? dnaMass : '0 ng'}</p>
             </div>
         </Col>
         <Col xs={2} lg={1} className={"overflow-x-auto"}>
             <div className={"hv-align fill-width"}>
-                <p className={"text-align-center"}>{libraryMass ? libraryMass : '0g'}</p>
+                <p className={"text-align-center"}>{libraryMass ? libraryMass : '0 ng'}</p>
             </div>
         </Col>
         <Col lg={5} className={"overflow-x-auto d-none d-lg-block"}>
