@@ -5,7 +5,7 @@ import {
     sortSamples,
     getSortedRequests
 } from "./utils";
-import {CORRECTED_INVESTIGATOR_ID, CORRECTED_SAMPLE, MOCK_SAMPLES, UNCORRECTED_SAMPLE} from "../mocks/samples";
+import {CORRECTED_INVESTIGATOR_ID, CORRECTED_SAMPLE_NAME, MOCK_SAMPLES, UNCORRECTED_SAMPLE_NAME} from "../mocks/mock-samples";
 import {REQ_deliveryDate, REQ_dueDate} from "./api-util";
 
 test('Sample Information is correctly parsed', () => {
@@ -13,8 +13,8 @@ test('Sample Information is correctly parsed', () => {
 
     expect(qtyInfo.length).toBe(2);
 
-    const corrected_sample = qtyInfo.filter(s => s[XLSX_SAMPLE_NAME] === CORRECTED_SAMPLE);
-    const uncorrected_sample = qtyInfo.filter(s => s[XLSX_SAMPLE_NAME] === UNCORRECTED_SAMPLE);
+    const corrected_sample = qtyInfo.filter(s => s[XLSX_SAMPLE_NAME] === CORRECTED_SAMPLE_NAME);
+    const uncorrected_sample = qtyInfo.filter(s => s[XLSX_SAMPLE_NAME] === UNCORRECTED_SAMPLE_NAME);
 
     expect(corrected_sample.length).toBe(1);
     expect(uncorrected_sample.length).toBe(1);

@@ -6,8 +6,6 @@ import StageLevelTracker from "./stage-level-tracker";
 import SampleLevelTracker from "./sample-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
-import {useSelector} from "react-redux";
-import {STATE_USER_SESSION} from "../redux/reducers";
 
 // project: Project.js instance
 function ProjectLevelTracker({project}) {

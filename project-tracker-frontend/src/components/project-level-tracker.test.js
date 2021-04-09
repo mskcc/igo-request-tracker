@@ -46,12 +46,7 @@ test('Should have child requests, not source requests', () => {
     const project = new Project(TEST_PROJECT_ID, 0, 0, '', true);
     project.addRequestTrackingInfo(request);
 
-    const { getByText, queryByText } = render(<Provider store={createStore(reducer, {
-        [STATE_USER_SESSION]: {
-            'isUser': false
-        }})}>
-            <ProjectLevelTracker project={project}/>
-    </Provider>);
+    const { getByText, queryByText } = render(<ProjectLevelTracker project={project}/>);
     const childRequests = getByText("Child Requests");
     expect(childRequests).toBeInTheDocument();
 
@@ -64,12 +59,20 @@ test('Should have source requests, not child requests', () => {
     const project = new Project(TEST_PROJECT_ID, 0, 0, '', true);
     project.addRequestTrackingInfo(request);
 
-    const { getByText, queryByText } = render(<Provider store={createStore(reducer, {
-        [STATE_USER_SESSION]: {
-            'isUser': false
-        }})}>
-            <ProjectLevelTracker project={project}/>
-    </Provider>);
+    const { getByText, queryByText } = render(<ProjectLevelTracker project={project}/>);
+    const childRequests = getByText("Source Requests");
+    expect(childRequests).toBeInTheDocument();
+
+    expect(queryByText("Child Requests")).toBeNull();
+});
+
+test('Should have source requests, not child requests', () => {
+    const request = JSON.parse(JSON.stringify(request_template));   // Deep-clone
+    request["metaData"]["sourceRequests"] = [ "SOURCE_REQUEST_ID" ]
+    const project = new Project(TEST_PROJECT_ID, 0, 0, '', true);
+    project.addRequestTrackingInfo(request);
+
+    const { getByText, queryByText } = render(<ProjectLevelTracker project={project}/>);
     const childRequests = getByText("Source Requests");
     expect(childRequests).toBeInTheDocument();
 

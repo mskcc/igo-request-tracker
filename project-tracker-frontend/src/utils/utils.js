@@ -334,10 +334,9 @@ export const getRequestTrackingInfoForRequest = (requestId, projectState, redux_
         })
 };
 
-export const XLSX_SAMPLE_NAME = 'Sample Name';
+export const XLSX_SAMPLE_NAME = 'Sample ID';
 export const XLSX_IGO_ID = 'IGO ID';
-export const XLSX_INVESTIGATOR_ID = 'Investigator ID';
-export const XLSX_CORRECTED_INVESTIGATOR_ID = 'Corrected Investigator ID';
+export const XLSX_CORRECTED_INVESTIGATOR_ID = 'Corrected Sample ID';
 export const XLSX_STATUS = 'Status';
 export const XLSX_NA_CONCENTRATION = 'DNA/RNA Concentration (ng/µL)';
 export const XLSX_NA_VOLUME = 'DNA/RNA Volume (µL)';
@@ -349,7 +348,6 @@ export const XLSX_LIB_MASS = 'Library Mass (ng)';
 export const XLSX_HEADERS = [
     XLSX_SAMPLE_NAME,
     XLSX_IGO_ID,
-    XLSX_INVESTIGATOR_ID,
     XLSX_CORRECTED_INVESTIGATOR_ID,
     XLSX_STATUS,
     XLSX_NA_CONCENTRATION,
@@ -374,7 +372,6 @@ export const extractQuantifyInfoXlsx = function(samples) {
         const status = sample['status'];
         const sampleInfo = sample['sampleInfo'] || {};
         const sampleName = sampleInfo['sampleName'] || '';
-        const investigatorId = sampleInfo['investigatorId'] || '';
         const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'] || '';
         const dnaInfo = sampleInfo['dna_material'] || {};
         const libraryInfo = sampleInfo['library_material'] || {};
@@ -385,7 +382,6 @@ export const extractQuantifyInfoXlsx = function(samples) {
         const xlsxObj = {
             [XLSX_SAMPLE_NAME]: sampleName,
             [XLSX_IGO_ID]: igoId,
-            [XLSX_INVESTIGATOR_ID]: investigatorId,
             [XLSX_CORRECTED_INVESTIGATOR_ID]: correctedInvestigatorId,
             [XLSX_STATUS]: status,
             [XLSX_NA_CONCENTRATION]: dnaConcentration || 0,
