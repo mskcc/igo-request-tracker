@@ -30,14 +30,6 @@ function ProjectLevelTracker({project}) {
     const childRequests = project.getChildRequests();
     const serviceId = project.getServiceId();
     const requestName = project.getRecipe();
-    const requestId = project.getRequestId();
-
-    // TODO - Remove once sample info download is complete
-    const userSession = useSelector(state => state[STATE_USER_SESSION] );
-    const isUser = (userSession['isUser'] || false) && (!userSession['isPM']);
-
-    // TODO - delete?
-    const projectManager = project.getProjectManager();
 
     // Filter Samples
     const completedSamples = samples.filter((sample) => {

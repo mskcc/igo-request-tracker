@@ -102,6 +102,14 @@ export function sortSamples(s1, s2) {
     let s2Name = s2Root['recordName'] || '';
     s2Name = s2Name.toUpperCase();
 
+    if(s2Name === '' && s1Name === ''){
+        return 0;
+    } else if(s1Name === ''){
+        return 1;
+    } else if(s2Name === ''){
+        return -1;
+    }
+
     if (s1Name.length - s2Name.length !== 0) {
         return s1Name.length - s2Name.length;
     }
@@ -366,8 +374,8 @@ export const extractQuantifyInfoXlsx = function(samples) {
         const status = sample['status'];
         const sampleInfo = sample['sampleInfo'] || {};
         const sampleName = sampleInfo['sampleName'] || '';
-        const investigatorId = sampleInfo['sampleName'] || '';
-        const correctedInvestigatorId = sampleInfo['sampleName'] || '';
+        const investigatorId = sampleInfo['investigatorId'] || '';
+        const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'] || '';
         const dnaInfo = sampleInfo['dna_material'] || {};
         const libraryInfo = sampleInfo['library_material'] || {};
         const [dnaConcentration, dnaVolume, dnaMass] = getMaterialInfo(dnaInfo, false);

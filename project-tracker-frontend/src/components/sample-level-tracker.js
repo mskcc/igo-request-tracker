@@ -61,7 +61,7 @@ const generateSampleQuantityRow = function(concentration, volume, mass, sampleTy
  * @returns {*}
  * @constructor
  */
-function SampleTree({igoCompleteDate, sample}){
+function SampleTree({igoCompleteDate, sample, showCorrected}){
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
 
     // TODO - constant
@@ -76,7 +76,7 @@ function SampleTree({igoCompleteDate, sample}){
     const status = sample['status'];
 
     let tooltip = '';
-    let toggleClasses = 'hv-align text-align-center';
+    let toggleClasses = 'hv-align text-align-center bold';
     // TODO - api constants
     if(status === 'Complete'){
         toggleClasses += ' success-green';
@@ -117,8 +117,10 @@ function SampleTree({igoCompleteDate, sample}){
     const investigatorId = sampleInfo['investigatorId'];
 
     let userId = investigatorId;
-    if(correctedInvestigatorId  && correctedInvestigatorId !== null && correctedInvestigatorId !== ''){
+    let iscorrected = false;
+    if(showCorrected && correctedInvestigatorId  && correctedInvestigatorId !== null && correctedInvestigatorId !== ''){
         userId = correctedInvestigatorId;
+        iscorrected = true;
     }
     return <Row key={sampleId} className={"sample-row border"}>
         <Col xs={3} lg={1}>
@@ -133,9 +135,15 @@ function SampleTree({igoCompleteDate, sample}){
         </Col>
         <Col xs={3} lg={2}>
             <div className={"hv-align fill-width"}>
-                <p className={"text-align-center"}>
-                    {userId}
-                </p>
+                <Tooltip classes={tooltipClasses}
+                         title={iscorrected ? `Original: ${investigatorId}` : ''}
+                         aria-label={'correction label'}
+                         placement='bottom'>
+                    <p className={`text-align-center ${iscorrected ? 'hover' : ''}`}>
+                        {userId}
+                        <span className={'fail-red'}>{iscorrected ? '*' : ''}</span>
+                    </p>
+                </Tooltip>
             </div>
         </Col>
         <Col xs={2} lg={1} className={"overflow-x-auto"}>
@@ -206,6 +214,23 @@ function SampleTree({igoCompleteDate, sample}){
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
     const tooltipClasses = useTooltipStyles();
 
+    const hasCorrectedSampleId = samples.reduce((foundCorrectedId, currSample) => {
+        const sampleInfo = currSample['sampleInfo'] || {};
+        const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'];
+        const hasCorrection = (correctedInvestigatorId && correctedInvestigatorId !== '' && correctedInvestigatorId !== undefined);
+        return hasCorrection || foundCorrectedId;
+    }, false);
+
+    const [showCorrected, setShowCorrected] = useState(true);
+
+    const indicateCorrections = showCorrected && hasCorrectedSampleId;
+    const sampleIdTooltip = indicateCorrections ? 'Corrected Sample ID' : 'Sample ID submitted by investigator';
+    const sampleIdOnClick = function() {
+        if(hasCorrectedSampleId){
+            setShowCorrected(!showCorrected);
+        }
+    };
+
     return <Container className={"interactiveContainer"}>
         <Row>
             <Col xs={3} lg={1} className={"padding-vert-10 text-align-center"}>
@@ -213,31 +238,34 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                          aria-label={'IGO ID label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>IGO ID</p>
+                    <p>IGO ID</p>
                 </Tooltip>
             </Col>
             <Col xs={3} lg={2} className={"padding-vert-10 text-align-center"}>
-                <Tooltip title={`Investigator ID (w/ corrections if available)`}
-                         aria-label={'User ID label'}
+                <Tooltip title={sampleIdTooltip}
+                         aria-label={'Sample ID label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>User ID</p>
+                    <p className={hasCorrectedSampleId ? 'hover' : ''}
+                        onClick={sampleIdOnClick}>Sample ID
+                        <span className={'fail-red'}>{indicateCorrections ? '*' : ''}</span>
+                    </p>
                 </Tooltip>
             </Col>
-            <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
+            <Col xs={2} lg={1} className={"text-align-center"}>
                 <Tooltip title={`Remaining DNA/RNA mass of the sample`}
                          aria-label={'NA Mass label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>NA Mass</p>
+                    <p>Remaining DNA/RNA</p>
                 </Tooltip>
             </Col>
-            <Col xs={2} lg={1} className={"padding-vert-10 text-align-center"}>
-                <Tooltip title={`Remaining mass of the library with the sample`}
+            <Col xs={2} lg={1} className={"text-align-center"}>
+                <Tooltip title={`Remaining library mass of the sample`}
                          aria-label={'Library Mass label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>Lib Mass</p>
+                    <p>Remaining Library</p>
                 </Tooltip>
             </Col>
             <Col lg={5} className={"padding-vert-10 text-align-center overflow-x-auto d-none d-lg-block"}>
@@ -245,7 +273,7 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                          aria-label={'workflow progress label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>Workflow Progress</p>
+                    <p>Workflow Progress</p>
                 </Tooltip>
             </Col>
             <Col xs={2} md={2}  className={"padding-vert-10 text-align-center"}>
@@ -253,7 +281,7 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                          aria-label={'status label'}
                          placement='top'
                          classes={tooltipClasses}>
-                    <p className={'hover'}>Status</p>
+                    <p>Status</p>
                 </Tooltip>
 
             </Col>
@@ -263,7 +291,8 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                 return <SampleTree  igoCompleteDate={igoCompleteDate}
                                     sample={sample}
                                     key={`${sample}-${idx}`}
-                                    requestName={requestName}></SampleTree>;
+                                    requestName={requestName}
+                                    showCorrected={showCorrected}></SampleTree>;
             }) :
                 <Row className={"sample-row"}>
                     <Col xs={12}>
