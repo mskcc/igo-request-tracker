@@ -69,6 +69,9 @@
 .margin-auto {
   margin: auto;
 }
+.vertical-align-top {
+  vertical-align: top;
+}
 .float-right {
   float: right;
 }
@@ -270,6 +273,12 @@
   margin: auto;
   display: block;
 }
+.project-download {
+  height: 100%;
+  vertical-align: top;
+  width: 50px;
+  display: inline-block;
+}
 
 .help-table {
   max-width: 600px;
@@ -333,7 +342,6 @@
 .request-selector-icon{
   font-size: 3.5em;
   display: inline-block;
-  margin-right: 20px;
 }
 .stage-tracker-icon{
   width: 25px;
@@ -363,7 +371,7 @@
   min-height: 150px;
 }
 .sample-viewer-toggle {
-  vertical-align: bottom;
+  padding: 10px 0px 10px 20px;
   font-size: 22px;
 }
 .fade-color {

@@ -24,12 +24,11 @@ const useStyles = makeStyles({
 
 function ProjectSection({requestList, projectState, dateFilterField}) {
     const classes = useStyles();
+    const tooltipClasses = useTooltipStyles();
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [numProjectsToShow, setNumProjectsToShow] = useState(5);
     const [descendingDateSort, setDescendingDateSort] = useState(true);
     const deliveryColumnHeader = projectState ===  STATE_DELIVERED_REQUESTS ? 'Delivered' : 'Expected Delivery';
-
-    const tooltipClasses = useTooltipStyles();
 
     useEffect(() => {
         const sortedRequests = getSortedRequests(requestList, descendingDateSort, dateFilterField);
@@ -69,7 +68,7 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                             <Tooltip classes={tooltipClasses}
                                      title={`Sort`}
                                      aria-label={'Received Sort'}
-                                     placement="right"><h4>Received</h4>
+                                     placement="top"><h4>Received</h4>
                             </Tooltip>
                     </Col>
                     <Col xs={2} className={"flexbox-center text-align-center overflow-x-hidden hover"}
@@ -77,7 +76,7 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                         <Tooltip classes={tooltipClasses}
                                  title={`Sort`}
                                  aria-label={'Received Sort'}
-                                 placement="right">
+                                 placement="top">
                             <h4>{deliveryColumnHeader}</h4>
                         </Tooltip>
                     </Col>

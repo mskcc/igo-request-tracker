@@ -73,7 +73,7 @@ export default function DownloadIndicator({label, tooltip, downloadFn}) {
                         </p>
                 </Col>
                 <Col xs={3} className={classes.downloadSep}>
-                    <FontAwesomeIcon className={classes.icon} icon={faDownload}/>
+                    <FontAwesomeIcon icon={faDownload}/>
                 </Col>
             </Row>
         </Tooltip>

@@ -62,6 +62,7 @@ const generateSampleQuantityRow = function(concentration, volume, mass, sampleTy
  * @constructor
  */
 function SampleTree({igoCompleteDate, sample, showCorrected}){
+    const tooltipClasses = useTooltipStyles();
     const userSession = useSelector(state => state[STATE_USER_SESSION] );
 
     // TODO - constant
@@ -110,7 +111,6 @@ function SampleTree({igoCompleteDate, sample, showCorrected}){
             setShowTree(!showTree);
         }
     };
-    const tooltipClasses = useTooltipStyles();
 
     const correctedSampleId = sampleInfo['correctedInvestigatorId'];
     const sampleName = sampleInfo['sampleName'];
