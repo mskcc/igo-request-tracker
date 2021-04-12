@@ -380,8 +380,8 @@ export const extractQuantifyInfoXlsx = function(samples) {
 
         // MAKE SURE YOU UPDATE THE HEADERS
         const xlsxObj = {
-            [XLSX_SAMPLE_NAME]: sampleName,
             [XLSX_IGO_ID]: igoId,
+            [XLSX_SAMPLE_NAME]: sampleName,
             [XLSX_CORRECTED_INVESTIGATOR_ID]: correctedInvestigatorId,
             [XLSX_STATUS]: status,
             [XLSX_NA_CONCENTRATION]: dnaConcentration || 0,

@@ -4,6 +4,18 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {useTooltipStyles} from "../utils/materialClasses";
 import SampleTree from "./sample-tree";
 import {sampleIsCorrected} from "../utils/utils";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
+import {makeStyles} from "@material-ui/core";
+
+const useStyles = makeStyles({
+    angleDown: {
+        'margin': 'auto',
+        'display': 'block',
+        'width': '25px !important',
+        'height': '40px'
+    }
+});
 
 /**
  *
@@ -13,6 +25,8 @@ import {sampleIsCorrected} from "../utils/utils";
  * @constructor
  */
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
+    const classes = useStyles();
+    const [numSamplesToShow, setNumSamplesToShow] = useState(100);
     const tooltipClasses = useTooltipStyles();
     const [showCorrected, setShowCorrected] = useState(true);
 
@@ -33,6 +47,9 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
             setShowCorrected(!showCorrected);
         }
     };
+
+    const samplesInView = samples.slice(0, numSamplesToShow);
+    const numRemainingSamples = samples.length - numSamplesToShow;
 
     return <Container className={"interactiveContainer"}>
         <Row>
@@ -92,7 +109,8 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
             </Col>
         </Row>
         {
-            (samples.length > 0) ? samples.map((sample, idx) => {
+            (samplesInView.length > 0) ?
+                samplesInView.map((sample, idx) => {
                 return <SampleTree  igoCompleteDate={igoCompleteDate}
                                     sample={sample}
                                     key={`${sample}-${idx}`}
@@ -104,6 +122,17 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                         <p className={"text-align-center"}>No Samples selected</p>
                     </Col>
                 </Row>
+        }
+        {
+            (samples.length > numSamplesToShow) ?
+                <Row className={"hover border padding-vert-5 padding-hor-20"}
+                     onClick={() => setNumSamplesToShow(numSamplesToShow + numRemainingSamples)}>
+                    <div className={"margin-auto"}>
+                        <p className={"no-margin-bottom text-align-center"}>{`Click to show all samples (Remaining: ${numRemainingSamples})`}</p>
+                        <FontAwesomeIcon className={classes.angleDown}
+                                         icon={faAngleDown}/>
+                    </div>
+                </Row> : <div></div>
         }
     </Container>
 }

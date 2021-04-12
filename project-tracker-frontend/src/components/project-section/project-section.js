@@ -106,7 +106,7 @@ function ProjectSection({requestList, projectState, dateFilterField}) {
                         <Row className={"hover border padding-vert-5 padding-hor-20"}
                              onClick={() => setNumProjectsToShow(numProjectsToShow + 5)}>
                             <div className={"margin-auto"}>
-                                <p className={"no-margin-bottom text-align-center"}>{`Show More (Remaining: ${filteredProjects.length - numProjectsToShow})`}</p>
+                                <p className={"no-margin-bottom text-align-center"}>{`Show More Requests (Remaining: ${filteredProjects.length - numProjectsToShow})`}</p>
                                 <FontAwesomeIcon className={classes.angleDown}
                                                  icon={faAngleDown}/>
                             </div>
