@@ -26,7 +26,7 @@ const useStyles = makeStyles({
  */
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
     const classes = useStyles();
-    const [numSamplesToShow, setNumSamplesToShow] = useState(100);
+    const [numSamplesToShow, setNumSamplesToShow] = useState(500);
     const tooltipClasses = useTooltipStyles();
     const [showCorrected, setShowCorrected] = useState(true);
 
