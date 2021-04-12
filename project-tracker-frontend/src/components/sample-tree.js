@@ -2,7 +2,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import {useSelector} from "react-redux";
 import {STATE_USER_SESSION} from "../redux/reducers";
 import React, {useState} from "react";
-import {getMaterialInfo} from "../utils/utils";
+import {getMaterialInfo, sampleIsCorrected} from "../utils/utils";
 import {useTooltipStyles} from "../utils/materialClasses";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faProjectDiagram} from "@fortawesome/free-solid-svg-icons";
@@ -115,12 +115,9 @@ function SampleTree({igoCompleteDate, sample, showCorrected}){
     const correctedSampleId = sampleInfo['correctedInvestigatorId'];
     const sampleName = sampleInfo['sampleName'];
 
-    let userId = sampleName;
-    let iscorrected = false;
-    if(showCorrected && correctedSampleId  && correctedSampleId !== null && correctedSampleId !== ''){
-        userId = correctedSampleId;
-        iscorrected = true;
-    }
+    const isCorrected = sampleIsCorrected(sample);
+    const showCorrections = isCorrected && showCorrected;
+    const userId = showCorrections ? correctedSampleId : sampleName;
     return <Row key={sampleId} className={"sample-row border"}>
         <Col xs={3} lg={1}>
             <div className={"hv-align fill-width"}>
@@ -136,12 +133,12 @@ function SampleTree({igoCompleteDate, sample, showCorrected}){
         <Col xs={3} lg={2}>
             <div className={"hv-align fill-width"}>
                 <Tooltip classes={tooltipClasses}
-                         title={iscorrected ? `Original: ${sampleName}` : ''}
+                         title={showCorrections ? `Original: ${sampleName}` : isCorrected ? `Corrected: ${correctedSampleId}` : ''}
                          aria-label={'correction label'}
                          placement='bottom'>
-                    <p className={`text-align-center ${iscorrected ? 'hover' : ''}`}>
+                    <p className={`text-align-center ${isCorrected ? 'hover' : ''}`}>
                         {userId}
-                        <span className={'fail-red'}>{iscorrected ? '*' : ''}</span>
+                        <span className={'fail-red'}>{showCorrections ? '*' : ''}</span>
                     </p>
                 </Tooltip>
             </div>

@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import Tooltip from '@material-ui/core/Tooltip';
 import {useTooltipStyles} from "../utils/materialClasses";
 import SampleTree from "./sample-tree";
+import {sampleIsCorrected} from "../utils/utils";
 
 /**
  *
@@ -13,18 +14,20 @@ import SampleTree from "./sample-tree";
  */
 function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
     const tooltipClasses = useTooltipStyles();
-
-    const hasCorrectedSampleId = samples.reduce((foundCorrectedId, currSample) => {
-        const sampleInfo = currSample['sampleInfo'] || {};
-        const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'];
-        const hasCorrection = (correctedInvestigatorId && correctedInvestigatorId !== '' && correctedInvestigatorId !== undefined);
-        return hasCorrection || foundCorrectedId;
-    }, false);
-
     const [showCorrected, setShowCorrected] = useState(true);
 
+    const hasCorrectedSampleId = samples.reduce((foundCorrectedId, currSample) => {
+        const isCorrected = sampleIsCorrected(currSample)
+        if(isCorrected) {
+            const sampleInfo = currSample['sampleInfo'] || {};
+            const sampleName = sampleInfo['sampleName'];
+            console.log(sampleName);
+        }
+        return isCorrected || foundCorrectedId;
+    }, false);
+
     const indicateCorrections = showCorrected && hasCorrectedSampleId;
-    const sampleIdTooltip = indicateCorrections ? 'Corrected Sample ID' : 'Sample ID submitted by investigator';
+    const sampleIdTooltip = indicateCorrections ? 'Corrected Sample ID' : hasCorrectedSampleId ? 'Submitted Sample ID - currently not showing corrections' : 'Sample ID submitted by investigator - request has no corrected samples';
     const sampleIdOnClick = function() {
         if(hasCorrectedSampleId){
             setShowCorrected(!showCorrected);
@@ -46,10 +49,12 @@ function SampleLevelTracker({igoCompleteDate, samples, requestName}) {
                          aria-label={'Sample ID label'}
                          placement='top'
                          classes={tooltipClasses}>
+                    <div>
                     <p className={hasCorrectedSampleId ? 'hover' : ''}
                         onClick={sampleIdOnClick}>Sample ID
                         <span className={'fail-red'}>{indicateCorrections ? '*' : ''}</span>
                     </p>
+                    </div>
                 </Tooltip>
             </Col>
             <Col xs={2} lg={1} className={"text-align-center"}>

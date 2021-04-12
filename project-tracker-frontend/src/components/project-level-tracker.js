@@ -88,7 +88,7 @@ function ProjectLevelTracker({project}) {
         const name = `sample_tracking_${requestName}`;
         const xlsx = extractQuantifyInfoXlsx(samples);
         downloadExcel(xlsx, name, XLSX_HEADERS);
-    }
+    };
 
     return <Container className={"interactiveContainer"}>
                     <Row className={"padding-vert-10"}>

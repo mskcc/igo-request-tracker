@@ -396,3 +396,20 @@ export const extractQuantifyInfoXlsx = function(samples) {
 
     return sampleInfoList;
 };
+
+/**
+ * Returns whether a sample should indicate it has corrections
+ *
+ * @param sample
+ */
+export const sampleIsCorrected = (sample) => {
+    const sampleInfo = sample['sampleInfo'] || {};
+    const sampleId = sampleInfo['sampleName'];
+    const correctedInvestigatorId = sampleInfo['correctedInvestigatorId'];
+    const hasCorrection = (correctedInvestigatorId &&
+        correctedInvestigatorId !== '' &&
+        correctedInvestigatorId !== undefined &&
+        sampleId !== correctedInvestigatorId);   // Only indicate a correction if correction differs from original
+
+    return hasCorrection;
+}
