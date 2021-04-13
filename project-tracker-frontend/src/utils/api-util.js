@@ -3,6 +3,8 @@
  */
 
 // TODO - Add all used constants
+export const COOKIE_isUser = 'isUser';
+
 export const REQ_requstId = 'requestId';
 export const REQ_recipe = 'requestType';
 export const REQ_receivedDate = 'receivedDate';

@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from "prop-types";
 import {useDispatch, useSelector, useStore} from "react-redux";
-import {getProjectTrackingDataRequest} from "../services/services";
-import {updateDelivered, updateUndelivered} from "../redux/dispatchers";
 import ProjectLevelTracker from "./project-level-tracker";
-import {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers";
+import {STATE_DELIVERED_REQUESTS} from "../redux/reducers";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { RequestStatusIndicator, LoadingIcon } from "./common/indicator-icons";
-import {convertUnixTimeToDateString_Day} from "../utils/utils";
+import {convertUnixTimeToDateString_Day, getRequestTrackingInfoForRequest} from "../utils/utils";
 
 function ProjectTracker({projectName, projectState}) {
     const store = useStore();
@@ -33,22 +31,7 @@ function ProjectTracker({projectName, projectState}) {
 
     useEffect(() => {
         if( !project || !project.isEnriched() ){
-            // Need to request the tracking information of the project
-            getProjectTrackingDataRequest(projectName)
-                .then(data => {
-                    const storeProjects = store.getState()[projectState] || {};  // Retrieve latest version of the store
-                    const clone = Object.assign({}, storeProjects);
-
-                    const request = clone[projectName];
-                    request.addRequestTrackingInfo(data);
-
-                    if(STATE_DELIVERED_REQUESTS === projectState){
-                        updateDelivered(dispatch, clone);
-                    } else if(STATE_PENDING_REQUESTS === projectState) {
-                        updateUndelivered(dispatch, clone);
-                    }
-
-                })
+            getRequestTrackingInfoForRequest(projectName, projectState, store, dispatch);
         }
     }, [dispatch, project, projectName, store]);
 
@@ -105,7 +88,7 @@ function ProjectTracker({projectName, projectState}) {
         return <Container></Container>
     }
 
-    return <Container className={showProject ? "border" : "white-border"}>
+    return <Container className={`interactiveContainer ${showProject ? 'border' : 'white-border'}`}>
             <Row className={`hover padding-vert-5 ${showProject ? "selected-request" : ""}`}
                  onClick={() => setShowProject(!showProject)}>
                 <Col xs={3} sm={2} className={"overflow-x-hidden"}>

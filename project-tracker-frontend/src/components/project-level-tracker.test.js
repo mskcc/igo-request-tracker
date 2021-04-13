@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux'
 import ProjectLevelTracker from './project-level-tracker';
-import reducer, {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS} from "../redux/reducers/index";
+import reducer, {STATE_DELIVERED_REQUESTS, STATE_PENDING_REQUESTS, STATE_USER_SESSION} from "../redux/reducers/index";
 import Project from "../utils/Project";
 
 const TEST_PROJECT_ID = 'TEST_PROJECT_ID';
@@ -51,6 +51,19 @@ test('Should have child requests, not source requests', () => {
     expect(childRequests).toBeInTheDocument();
 
     expect(queryByText("Source Requests")).toBeNull();
+});
+
+test('Should have source requests, not child requests', () => {
+    const request = JSON.parse(JSON.stringify(request_template));   // Deep-clone
+    request["metaData"]["sourceRequests"] = [ "SOURCE_REQUEST_ID" ]
+    const project = new Project(TEST_PROJECT_ID, 0, 0, '', true);
+    project.addRequestTrackingInfo(request);
+
+    const { getByText, queryByText } = render(<ProjectLevelTracker project={project}/>);
+    const childRequests = getByText("Source Requests");
+    expect(childRequests).toBeInTheDocument();
+
+    expect(queryByText("Child Requests")).toBeNull();
 });
 
 test('Should have source requests, not child requests', () => {

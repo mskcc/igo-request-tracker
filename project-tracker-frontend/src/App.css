@@ -18,6 +18,11 @@
   display: table-cell;
   vertical-align: middle;
 }
+
+.interactiveContainer {
+  max-width: 1200px !important;
+}
+
 /* Horizontally/Vertically align content */
 .flexbox-center {
   display: flex;
@@ -32,6 +37,9 @@
 }
 .bold {
   font-weight: bold;
+}
+.underline {
+  text-decoration: underline;
 }
 .font-p8em {
   font-size: 0.8em;
@@ -61,6 +69,9 @@
 .margin-auto {
   margin: auto;
 }
+.vertical-align-top {
+  vertical-align: top;
+}
 .float-right {
   float: right;
 }
@@ -71,6 +82,12 @@
   position: absolute;
   top: 50%;
   transform: translate(0px, -50%);
+}
+.hv-align {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .padding-hor-20 {
   padding-left: 20px;
@@ -242,9 +259,8 @@
   color: white;
   margin-bottom: 0px;
 }
-.filters-container{
+.display-inline{
   display: inline;
-  float: left;
 }
 .filters-toggle-container {
   margin-left: 10px;
@@ -256,6 +272,12 @@
   height: 25px;
   margin: auto;
   display: block;
+}
+.project-download {
+  height: 100%;
+  vertical-align: top;
+  width: 50px;
+  display: inline-block;
 }
 
 .help-table {
@@ -278,6 +300,9 @@
   margin-right: auto;
 }
 
+.sample-row {
+  min-height: 80px;
+}
 .step {
   width: 300px;
   height: 175px;
@@ -317,7 +342,6 @@
 .request-selector-icon{
   font-size: 3.5em;
   display: inline-block;
-  margin-right: 20px;
 }
 .stage-tracker-icon{
   width: 25px;
@@ -347,7 +371,7 @@
   min-height: 150px;
 }
 .sample-viewer-toggle {
-  vertical-align: bottom;
+  padding: 10px 0px 10px 20px;
   font-size: 22px;
 }
 .fade-color {

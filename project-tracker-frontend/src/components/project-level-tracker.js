@@ -1,18 +1,29 @@
 import React, {useState} from 'react';
-import {convertUnixTimeToDateStringFull} from '../utils/utils';
+import {
+    convertUnixTimeToDateStringFull,
+    downloadExcel,
+    extractQuantifyInfoXlsx,
+    sortSamples,
+    XLSX_HEADERS
+} from "../utils/utils";
 import {Row, Col, Container} from 'react-bootstrap';
 import Project from '../utils/Project';
 import StageLevelTracker from "./stage-level-tracker";
 import SampleLevelTracker from "./sample-level-tracker";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleDown, faAngleRight, faFlask} from "@fortawesome/free-solid-svg-icons";
+import {faAngleDown, faAngleRight, faDownload, faFlask} from "@fortawesome/free-solid-svg-icons";
+import Tooltip from "@material-ui/core/Tooltip/Tooltip";
+import {useTooltipStyles} from "../utils/materialClasses";
+import {makeStyles} from "@material-ui/core";
 
 // project: Project.js instance
 function ProjectLevelTracker({project}) {
-    const [viewSamples, setViewSamples] = useState(false);
+    const tooltipClasses = useTooltipStyles();
+
+    const [viewSamples, setViewSamples] = useState(true);
     const [showFailed, setShowFailed] = useState(true);
     const [showPending, setShowPending] = useState(true);
-    const [showCompleted, setShowCompleted] = useState(false);
+    const [showCompleted, setShowCompleted] = useState(true);
 
     const [samples, setSamples] = useState(project.getSamples());
     const stages = project.getStages();
@@ -28,9 +39,6 @@ function ProjectLevelTracker({project}) {
     const childRequests = project.getChildRequests();
     const serviceId = project.getServiceId();
     const requestName = project.getRecipe();
-
-    // TODO - delete?
-    const projectManager = project.getProjectManager();
 
     // Filter Samples
     const completedSamples = samples.filter((sample) => {
@@ -59,23 +67,8 @@ function ProjectLevelTracker({project}) {
         filteredSamples = filteredSamples.concat(completedSamples);
     }
 
-    // Sort on recordName, e.g. [08470_E_42, 08470_E_11, 08470_E_4, 08470_E_1] -> [08470_E_1, 08470_E_4, 08470_E_11, 08470_E_42]
-    filteredSamples.sort((s1, s2) => {
-        let s1Root = s1.root || {};
-        let s1Name = s1Root['recordName'] || '';
-        s1Name = s1Name.toUpperCase();
 
-        let s2Root = s2.root || {};
-        let s2Name = s2Root['recordName'] || '';
-        s2Name = s2Name.toUpperCase();
-
-        if (s1Name.length - s2Name.length !== 0) {
-            return s1Name.length - s2Name.length;
-        }
-
-        return (s1Name < s2Name) ? -1 : (s1Name > s2Name) ? 1 : 0;
-    });
-
+    filteredSamples.sort(sortSamples);
     const getOtherTimeField = () => {
         if(igoCompleteDate && "Not Available" !== igoCompleteDate) {
             return <Col xs={12} sm={6}>
@@ -91,7 +84,13 @@ function ProjectLevelTracker({project}) {
         </Col>
     };
 
-    return <Container>
+    const downloadFunction = () => {
+        const name = `sample_tracking_${requestName}`;
+        const xlsx = extractQuantifyInfoXlsx(samples);
+        downloadExcel(xlsx, name, XLSX_HEADERS);
+    };
+
+    return <Container className={"interactiveContainer"}>
                     <Row className={"padding-vert-10"}>
                         <Col xs={12} sm={6}>
                             <p className={"text-align-left"}><span className={"bold"}>Project Start</span>: {startTime}</p>
@@ -134,16 +133,34 @@ function ProjectLevelTracker({project}) {
                                            projectView={true}></StageLevelTracker>
                     </Row>
                     <Row className={"padding-vert-10"}>
-                        <Col xs={6} className={"hover"} onClick={() => setViewSamples(!viewSamples)}>
-                            <FontAwesomeIcon className="request-selector-icon inline-block" icon={ viewSamples ? faAngleDown : faAngleRight }/>
-                            <p className={"sample-viewer-toggle inline-block"}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
+                        <Col xs={4} className={"hover"} >
+                            <FontAwesomeIcon className="request-selector-icon inline-block"
+                                             onClick={() => setViewSamples(!viewSamples)}
+                                             icon={ viewSamples ? faAngleDown : faAngleRight }/>
+                            <div className={"vertical-align-top fill-height inline-block"}>
+                                <p className={"sample-viewer-toggle inline-block"}
+                                   onClick={() => setViewSamples(!viewSamples)}>{ viewSamples ? "Hide Samples" : "View Samples" }</p>
+                                {
+                                    samples.length > 0 ? <Tooltip classes={tooltipClasses}
+                                                                  title={`Download ${project.getRequestId()} sample info`}
+                                                                  aria-label={`${requestName} download`}
+                                                                  placement="top">
+                                        <span className={'sample-viewer-toggle project-download'}>
+                                            <FontAwesomeIcon className={'hover mskcc-black'}
+                                                             onClick={downloadFunction}
+                                                             icon={faDownload}/>
+                                        </span>
+                                    </Tooltip> : <span></span>
+                                }
+                            </div>
                         </Col>
+                        <Col xs={2}></Col>
                         {
                             viewSamples? <Col xs={6}>
                                 <Container>
                                     <Row>
                                         {
-                                            completedSamples.length > 0 ? <Col xs={6} sm={4}>
+                                            completedSamples.length > 0 ? <Col xs={4}>
                                                 <span className={`small-icon success-green fa-layers fa-fw hover inline-block ${showCompleted ? '' : 'fade-color'}`}
                                                       onClick={() => setShowCompleted(!showCompleted)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
@@ -153,7 +170,7 @@ function ProjectLevelTracker({project}) {
                                             </Col> : <span></span>
                                         }
                                         {
-                                            failedSamples.length > 0 ? <Col xs={6} sm={4}>
+                                            failedSamples.length > 0 ? <Col xs={4}>
                                                 <span className={`small-icon fail-red fa-layers fa-fw hover inline-block ${showFailed ? '' : 'fade-color'}`}
                                                       onClick={() => setShowFailed(!showFailed)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
@@ -163,7 +180,7 @@ function ProjectLevelTracker({project}) {
                                             </Col> : <span></span>
                                         }
                                         {
-                                            pendingSamples.length > 0 ? <Col xs={6} sm={4}>
+                                            pendingSamples.length > 0 ? <Col xs={4}>
                                                 <span className={`small-icon update-blue fa-layers fa-fw hover inline-block ${showPending ? '' : 'fade-color'}`}
                                                       onClick={() => setShowPending(!showPending)}>
                                                     <FontAwesomeIcon icon={faFlask}/>
