@@ -2,6 +2,8 @@ import axios from 'axios';
 import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST} from "../config";
 import {getResponseData} from "../utils/utils";
 
+const HISTORY_QUERY_LENGTH = 600;  // Past 10 years...
+
 export function getUserSession() {
     return axios
         .get(`${HOST}/login/api/session/user`)
@@ -50,7 +52,8 @@ export function getUndeliveredProjectsRequest(userView) {
             ]
     }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered?days=500`;
+    // We trust the LIMS after 2018
+    let baseUrl = `${PROJECTS_ENDPOINT}/undelivered?days=${HISTORY_QUERY_LENGTH}`;
     if(userView){
         baseUrl = `${baseUrl}&userView=true`;
     }
@@ -97,7 +100,8 @@ export function getDeliveredProjectsRequest(userView) {
              }
          }
      */
-    let baseUrl = `${PROJECTS_ENDPOINT}/delivered?days=500`;
+    // We trust the LIMS after 2018
+    let baseUrl = `${PROJECTS_ENDPOINT}/delivered?days=${HISTORY_QUERY_LENGTH}`;
     if(userView){
         baseUrl = `${baseUrl}&userView=true`;
     }
