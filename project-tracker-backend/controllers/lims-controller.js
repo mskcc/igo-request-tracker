@@ -7,6 +7,17 @@ const { authenticateRequest } = require("../middlewares/jwt-cookie");
 const { isInputTrue } = require("../helpers/utility");
 
 /**
+ * Standardizes parsing of "days" filter from the request query params
+ *
+ * @type {number}
+ */
+const DEFAULT_TIME_FILTER = 30;
+const getTimeFilterFromReq = function(query) {
+	const days = query.days || DEFAULT_TIME_FILTER;	// Default to returning requests from past X days
+	return days;
+};
+
+/**
  * Returns Tracking info for a particular request
  *
  * @param req, express
@@ -51,7 +62,7 @@ const getRequestTrackingInfo = function(req, res) {
  */
 const getDeliveredRequests = async function (req, res) {
 	const query = req.query || {};
-	const days = query.days || 30;	// Default to returning requests from past 30 days
+	const days = getTimeFilterFromReq(query);
 
 	// Anyone can mock their user view by providing this parameter (only affects non-users)
 	const userView = query.userView;
@@ -82,7 +93,7 @@ const getDeliveredRequests = async function (req, res) {
  */
 const getPendingRequests = async function (req, res) {
 	const query = req.query || {};
-	const days = query.days || 30;	// Default to returning requests from past 30 days
+	const days = getTimeFilterFromReq(query);
 
 	// Anyone can mock their user view by providing this parameter (only affects non-users)
 	const userView = query.userView;
@@ -112,7 +123,8 @@ const getPendingRequests = async function (req, res) {
  */
 const getIgoRequests = async function (req, res) {
 	const query = req.query || {};
-	const dayFilter = query.days || 30;	// Default to returning requests from past 30 days
+	const dayFilter = getTimeFilterFromReq(query);
+
 	logger.info(`Retrieving all IGO requests from past ${dayFilter} days`);
 
 	let deliveredResponse, pendingResponse;
@@ -128,6 +140,34 @@ const getIgoRequests = async function (req, res) {
 	const allRequests = deliveredRequests.concat(pendingRequests);
 
 	return apiResponse.successResponseWithData(res, "success", allRequests);
+};
+
+/**
+ * Clears all entries in the cache
+ *
+ * @param req
+ * @param res
+ */
+const updateRequestList = async function(req, res){
+	const query = req.query || {};
+	const days = getTimeFilterFromReq(query);
+
+	const deliveredRequestsKey = getDeliveredRequestsFromCacheKey(days);
+	const pendingRequestsKey = getPendingRequestsFromCacheKey(days);
+
+	const numDeleted = cache.del([deliveredRequestsKey, pendingRequestsKey]);
+	logger.info(`DEL on ${deliveredRequestsKey}, ${pendingRequestsKey} - Removed ${numDeleted} Key(s)`);
+
+	logger.info(`Updating delivered requests (days=${days})`);
+	await getDeliveredRequestsFromCache(days);
+
+	logger.info(`Updating pending requests (days=${days})`);
+	await getPendingRequestsFromCache(days);
+
+	const status = `Updated ${deliveredRequestsKey} and ${pendingRequestsKey}`;
+	logger.info(status);
+
+	return apiResponse.successResponse(res, status);
 };
 
 const getDeliveredRequestsFromCacheKey = function(dayFilter) {
@@ -154,18 +194,19 @@ exports.getIgoRequests = [
 ];
 
 /* Application Authentications */
-// TODO - there needs to be an option to force an update
 exports.getDeliveredProjects = [
 	authenticateRequest,
 	getDeliveredRequests
 ];
-// TODO - there needs to be an option to force an update
 exports.getUndeliveredProjects = [
 	authenticateRequest,
 	getPendingRequests
 ];
-// TODO - there needs to be an option to force an update
 exports.getProjectTrackingData = [
 	authenticateRequest,
 	getRequestTrackingInfo
+];
+exports.updateRequestList = [
+	authenticateRequest,
+	updateRequestList
 ];

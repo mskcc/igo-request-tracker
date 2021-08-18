@@ -6,6 +6,9 @@ var router = express.Router();
 router.get("/delivered", LimsController.getDeliveredProjects);
 router.get("/undelivered", LimsController.getUndeliveredProjects);
 router.get("/all", LimsController.getIgoRequests);
+router.get("/updateRequestList", LimsController.updateRequestList);
+
+/* LAST ENDPOINT: * */
 router.get("/:requestId", LimsController.getProjectTrackingData);
 
 /* API Endpoints */
@@ -20,6 +23,12 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  * tags:
  *   name: RequestInfo
  *   description: Endpoint to retrieve tracking information of one request
+ */
+/**
+ * @swagger
+ * tags:
+ *   name: updateRequestList
+ *   description: Forces an update on the status of the request list
  */
 /**
  * @swagger
@@ -71,6 +80,26 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/TrackingInfoResponse'
+ * /updateRequestList:
+ *   get:
+ *     summary: Updates the list of requests for the input period of days
+ *     tags:
+ *       - updateRequestList
+ *     parameters:
+ *       - in: query
+ *         name: days
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: Period from now which should be updated
+ *         example:
+ *           7
+ *     name: IGO Requests
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       '200':
+ *         description: Update of the request keys that are updated
  */
 /**
  *  @swagger
