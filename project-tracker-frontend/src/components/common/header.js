@@ -72,9 +72,9 @@ export function Header({ classes }) {
         const isPM =  userSession['isPM'] || false;
         console.log(userName);
         if (userName === 'fahimeh') return 'User';
-        // return isAdmin ? 'Admin' :
-        //     isLabMember ? 'IGO' :
-        //         isPM ? 'PM' : 'User';   // Everyone is a user if they don't have a special role
+        return isAdmin ? 'Admin' :
+            isLabMember ? 'IGO' :
+                isPM ? 'PM' : 'User';   // Everyone is a user if they don't have a special role
     };
     const role = showUserView ? 'User' : getUserSessionRole();
 
