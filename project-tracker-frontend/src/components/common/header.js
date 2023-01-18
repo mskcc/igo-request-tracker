@@ -70,7 +70,6 @@ export function Header({ classes }) {
         const isAdmin = userSession['isAdmin'] || false;
         const isLabMember = userSession['isLabMember'] || false;
         const isPM =  userSession['isPM'] || false;
-        
         return isAdmin ? 'Admin' :
             isLabMember ? 'IGO' :
                 isPM ? 'PM' : 'User';   // Everyone is a user if they don't have a special role
