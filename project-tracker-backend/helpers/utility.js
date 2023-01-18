@@ -103,11 +103,15 @@ const getSavedUserGroups = async (username) => {
 const getAccessGroups = (request) => {
 	const dataAccessEmailsValue = request["dataAccessEmails"] || "";
 	const qcAccessEmailsValue = request["qcAccessEmail"] || "";
+	const PIemail = request["piEmail"] || "";
+	const InvestigatorEmail = request["investigatorEmail"] || "";
 
+	console.log("PIemail: " + PIemail);
+	console.log("InvestigatorEmail: " + InvestigatorEmail);
 	const dataAccessEmails = dataAccessEmailsValue.split(",");
 	const qcAccessEmails = qcAccessEmailsValue.split(",");
 
-	const accessEmails = dataAccessEmails.concat(qcAccessEmails);
+	const accessEmails = PIemail.concat(InvestigatorEmail).concat(dataAccessEmails).concat(qcAccessEmails);
 	const accessGroups = [];
 	const unrecognizedEmails = new Set();
 	for(const emailValue of accessEmails){
