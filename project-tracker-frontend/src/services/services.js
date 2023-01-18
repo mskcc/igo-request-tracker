@@ -2,12 +2,12 @@ import axios from 'axios';
 import {PROJECTS_ENDPOINT, LOGIN_PAGE_URL, HOME_PAGE_PATH, HOST} from "../config";
 import {getResponseData} from "../utils/utils";
 
-var start_date = 1514851261000; // Epochtime: Tuesday, January 2, 2018 12:01:01 AM
-var currect_date = Date.now();
-console.log("start_date = " + start_date);
-console.log("current_date = " + currect_date);
-var HISTORY_QUERY_LENGTH = Math.ceil((currect_date - start_date)/(1000 * 3600 * 24));
-console.log("days: " + HISTORY_QUERY_LENGTH);
+// var start_date = 1514851261000; // Epochtime: Tuesday, January 2, 2018 12:01:01 AM
+// var currect_date = Date.now();
+// console.log("start_date = " + start_date);
+// console.log("current_date = " + currect_date);
+var HISTORY_QUERY_LENGTH = 730; // Math.ceil((currect_date - start_date)/(1000 * 3600 * 24));
+//console.log("days: " + HISTORY_QUERY_LENGTH);
 
 export function getUserSession() {
     return axios
