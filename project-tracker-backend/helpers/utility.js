@@ -25,10 +25,6 @@ exports.isUser = (req) => {
 	let userData;
 	try {
 		userData = jwtInCookie.validateJwtToken(req);
-		if (userData["username"] === "mirhajf") {
-			console.log("Fahimeh is here!");
-			return true;
-		}
 	} catch (err) {
 		return true; // Default to true
 	}
