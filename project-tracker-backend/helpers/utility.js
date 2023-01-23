@@ -102,16 +102,18 @@ const getSavedUserGroups = async (username) => {
  */
 const getAccessGroups = (request) => {
 	const dataAccessEmailsValue = request["dataAccessEmails"] || "";
-	const qcAccessEmailsValue = request["qcAccessEmail"] || "";
-	const PIemail = request["piEmail"] || "";
-	const InvestigatorEmail = request["investigatorEmail"] || "";
+        const qcAccessEmailsValue = request["qcAccessEmail"] || "";
+        const PIemail = request["labHeadEmail"] || "";
+        const InvestigatorEmailValue = request["investigatorEmail"] || "";
 
-	console.log("PIemail: " + PIemail);
-	console.log("InvestigatorEmail: " + InvestigatorEmail);
-	const dataAccessEmails = dataAccessEmailsValue.split(",");
-	const qcAccessEmails = qcAccessEmailsValue.split(",");
+        console.log("labHeadEmail: " + PIemail);
+        console.log("InvestigatorEmail: " + InvestigatorEmailValue);
+        const dataAccessEmails = dataAccessEmailsValue.split(",");
+        const qcAccessEmails = qcAccessEmailsValue.split(",");
+        const labHeadEmail = PIemail.split(",");
+        const investEmail = InvestigatorEmailValue.split(",");
 
-	const accessEmails = PIemail.concat(InvestigatorEmail).concat(dataAccessEmails).concat(qcAccessEmails);
+        const accessEmails = labHeadEmail.concat(investEmail, dataAccessEmails, qcAccessEmails);
 	const accessGroups = [];
 	const unrecognizedEmails = new Set();
 	for(const emailValue of accessEmails){
