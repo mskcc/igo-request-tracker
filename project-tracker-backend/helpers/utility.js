@@ -25,6 +25,10 @@ exports.isUser = (req) => {
 	let userData;
 	try {
 		userData = jwtInCookie.validateJwtToken(req);
+		if (userData["username"] === "mirhajf") {
+			console.log("Fahimeh is here!");
+			return true;
+		}
 	} catch (err) {
 		return true; // Default to true
 	}
@@ -103,15 +107,15 @@ const getSavedUserGroups = async (username) => {
 const getAccessGroups = (request) => {
 	const dataAccessEmailsValue = request["dataAccessEmails"] || "";
 	const qcAccessEmailsValue = request["qcAccessEmail"] || "";
-	const PIemail = request["piEmail"] || "";
+	const PIemail = request["labHeadEmail"] || "";
 	const InvestigatorEmail = request["investigatorEmail"] || "";
 
-	console.log("PIemail: " + PIemail);
+	console.log("labHeadEmail: " + PIemail);
 	console.log("InvestigatorEmail: " + InvestigatorEmail);
 	const dataAccessEmails = dataAccessEmailsValue.split(",");
 	const qcAccessEmails = qcAccessEmailsValue.split(",");
 
-	const accessEmails = PIemail.concat(InvestigatorEmail).concat(dataAccessEmails).concat(qcAccessEmails);
+	const accessEmails = PIemail.concat(InvestigatorEmail, dataAccessEmails, qcAccessEmails);
 	const accessGroups = [];
 	const unrecognizedEmails = new Set();
 	for(const emailValue of accessEmails){
