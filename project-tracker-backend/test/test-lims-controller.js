@@ -6,10 +6,10 @@ var chai = require("chai");
 let should = chai.should();
 
 const {userCollection} = require("../db/data-access");
-const {LIMS_API} = require("../services/config.js");
 const cache = require("../helpers/cache");
 const jwtInCookie = require("jwt-in-cookie");
 const {createRequestList, MockResponse} = require("./setup-util");
+const LIMS_API = process.env.LIMS_API;
 
 var axios = require("axios");
 var MockAdapter = require("axios-mock-adapter");

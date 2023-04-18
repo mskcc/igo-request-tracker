@@ -1,7 +1,8 @@
 const axios = require("axios");
 const https = require("https");
-const { LIMS_API, LIMS } = require("./config.js");
 const { logger } = require("../helpers/winston");
+const LIMS_API = process.env.LIMS_API;
+const LIMS = process.env.LIMS;
 
 // LIMS is authorized. Avoids certificate verification & "unable to verify the first certificate in nodejs" errors
 const agent = new https.Agent({

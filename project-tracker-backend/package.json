@@ -6,7 +6,6 @@
     "start": "nodemon ./bin/www",
     "clean": "rm -rf node_modules && rm request_tracker.log",
     "dev": "NODE_ENV=dev nodemon ./bin/www",
-    "test": "NODE_ENV=qa nyc _mocha --timeout 10000 --exit --report lcovonly -- -R spec",
     "lint": "eslint --fix --config .eslintrc.json \"**/*.js\""
   },
   "dependencies": {
