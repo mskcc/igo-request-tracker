@@ -2,7 +2,8 @@ const axios = require("axios");
 const https = require("https");
 const { logger } = require("../helpers/winston");
 const LIMS_API = process.env.LIMS_API;
-const LIMS = process.env.LIMS;
+const LIMS_USERNAME = process.env.LIMS_USERNAME;
+const LIMS_PASSWORD = process.env.LIMS_PASSWORD;
 
 // LIMS is authorized. Avoids certificate verification & "unable to verify the first certificate in nodejs" errors
 const agent = new https.Agent({
@@ -32,7 +33,7 @@ const formatData = function(resp) {
 exports.getUndeliveredProjects = (days) => {
 	const url = `${LIMS_API}/getIgoRequests?days=${days}&complete=false`;
 	return axios.get(url,
-		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
+		{auth: { username: LIMS_USERNAME, password: LIMS_PASSWORD}, httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getUndeliveredProjects response from ${url}`);
 			return resp;
@@ -44,7 +45,7 @@ exports.getUndeliveredProjects = (days) => {
 exports.getRecentDeliveries = (days) => {
 	const url = `${LIMS_API}/getIgoRequests?days=${days}&complete=true`;
 	return axios.get(url,
-		{auth: { username: LIMS.username, password: LIMS.password}, httpsAgent: agent})
+		{auth: { username: LIMS_USERNAME, password: LIMS_PASSWORD}, httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getRecentDeliveries response from ${url}`);
 			return resp;
@@ -56,7 +57,7 @@ exports.getProjectTrackingInfo = (requestId) => {
 	const url = `${LIMS_API}/getRequestTracking?request=${requestId}`;
 	logger.log("info", `Sending request to ${url}`);
 	return axios.get(url,
-		{auth: { username: LIMS.username, password: LIMS.password},
+		{auth: { username: LIMS_USERNAME, password: LIMS_PASSWORD},
 			httpsAgent: agent})
 		.then((resp) => {
 			logger.log("info", `Successfully retrieved /getProjectTrackingInfo response from ${url}`);
