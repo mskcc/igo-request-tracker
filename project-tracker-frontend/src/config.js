@@ -27,11 +27,15 @@ const properties = {
     }
 }
 
-const env = 'prod';
+const env = process.env.REACT_APP_ENV.toLowerCase();
+const config = Object.assign( properties.base, properties[ env ] )
+if(env !== 'prod'){
+    console.log(`${env} ENVIRONMENT: ${JSON.stringify(config)}`);
+}
 
-export const HOME_PAGE_PATH = 'request-tracker';
-export const LOGIN_PAGE_URL = '/login';
-export const PROJECTS_ENDPOINT = 'https://igo.mskcc.org/request-tracker/api/requests';
-export const HOME = '/request-tracker';
-export const HOST = 'https://igo.mskcc.org';
-export const SWAGGER = 'https://igo.mskcc.org/request-tracker/swagger/';
+export const HOME_PAGE_PATH = config.home_page_path;
+export const LOGIN_PAGE_URL = config.login_page_url;
+export const PROJECTS_ENDPOINT = config.projects_endpoint;
+export const HOME = config.home;
+export const HOST = config.host;
+export const SWAGGER = config.swagger;
