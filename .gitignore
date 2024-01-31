@@ -1,0 +1,5 @@
+# Dependency directories
+*/node_modules/
+project-tracker-backend/.DS_Store
+.DS_Store
+project-tracker-backend/request_tracker.log
