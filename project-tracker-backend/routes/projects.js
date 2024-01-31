@@ -13,25 +13,18 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
 
 /* API Endpoints */
 /**
- * @swagger
- * tags:
  *   name: RequestList
  *   description: Endpoint to retrieve list of delivered/pending IGO request summaries
  */
 /**
- * @swagger
- * tags:
  *   name: RequestInfo
  *   description: Endpoint to retrieve tracking information of one request
  */
 /**
- * @swagger
- * tags:
  *   name: updateRequestList
  *   description: Forces an update on the status of the request list
  */
 /**
- * @swagger
  * /all:
  *   get:
  *     summary: Retrieves list of IGO requests (sequencing & non-sequencing)
@@ -102,7 +95,6 @@ router.get("/:requestId", LimsController.getProjectTrackingData);
  *         description: Update of the request keys that are updated
  */
 /**
- *  @swagger
  *  components:
  *    schemas:
  *      RequestListResponse:

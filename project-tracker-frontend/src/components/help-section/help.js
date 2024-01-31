@@ -7,7 +7,6 @@ import aliquotStatus from "./assets/aliquot_status.png";
 import conservativeStage from "./assets/conservative-stage.png";
 import requestsView from "./assets/requests_view.png";
 import treeView from "./assets/tree_view.png";
-import {SWAGGER} from "../../config";
 
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -432,14 +431,6 @@ function HelpSection() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </div>
-                    <div className={"help-unit"}>
-                        <h2>Is the request-tracker API available?</h2>
-                        <p>
-                            Yes. If you would like access to the request-tracker API, please contact the IGO data team,
-                            <span className={"bold"}>zzPDL_SKI_IGO_DATA@mskcc.org</span> for an API user. To preview
-                            the responses available, please visit the <a href={SWAGGER} target={"_blank"}>API's swagger</a>
-                        </p>
                     </div>
                 </div> : <div></div>
             }
